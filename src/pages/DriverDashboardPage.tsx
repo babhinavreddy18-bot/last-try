@@ -1,0 +1,351 @@
+import React, { useState } from 'react';
+import { MOCK_DRIVERS, MOCK_SHIPMENTS, MOCK_TRUCKS } from '../mock/data';
+import type { TruckStatus, Shipment } from '../types';
+import { StatCard } from '../components/common/StatCard';
+import { Badge } from '../components/common/Badge';
+import { DocumentScanner } from '../components/ai/DocumentScanner';
+import { ReturnLoadMatcher } from '../components/ai/ReturnLoadMatcher';
+import { InteractiveMap } from '../components/maps/InteractiveMap';
+import { formatCurrency, formatDistance } from '../utils/formatters';
+import { Navigation, DollarSign, Award, MapPin, CheckCircle2, ShieldCheck, ArrowRight, Truck as TruckIcon, X, Compass, Route } from 'lucide-react';
+import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from 'recharts';
+
+const earningsData = [
+  { day: 'Mon', earnings: 4200 },
+  { day: 'Tue', earnings: 6800 },
+  { day: 'Wed', earnings: 5100 },
+  { day: 'Thu', earnings: 8900 },
+  { day: 'Fri', earnings: 7400 },
+  { day: 'Sat', earnings: 9600 },
+  { day: 'Sun', earnings: 11200 },
+];
+
+export const DriverDashboardPage: React.FC = () => {
+  const driver = MOCK_DRIVERS[0];
+  const [gpsStatus, setGpsStatus] = useState<TruckStatus>('in-transit');
+  const [destination, setDestination] = useState('Pune NH-48 Hub');
+  const [navigatingShipment, setNavigatingShipment] = useState<Shipment | null>(null);
+  const [deliveryFilter, setDeliveryFilter] = useState<'all' | 'in-transit' | 'cold-chain' | 'high-payout' | 'assigned'>('all');
+  const [visibleCount, setVisibleCount] = useState(24);
+
+  const activeTruck = MOCK_TRUCKS[0];
+
+  const filteredDeliveries = MOCK_SHIPMENTS.filter((s) => {
+    if (deliveryFilter === 'in-transit') return s.status === 'in-transit';
+    if (deliveryFilter === 'cold-chain') return s.temperatureControlled;
+    if (deliveryFilter === 'high-payout') return s.estimatedPriceInr >= 45000;
+    if (deliveryFilter === 'assigned') return s.status === 'pending' || s.status === 'assigned';
+    return true;
+  });
+
+  const visibleDeliveries = filteredDeliveries.slice(0, visibleCount);
+
+  return (
+    <div className="space-y-6">
+      {/* Top Banner & Live GPS Status Toggle */}
+      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <img
+            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"
+            alt={driver.name}
+            className="w-14 h-14 rounded-2xl object-cover border-2 border-blue-500 shadow-sm"
+          />
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl font-bold text-slate-900">{driver.name}</h1>
+              <Badge variant="teal" icon={<Award className="w-3.5 h-3.5" />}>
+                ⭐ {driver.rating} Rating
+              </Badge>
+            </div>
+            <p className="text-xs text-slate-500 font-medium">
+              Lic: {driver.licenseNumber} | Assigned Vehicle: <strong className="text-slate-800">{activeTruck.plateNumber}</strong>
+            </p>
+          </div>
+        </div>
+
+        {/* Live GPS Status & Destination Selector */}
+        <div className="flex flex-wrap items-center gap-3 bg-slate-50 p-2.5 rounded-2xl border border-slate-200">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 px-2">
+            <Navigation className="w-4 h-4 text-blue-600 animate-pulse" />
+            <span>GPS Status:</span>
+          </div>
+
+          <div className="flex items-center bg-white p-1 rounded-xl border border-slate-200 text-xs font-semibold">
+            {(['available', 'in-transit', 'offline'] as const).map((st) => (
+              <button
+                key={st}
+                onClick={() => setGpsStatus(st)}
+                className={`px-3 py-1.5 rounded-lg capitalize transition-all ${
+                  gpsStatus === st
+                    ? st === 'available'
+                      ? 'bg-teal-600 text-white shadow-2xs'
+                      : st === 'in-transit'
+                      ? 'bg-blue-600 text-white shadow-2xs'
+                      : 'bg-slate-700 text-white'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                {st}
+              </button>
+            ))}
+          </div>
+
+          <select
+            value={destination}
+            onChange={(e) => setDestination(e.target.value)}
+            className="px-3 py-1.5 bg-white border border-slate-200 text-slate-800 text-xs font-semibold rounded-xl focus:outline-none cursor-pointer"
+          >
+            <option value="Pune NH-48 Hub">Dest: Pune NH-48</option>
+            <option value="Bengaluru Logistics Park">Dest: Bengaluru LP</option>
+            <option value="Mumbai Container Terminal">Dest: Mumbai Port</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Driver Key Performance Metrics */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard
+          title="Total Earnings"
+          value={formatCurrency(driver.totalEarningsInr)}
+          change="+18.4% this month"
+          icon={<DollarSign className="w-5 h-5" />}
+          accentColor="emerald"
+        />
+        <StatCard
+          title="Completed Trips"
+          value={driver.completedTrips}
+          change="+12 trips"
+          icon={<TruckIcon className="w-5 h-5" />}
+          accentColor="blue"
+        />
+        <StatCard
+          title="Document Trust Score"
+          value={`${driver.trustScorePercent}%`}
+          change="AI Verified"
+          icon={<ShieldCheck className="w-5 h-5" />}
+          accentColor="teal"
+        />
+        <StatCard
+          title="On-Time Rate"
+          value="98.2%"
+          change="Top 5% Driver"
+          icon={<CheckCircle2 className="w-5 h-5" />}
+          accentColor="amber"
+        />
+      </div>
+
+      {/* ══ AI RETURN LOAD MATCHER ─ Core Feature ══ */}
+      <ReturnLoadMatcher
+        currentDropCity={activeTruck.destination?.city ?? destination}
+        currentDropLat={activeTruck.destination?.lat ?? activeTruck.currentLocation.lat}
+        currentDropLng={activeTruck.destination?.lng ?? activeTruck.currentLocation.lng}
+        truckCapacityTons={activeTruck.capacityTons}
+        onAccept={(shipment) => setNavigatingShipment(shipment)}
+      />
+
+      {/* Main Content Grid: Document Verification & Deliveries */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Column: AI Document Verification Center */}
+        <div className="lg:col-span-1 space-y-6">
+          <DocumentScanner />
+        </div>
+
+        {/* Right Column: Assigned Deliveries & Earnings History */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Active Route Telemetry Map */}
+          <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-card space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-blue-600" />
+                Live Route Telemetry ({destination})
+              </h3>
+              <Badge variant="blue">Real-Time GPS Active</Badge>
+            </div>
+            <InteractiveMap trucks={MOCK_TRUCKS} selectedTruckId={activeTruck.id} className="h-[520px]" />
+          </div>
+
+          {/* Assigned Deliveries List */}
+          <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 className="font-bold text-slate-900 text-base">Assigned Cargo Deliveries</h3>
+                <p className="text-xs text-slate-500">
+                  Showing {visibleDeliveries.length} of {filteredDeliveries.length} trips ({MOCK_SHIPMENTS.length} total in dispatch grid)
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-teal-600 font-bold bg-teal-50 px-2.5 py-1 rounded-lg border border-teal-100">
+                  {MOCK_SHIPMENTS.filter(s => s.temperatureControlled).length} Cold Chain
+                </span>
+                <span className="text-xs text-blue-600 font-bold bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100">
+                  {filteredDeliveries.length} Trips
+                </span>
+              </div>
+            </div>
+
+            {/* Category Filter Pills */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
+              {([
+                { key: 'all', label: 'All Deliveries' },
+                { key: 'in-transit', label: '🚛 In-Transit' },
+                { key: 'cold-chain', label: '❄️ Cold Chain' },
+                { key: 'high-payout', label: '💰 High Payout (₹45k+)' },
+                { key: 'assigned', label: '📋 Available' },
+              ] as const).map(({ key, label }) => (
+                <button
+                  key={key}
+                  onClick={() => { setDeliveryFilter(key); setVisibleCount(24); }}
+                  className={`px-3 py-1 font-semibold rounded-lg transition-colors whitespace-nowrap ${
+                    deliveryFilter === key
+                      ? 'bg-blue-600 text-white shadow-sm'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <div className="space-y-3 max-h-[600px] overflow-y-auto pr-1">
+              {visibleDeliveries.map((shipment) => (
+                <div
+                  key={shipment.id}
+                  className="bg-slate-50 rounded-xl p-4 border border-slate-200 hover:border-blue-300 hover:bg-blue-50/20 transition-all"
+                >
+                  {/* Row 1: Title + badges */}
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <span className="font-bold text-slate-900 text-sm">{shipment.title}</span>
+                    <Badge
+                      variant={
+                        shipment.status === 'in-transit' ? 'blue'
+                        : shipment.status === 'delivered' ? 'green'
+                        : 'amber'
+                      }
+                    >
+                      {shipment.status}
+                    </Badge>
+                    {shipment.temperatureControlled && (
+                      <Badge variant="teal">❄️ Cold Chain</Badge>
+                    )}
+                    <Badge variant="slate">{shipment.material}</Badge>
+                  </div>
+
+                  {/* Row 2: Route */}
+                  <div className="flex items-center gap-1.5 text-xs text-slate-600 mb-2">
+                    <MapPin className="w-3 h-3 text-blue-500 shrink-0" />
+                    <span className="font-semibold text-slate-800">{shipment.origin.city}</span>
+                    <ArrowRight className="w-3 h-3 text-slate-400 shrink-0" />
+                    <MapPin className="w-3 h-3 text-teal-500 shrink-0" />
+                    <span className="font-semibold text-slate-800">{shipment.destination.city}</span>
+                  </div>
+
+                  {/* Row 3: Meta + Action */}
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
+                      <span>📅 <strong className="text-slate-800">{shipment.pickupWindow}</strong></span>
+                      <span>📏 <strong className="text-slate-800">{formatDistance(shipment.distanceKm)}</strong></span>
+                      <span>⚖️ <strong className="text-slate-800">{shipment.weightTons}T</strong></span>
+                      {shipment.temperatureControlled && (
+                        <span>🌡️ <strong className="text-slate-800">Temp Controlled</strong></span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="text-right">
+                        <p className="text-xs text-slate-400">Trip Payout</p>
+                        <p className="font-extrabold text-slate-900 text-sm">{formatCurrency(shipment.estimatedPriceInr)}</p>
+                      </div>
+                      <button
+                        onClick={() => setNavigatingShipment(shipment)}
+                        className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-lg shadow-sm flex items-center gap-1 transition-colors shrink-0"
+                      >
+                        <span>Navigate</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              {/* Load More */}
+              {visibleCount < filteredDeliveries.length && (
+                <button
+                  onClick={() => setVisibleCount(prev => Math.min(prev + 12, filteredDeliveries.length))}
+                  className="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm rounded-xl border border-slate-200 transition-colors"
+                >
+                  Load More Deliveries ({filteredDeliveries.length - visibleCount} remaining)
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Weekly Earnings History Chart */}
+          <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card space-y-4">
+            <h3 className="font-bold text-slate-900 text-base">Weekly Earnings Breakdown</h3>
+            <div className="h-56 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={earningsData}>
+                  <defs>
+                    <linearGradient id="colorEarnings" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#2563EB" stopOpacity={0.4} />
+                      <stop offset="95%" stopColor="#2563EB" stopOpacity={0.0} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="day" stroke="#94A3B8" fontSize={12} tickLine={false} />
+                  <YAxis stroke="#94A3B8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(v) => `₹${v}`} />
+                  <Tooltip formatter={(value: any) => [`₹${value}`, 'Earnings']} />
+                  <Area type="monotone" dataKey="earnings" stroke="#2563EB" strokeWidth={3} fillOpacity={1} fill="url(#colorEarnings)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation Modal */}
+      {navigatingShipment && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 border border-slate-200 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2">
+                <Compass className="w-5 h-5 text-blue-600 animate-spin" />
+                <h3 className="font-bold text-slate-900 text-base">Live Route Navigation Active</h3>
+              </div>
+              <button
+                onClick={() => setNavigatingShipment(null)}
+                className="p-1 text-slate-400 hover:text-slate-700 rounded"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs text-slate-700">
+              <div className="bg-blue-50 p-3 rounded-xl border border-blue-100 space-y-1">
+                <span className="text-blue-800 font-bold text-sm">{navigatingShipment.title}</span>
+                <p className="text-slate-600">{navigatingShipment.origin.city} → {navigatingShipment.destination.city} ({formatDistance(navigatingShipment.distanceKm)})</p>
+              </div>
+
+              <div className="space-y-2">
+                <span className="font-bold text-slate-800 uppercase tracking-wider text-[10px]">Turn-by-Turn Telemetry Steps</span>
+                <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-200 flex items-center gap-2">
+                  <Route className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>Head East on NH-48 Express Corridor (Speed: 52 km/h)</span>
+                </div>
+                <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-200 flex items-center gap-2 text-slate-500">
+                  <Route className="w-4 h-4 text-slate-400 shrink-0" />
+                  <span>In 45 km: Exit towards Talegaon Toll Plaza</span>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setNavigatingShipment(null)}
+              className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-xs transition-colors"
+            >
+              Close Navigation Preview
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
