@@ -186,7 +186,23 @@ export const ShipperDashboardPage: React.FC = () => {
             </div>
 
             <div className="space-y-3">
-              <InteractiveMap trucks={[selectedTrackedTruck]} selectedTruckId={selectedTrackedTruck.id} className="h-[250px]" />
+              <InteractiveMap
+                trucks={[selectedTrackedTruck]}
+                selectedTruckId={selectedTrackedTruck.id}
+                activeRoute={{
+                  origin: trackedShipment.origin,
+                  destination: trackedShipment.destination,
+                  title: trackedShipment.title,
+                  driverName: selectedTrackedTruck.driverName,
+                  truckId: selectedTrackedTruck.plateNumber,
+                  speedKmH: 94,
+                  nextStopEta: selectedTrackedTruck.etaMinutes ? `${selectedTrackedTruck.etaMinutes}m` : '1h 36m',
+                  temperatureC: trackedShipment.temperatureTargetCelsius || 4,
+                  fuelPercent: 67,
+                }}
+                onCloseRoute={() => setTrackedShipment(null)}
+                className="h-[360px]"
+              />
 
               <div className="grid grid-cols-2 gap-2 text-xs bg-slate-50 p-3 rounded-xl border border-slate-200">
                 <div>
