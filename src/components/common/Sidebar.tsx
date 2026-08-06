@@ -56,7 +56,7 @@ export const Sidebar: React.FC = () => {
   const currentAiItems = aiIntelligenceItems[userRole] || [];
 
   return (
-    <aside className="w-64 hidden md:flex flex-col justify-between p-4 min-h-[calc(100vh-4rem)] glass-panel">
+    <aside className="w-64 hidden md:flex flex-col justify-between p-4 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto shrink-0 z-20 glass-panel">
       <div className="space-y-6">
         {/* Role Portal Section */}
         <div>
