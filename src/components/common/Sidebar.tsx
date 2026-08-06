@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
+import { useLanguage } from '../../context/LanguageContext';
 import type { UserRole } from '../../types';
 import {
   Truck, PackageCheck, Building2, ShieldAlert,
@@ -20,33 +21,34 @@ interface NavItem {
 export const Sidebar: React.FC = () => {
   const { role } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { t } = useLanguage();
   const location = useLocation();
 
   const userRole = role || 'shipper';
 
   const dashboardItems: Record<UserRole, NavItem> = {
-    driver: { label: 'Driver Portal', path: '/dashboard/driver', icon: <Truck className="w-4 h-4" />, roleAllowed: 'driver', color: '#0D9488' },
-    shipper: { label: 'Shipper Hub', path: '/dashboard/shipper', icon: <PackageCheck className="w-4 h-4" />, roleAllowed: 'shipper', color: '#2563EB' },
-    fleet: { label: 'Fleet Command', path: '/dashboard/fleet', icon: <Building2 className="w-4 h-4" />, roleAllowed: 'fleet', color: '#D97706' },
-    admin: { label: 'Admin Telemetry', path: '/dashboard/admin', icon: <ShieldAlert className="w-4 h-4" />, roleAllowed: 'admin', color: '#DC2626' },
+    driver: { label: t.driverPortal, path: '/dashboard/driver', icon: <Truck className="w-4 h-4" />, roleAllowed: 'driver', color: '#0D9488' },
+    shipper: { label: t.shipperHub, path: '/dashboard/shipper', icon: <PackageCheck className="w-4 h-4" />, roleAllowed: 'shipper', color: '#2563EB' },
+    fleet: { label: t.fleetCommand, path: '/dashboard/fleet', icon: <Building2 className="w-4 h-4" />, roleAllowed: 'fleet', color: '#D97706' },
+    admin: { label: t.adminTelemetry, path: '/dashboard/admin', icon: <ShieldAlert className="w-4 h-4" />, roleAllowed: 'admin', color: '#DC2626' },
   };
 
   const aiIntelligenceItems: Record<UserRole, NavItem[]> = {
     driver: [
-      { label: 'Document Scanner', path: '/dashboard/driver', icon: <FileCheck className="w-4 h-4" />, roleAllowed: 'driver', color: '#0D9488' },
-      { label: 'AI Return Load Matcher', path: '/dashboard/driver', icon: <Sparkles className="w-4 h-4" />, roleAllowed: 'driver', color: '#2563EB' },
+      { label: t.documentScanner, path: '/dashboard/driver', icon: <FileCheck className="w-4 h-4" />, roleAllowed: 'driver', color: '#0D9488' },
+      { label: t.returnLoadMatcher, path: '/dashboard/driver', icon: <Sparkles className="w-4 h-4" />, roleAllowed: 'driver', color: '#2563EB' },
     ],
     shipper: [
-      { label: 'Freight Pricing Engine', path: '/dashboard/shipper', icon: <Sparkles className="w-4 h-4" />, roleAllowed: 'shipper', color: '#7C3AED' },
-      { label: 'Dynamic Benchmarks', path: '/dashboard/shipper', icon: <MapPin className="w-4 h-4" />, roleAllowed: 'shipper', color: '#2563EB' },
+      { label: t.freightPricingEngine, path: '/dashboard/shipper', icon: <Sparkles className="w-4 h-4" />, roleAllowed: 'shipper', color: '#7C3AED' },
+      { label: t.dynamicBenchmarks, path: '/dashboard/shipper', icon: <MapPin className="w-4 h-4" />, roleAllowed: 'shipper', color: '#2563EB' },
     ],
     fleet: [
-      { label: 'Fleet Availability Predictor', path: '/dashboard/fleet', icon: <MapPin className="w-4 h-4" />, roleAllowed: 'fleet', color: '#D97706' },
-      { label: 'Carbon Sustainability Hub', path: '/dashboard/fleet', icon: <Leaf className="w-4 h-4" />, roleAllowed: 'fleet', color: '#059669' },
+      { label: t.fleetPredictor, path: '/dashboard/fleet', icon: <MapPin className="w-4 h-4" />, roleAllowed: 'fleet', color: '#D97706' },
+      { label: t.carbonHub, path: '/dashboard/fleet', icon: <Leaf className="w-4 h-4" />, roleAllowed: 'fleet', color: '#059669' },
     ],
     admin: [
-      { label: 'Tampering Anomalies', path: '/dashboard/admin', icon: <ShieldAlert className="w-4 h-4" />, roleAllowed: 'admin', color: '#DC2626' },
-      { label: 'Telemetry Monitoring', path: '/dashboard/admin', icon: <Sparkles className="w-4 h-4" />, roleAllowed: 'admin', color: '#7C3AED' },
+      { label: t.tamperingAlerts, path: '/dashboard/admin', icon: <ShieldAlert className="w-4 h-4" />, roleAllowed: 'admin', color: '#DC2626' },
+      { label: t.aiPlatform, path: '/dashboard/admin', icon: <Sparkles className="w-4 h-4" />, roleAllowed: 'admin', color: '#7C3AED' },
     ],
   };
 
@@ -59,7 +61,7 @@ export const Sidebar: React.FC = () => {
         {/* Role Portal Section */}
         <div>
           <h4 className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 px-3 mb-2">
-            My Workspace
+            {t.myWorkspace}
           </h4>
           <nav className="space-y-1">
             <NavLink
@@ -85,7 +87,7 @@ export const Sidebar: React.FC = () => {
         {/* AI Intelligence Modules for Role */}
         <div>
           <h4 className="text-[10px] font-extrabold uppercase tracking-widest text-teal-600 dark:text-teal-400 px-3 mb-2">
-            Role AI Modules
+            {t.roleAiModules}
           </h4>
           <nav className="space-y-1">
             {currentAiItems.map((item, idx) => (

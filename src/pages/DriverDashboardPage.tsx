@@ -20,7 +20,10 @@ const earningsData = [
   { day: 'Sun', earnings: 11200 },
 ];
 
+import { useLanguage } from '../context/LanguageContext';
+
 export const DriverDashboardPage: React.FC = () => {
+  const { t } = useLanguage();
   const driver = MOCK_DRIVERS[0];
   const [gpsStatus, setGpsStatus] = useState<TruckStatus>('in-transit');
   const [destination, setDestination] = useState('Pune NH-48 Hub');
@@ -112,28 +115,28 @@ export const DriverDashboardPage: React.FC = () => {
       {/* Driver Key Performance Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
-          title="Total Earnings"
+          title={t.totalEarnings}
           value={formatCurrency(driver.totalEarningsInr)}
           change="+18.4% this month"
           icon={<DollarSign className="w-5 h-5" />}
           accentColor="emerald"
         />
         <StatCard
-          title="Completed Trips"
+          title={t.completedTrips}
           value={driver.completedTrips}
           change="+12 trips"
           icon={<TruckIcon className="w-5 h-5" />}
           accentColor="blue"
         />
         <StatCard
-          title="Document Trust Score"
+          title={t.trustScore}
           value={`${driver.trustScorePercent}%`}
           change="AI Verified"
           icon={<ShieldCheck className="w-5 h-5" />}
           accentColor="teal"
         />
         <StatCard
-          title="On-Time Rate"
+          title={t.onTimeRate}
           value="98.2%"
           change="Top 5% Driver"
           icon={<CheckCircle2 className="w-5 h-5" />}

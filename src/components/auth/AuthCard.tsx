@@ -261,10 +261,12 @@ function getPasswordStrength(pass: string) {
   return { label: 'Strong', color: '#059669', bars: 4 };
 }
 
+import { useLanguage } from '../../context/LanguageContext';
+
 export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
   const { loginWithCredentials } = useAuth();
+  const { lang, setLang } = useLanguage();
 
-  const [lang, setLang] = useState<IndianLanguage>('en');
   const [showLangDropdown, setShowLangDropdown] = useState(false);
   const [tab, setTab] = useState<'signin' | 'signup'>('signin');
   const [email, setEmail] = useState('');
