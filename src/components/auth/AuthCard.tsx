@@ -8,6 +8,7 @@ import {
   Eye, EyeOff, Truck, Package, Building2, Shield,
   CheckCircle2, AlertCircle, Loader2, Globe, ChevronDown
 } from 'lucide-react';
+import { TruckLogo } from '../common/TruckLogo';
 
 interface AuthCardProps {
   onSuccess?: () => void;
@@ -379,9 +380,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
       {/* ── Top Bar: Brand & Language Picker ── */}
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-3">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-blue-600 text-white font-black text-xl shadow-md shrink-0">
-            CL
-          </div>
+          <TruckLogo size="lg" />
           <div>
             <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
               CargoLoop

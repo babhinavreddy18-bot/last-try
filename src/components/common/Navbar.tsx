@@ -6,6 +6,8 @@ import type { UserRole } from '../../types';
 import { Sparkles, Bell, Truck, UserCheck, Shield, LogOut, CheckCircle2, AlertTriangle, Info, Sun, Moon, Globe, ChevronDown } from 'lucide-react';
 import { Badge } from './Badge';
 
+import { TruckLogo } from './TruckLogo';
+
 interface NavbarProps {
   onOpenCopilot: () => void;
 }
@@ -38,14 +40,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot }) => {
       {/* Logo */}
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2.5">
-          <div
-            className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-black text-base tracking-wider shadow-sm"
-            style={{
-              background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
-            }}
-          >
-            CL
-          </div>
+          <TruckLogo size="sm" />
           <div className="hidden sm:block">
             <span className="font-extrabold text-lg tracking-tight text-gradient-blue">
               {t.platformName}
