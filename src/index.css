@@ -3,12 +3,12 @@
 
 @layer base {
   :root, html[data-theme='light'] {
-    --bg-main: #EEF2F6;
+    --bg-main: #F5F3EF;
     --card-bg: #FFFFFF;
-    --border-color: #CBD5E1;
-    --glass-border: #2563EB;
-    --text-primary: #0F172A;
-    --text-secondary: #334155;
+    --border-color: #E5DCD0;
+    --glass-border: #D97706;
+    --text-primary: #1C1917;
+    --text-secondary: #57534E;
     --accent-blue: #2563EB;
     --accent-teal: #0D9488;
     --accent-violet: #7C3AED;
@@ -17,19 +17,19 @@
     --accent-emerald: #059669;
 
     --panel-bg: #FFFFFF;
-    --panel-border: #CBD5E1;
-    --shadow-card: 0 4px 20px -2px rgba(37, 99, 235, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
-    --shadow-float: 0 16px 36px -4px rgba(37, 99, 235, 0.2), 0 4px 12px -2px rgba(15, 23, 42, 0.08);
+    --panel-border: #E5DCD0;
+    --shadow-card: 0 4px 20px -2px rgba(217, 119, 6, 0.1), 0 2px 6px -1px rgba(28, 25, 23, 0.04);
+    --shadow-float: 0 16px 36px -4px rgba(217, 119, 6, 0.22), 0 4px 12px -2px rgba(28, 25, 23, 0.08);
 
-    --bg-gradient: radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.08) 0, transparent 60%), radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.08) 0, transparent 60%), #EEF2F6;
+    --bg-gradient: radial-gradient(at 0% 0%, rgba(217, 119, 6, 0.08) 0, transparent 60%), radial-gradient(at 100% 100%, rgba(37, 99, 235, 0.06) 0, transparent 60%), #F5F3EF;
   }
 
   html.dark, html[data-theme='dark'] {
-    --bg-main: #0B132B;
-    --card-bg: rgba(15, 23, 42, 0.85);
-    --border-color: rgba(30, 58, 138, 0.5);
-    --glass-border: #3B82F6;
-    --text-primary: #F8FAFC;
+    --bg-main: #0A1128;
+    --card-bg: rgba(15, 23, 42, 0.88);
+    --border-color: rgba(245, 158, 11, 0.28);
+    --glass-border: #F59E0B;
+    --text-primary: #FFFBEB;
     --text-secondary: #94A3B8;
     --accent-blue: #3B82F6;
     --accent-teal: #06B6D4;
@@ -38,12 +38,12 @@
     --accent-amber: #F59E0B;
     --accent-emerald: #10B981;
 
-    --panel-bg: rgba(15, 23, 42, 0.9);
-    --panel-border: rgba(30, 58, 138, 0.6);
-    --shadow-card: 0 8px 32px 0 rgba(0, 0, 0, 0.5), 0 0 20px rgba(37, 99, 235, 0.12);
-    --shadow-float: 0 25px 55px 0 rgba(0, 0, 0, 0.7), 0 0 35px rgba(37, 99, 235, 0.28);
+    --panel-bg: rgba(15, 23, 42, 0.92);
+    --panel-border: rgba(245, 158, 11, 0.35);
+    --shadow-card: 0 8px 32px 0 rgba(0, 0, 0, 0.55), 0 0 24px rgba(245, 158, 11, 0.14);
+    --shadow-float: 0 25px 55px 0 rgba(0, 0, 0, 0.75), 0 0 38px rgba(245, 158, 11, 0.28);
 
-    --bg-gradient: radial-gradient(at 0% 0%, rgba(30, 58, 138, 0.35) 0, transparent 65%), radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.15) 0, transparent 60%), #0B132B;
+    --bg-gradient: radial-gradient(at 0% 0%, rgba(245, 158, 11, 0.18) 0, transparent 65%), radial-gradient(at 100% 100%, rgba(30, 58, 138, 0.4) 0, transparent 60%), #0A1128;
   }
 
   /* High contrast rules for Light Mode */
