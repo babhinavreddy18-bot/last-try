@@ -19,16 +19,16 @@
     --panel-border: rgba(203, 213, 225, 0.7);
     --shadow-card: 0 10px 30px -5px rgba(15, 23, 42, 0.05), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
     --shadow-float: 0 25px 50px -12px rgba(37, 99, 235, 0.12), 0 10px 20px -5px rgba(15, 23, 42, 0.04);
-    --orb-opacity: 0.14;
-    --grid-opacity: 0.04;
+    --orb-opacity: 0;
+    --grid-opacity: 0;
 
-    --bg-gradient: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 40%, #EFF6FF 100%);
+    --bg-gradient: #F8FAFC;
   }
 
   html.dark, html[data-theme='dark'] {
-    --bg-main: #070B14;
-    --card-bg: rgba(15, 23, 42, 0.85);
-    --border-color: rgba(99, 102, 241, 0.25);
+    --bg-main: #0F172A;
+    --card-bg: rgba(15, 23, 42, 0.95);
+    --border-color: rgba(51, 65, 85, 0.8);
     --text-primary: #F8FAFC;
     --text-secondary: #94A3B8;
     --accent-blue: #6366F1;
@@ -38,14 +38,14 @@
     --accent-amber: #F59E0B;
     --accent-emerald: #10B981;
 
-    --panel-bg: rgba(11, 17, 32, 0.85);
-    --panel-border: rgba(99, 102, 241, 0.28);
-    --shadow-card: 0 12px 36px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.08) inset;
-    --shadow-float: 0 25px 65px rgba(0, 0, 0, 0.65), 0 0 30px rgba(99, 102, 241, 0.2);
-    --orb-opacity: 0.22;
-    --grid-opacity: 0.06;
+    --panel-bg: rgba(15, 23, 42, 0.95);
+    --panel-border: rgba(51, 65, 85, 0.8);
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.3);
+    --shadow-float: 0 10px 30px rgba(0, 0, 0, 0.4);
+    --orb-opacity: 0;
+    --grid-opacity: 0;
 
-    --bg-gradient: linear-gradient(135deg, #070B14 0%, #0D1527 50%, #091224 100%);
+    --bg-gradient: #0F172A;
   }
 
   body {

@@ -8,18 +8,7 @@ export const Layout: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col font-sans relative">
-
-
-      {/* Soft ambient glow orbs */}
-      <div className="bg-orb-1" />
-      <div className="bg-orb-2" />
-      <div className="bg-orb-3" />
-      <div className="bg-orb-4" />
-
-      {/* Light grid overlay */}
-      <div className="bg-grid-overlay" />
-
+    <div className="min-h-screen flex flex-col font-sans relative bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
       {/* App content layer */}
       <div className="relative z-10 flex flex-col min-h-screen">
         <Navbar
