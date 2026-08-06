@@ -416,6 +416,7 @@ export const DriverDashboardPage: React.FC = () => {
               <InteractiveMap
                 trucks={MOCK_TRUCKS}
                 selectedTruckId={activeTruck.id}
+                singleRouteOnly={true}
                 activeRoute={{
                   origin: navigatingShipment.origin,
                   destination: navigatingShipment.destination,

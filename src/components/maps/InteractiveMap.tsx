@@ -16,6 +16,7 @@ interface InteractiveMapProps {
   trucks: Truck[];
   selectedTruckId?: string;
   activeRoute?: ActiveRouteInfo | null;
+  singleRouteOnly?: boolean;
   onSelectTruck?: (truck: Truck) => void;
   className?: string;
 }
@@ -36,7 +37,7 @@ const MapViewController: React.FC<{
         [activeRoute.origin.lat, activeRoute.origin.lng],
         [activeRoute.destination.lat, activeRoute.destination.lng],
       ]);
-      map.flyToBounds(bounds, { padding: [60, 60], animate: true, duration: 1.5 });
+      map.flyToBounds(bounds, { padding: [70, 70], animate: true, duration: 1.5 });
     } else if (selectedTruck) {
       map.flyTo([selectedTruck.currentLocation.lat, selectedTruck.currentLocation.lng], 10, {
         animate: true,
@@ -60,14 +61,18 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
   trucks,
   selectedTruckId,
   activeRoute,
+  singleRouteOnly = false,
   onSelectTruck,
   className,
 }) => {
   const [activeFilter, setActiveFilter] = useState<TruckStatus | 'all'>('all');
   const [resetTrigger, setResetTrigger] = useState(0);
 
-  const filteredTrucks = trucks.filter((t) => (activeFilter === 'all' ? true : t.status === activeFilter));
-  const selectedTruck = trucks.find((t) => t.id === selectedTruckId);
+  const filteredTrucks = singleRouteOnly
+    ? trucks.filter((t) => t.id === selectedTruckId || t.status === 'in-transit').slice(0, 1)
+    : trucks.filter((t) => (activeFilter === 'all' ? true : t.status === activeFilter));
+
+  const selectedTruck = trucks.find((t) => t.id === selectedTruckId) || trucks[0];
 
   // Major Indian Logistics Corridors
   const corridorDelhiMumbaiPuneBengaluruChennai: [number, number][] = [
@@ -97,11 +102,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
     const html = `
       <div style="position: relative; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; cursor: pointer;">
-        ${
-          truck.status === 'in-transit'
-            ? `<div style="position: absolute; width: 36px; height: 36px; border-radius: 50%; background-color: ${color}; opacity: 0.3; animation: pulse-ring 2s infinite ease-in-out;"></div>`
-            : ''
-        }
+        <div style="position: absolute; width: 36px; height: 36px; border-radius: 50%; background-color: ${color}; opacity: 0.35; animation: pulse-ring 2s infinite ease-in-out;"></div>
         <div style="
           position: absolute;
           width: ${isSelected ? '28px' : '22px'};
@@ -135,51 +136,53 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
   const createPinIcon = (color: string, label: string) => {
     const html = `
       <div style="display: flex; flex-direction: column; align-items: center; cursor: pointer;">
-        <div style="background-color: ${color}; color: #ffffff; font-weight: 800; font-size: 10px; padding: 2px 8px; border-radius: 9999px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); border: 1.5px solid #ffffff; white-space: nowrap;">
+        <div style="background-color: ${color}; color: #ffffff; font-weight: 800; font-size: 11px; padding: 3px 10px; border-radius: 9999px; box-shadow: 0 4px 12px rgba(0,0,0,0.35); border: 2px solid #ffffff; white-space: nowrap;">
           ${label}
         </div>
-        <div style="width: 2px; height: 10px; background-color: ${color};"></div>
+        <div style="width: 3px; height: 12px; background-color: ${color};"></div>
       </div>
     `;
     return L.divIcon({
       html,
       className: 'custom-route-pin',
-      iconSize: [80, 30],
-      iconAnchor: [40, 30],
+      iconSize: [100, 34],
+      iconAnchor: [50, 34],
     });
   };
 
   return (
     <div className={clsx('relative rounded-2xl overflow-hidden shadow-card border border-slate-200 bg-slate-900', className)}>
-      {/* Map Header & Filter Controls */}
-      <div className="absolute top-3 left-3 z-[400] flex flex-wrap items-center gap-1.5 bg-white/95 backdrop-blur-md p-1.5 rounded-xl border border-slate-200 shadow-md text-xs">
-        <span className="text-slate-500 font-bold px-1.5 text-[11px] uppercase tracking-wider">Fleet Filter:</span>
-        {(['all', 'available', 'in-transit', 'maintenance'] as const).map((st) => (
+      {/* Map Header Controls — Hidden when singleRouteOnly is active */}
+      {!singleRouteOnly && (
+        <div className="absolute top-3 left-3 z-[400] flex flex-wrap items-center gap-1.5 bg-white/95 backdrop-blur-md p-1.5 rounded-xl border border-slate-200 shadow-md text-xs">
+          <span className="text-slate-500 font-bold px-1.5 text-[11px] uppercase tracking-wider">Fleet Filter:</span>
+          {(['all', 'available', 'in-transit', 'maintenance'] as const).map((st) => (
+            <button
+              key={st}
+              onClick={() => setActiveFilter(st)}
+              className={clsx(
+                'px-2.5 py-1 rounded-lg font-bold capitalize transition-all text-xs',
+                activeFilter === st
+                  ? 'bg-blue-600 text-white shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              )}
+            >
+              {st} ({st === 'all' ? trucks.length : trucks.filter((t) => t.status === st).length})
+            </button>
+          ))}
+
+          <div className="h-4 w-px bg-slate-200 mx-1 hidden sm:block" />
+
           <button
-            key={st}
-            onClick={() => setActiveFilter(st)}
-            className={clsx(
-              'px-2.5 py-1 rounded-lg font-bold capitalize transition-all text-xs',
-              activeFilter === st
-                ? 'bg-blue-600 text-white shadow-2xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            )}
+            onClick={() => setResetTrigger((prev) => prev + 1)}
+            className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg transition-colors flex items-center gap-1 text-xs"
+            title="Smooth fit map to all active fleet locations"
           >
-            {st} ({st === 'all' ? trucks.length : trucks.filter((t) => t.status === st).length})
+            <Maximize2 className="w-3.5 h-3.5 text-blue-600" />
+            <span>Fit All Fleet</span>
           </button>
-        ))}
-
-        <div className="h-4 w-px bg-slate-200 mx-1 hidden sm:block" />
-
-        <button
-          onClick={() => setResetTrigger((prev) => prev + 1)}
-          className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg transition-colors flex items-center gap-1 text-xs"
-          title="Smooth fit map to all active fleet locations"
-        >
-          <Maximize2 className="w-3.5 h-3.5 text-blue-600" />
-          <span>Fit All Fleet</span>
-        </button>
-      </div>
+        </div>
+      )}
 
       {/* Leaflet Map Canvas */}
       <MapContainer
@@ -200,9 +203,13 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         />
 
-        {/* Corridor Route Lines */}
-        <Polyline positions={corridorDelhiMumbaiPuneBengaluruChennai} pathOptions={{ color: '#2563EB', weight: 2.5, dashArray: '6, 6', opacity: 0.7 }} />
-        <Polyline positions={corridorKolkata} pathOptions={{ color: '#0D9488', weight: 2.5, dashArray: '6, 6', opacity: 0.7 }} />
+        {/* General Corridor Route Lines — Only shown when NOT in singleRouteOnly mode */}
+        {!singleRouteOnly && (
+          <>
+            <Polyline positions={corridorDelhiMumbaiPuneBengaluruChennai} pathOptions={{ color: '#2563EB', weight: 2.5, dashArray: '6, 6', opacity: 0.7 }} />
+            <Polyline positions={corridorKolkata} pathOptions={{ color: '#0D9488', weight: 2.5, dashArray: '6, 6', opacity: 0.7 }} />
+          </>
+        )}
 
         {/* Active Accepted Return Load Navigation Route Line */}
         {activeRoute && (
@@ -212,7 +219,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
                 [activeRoute.origin.lat, activeRoute.origin.lng],
                 [activeRoute.destination.lat, activeRoute.destination.lng],
               ]}
-              pathOptions={{ color: '#059669', weight: 5, opacity: 0.9 }}
+              pathOptions={{ color: '#059669', weight: 6, opacity: 0.95 }}
             />
             <Marker
               position={[activeRoute.origin.lat, activeRoute.origin.lng]}
