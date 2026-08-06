@@ -7,7 +7,7 @@ import { StatCard } from '../components/common/StatCard';
 import { Badge } from '../components/common/Badge';
 import { InteractiveMap } from '../components/maps/InteractiveMap';
 import { formatCurrency, formatDistance } from '../utils/formatters';
-import { PackageCheck, Truck as TruckIcon, Clock, DollarSign, ArrowRight, ShieldCheck, MapPin, X } from 'lucide-react';
+import { PackageCheck, Truck as TruckIcon, Clock, DollarSign, ArrowRight, ShieldCheck, MapPin, X, ArrowUpDown } from 'lucide-react';
 
 import { ErpWmsIntegration } from '../components/ai/ErpWmsIntegration';
 
@@ -111,9 +111,12 @@ export const ShipperDashboardPage: React.FC = () => {
         {/* Right Column: Active Shipments Tracker */}
         <div className="lg:col-span-2 space-y-4">
           <div className="glass-card rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-card space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <h3 className="font-bold text-slate-900 dark:text-white text-base">Active Cargo Listings & Status</h3>
-              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Sorted by pickup priority</span>
+              <span className="text-[11px] text-purple-300 font-extrabold bg-purple-500/20 border border-purple-500/40 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
+                <ArrowUpDown className="w-3.5 h-3.5 text-purple-400" />
+                <span>Sorted by pickup priority</span>
+              </span>
             </div>
 
             <div className="space-y-3 max-h-[480px] overflow-y-auto pr-1">
