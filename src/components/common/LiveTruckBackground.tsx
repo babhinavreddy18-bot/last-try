@@ -256,12 +256,12 @@ export const LiveTruckBackground: React.FC = () => {
         className="absolute inset-0 w-full h-full bg-cover bg-center transition-transform duration-100 ease-out"
         style={{
           backgroundImage: `url(${bgImage})`,
-          filter: 'brightness(0.55) contrast(1.2) saturate(1.2)',
+          filter: 'brightness(0.82) contrast(1.15) saturate(1.2)',
         }}
       />
 
       {/* Cyber Dark Theme Blend Overlay */}
-      <div className="absolute inset-0 bg-[#0C0D14]/75 backdrop-blur-[1.5px]" />
+      <div className="absolute inset-0 bg-[#0C0D14]/30 backdrop-blur-[1px]" />
 
       {/* Live Animated Canvas Telemetry & Moving Trucks Overlay */}
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
