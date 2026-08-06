@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Layout } from './components/common/Layout';
-import { LandingPage } from './pages/LandingPage';
 import { AuthPage } from './pages/AuthPage';
 import { DriverDashboardPage } from './pages/DriverDashboardPage';
 import { ShipperDashboardPage } from './pages/ShipperDashboardPage';
@@ -10,24 +9,56 @@ import { FleetDashboardPage } from './pages/FleetDashboardPage';
 import { AdminDashboardPage } from './pages/AdminDashboardPage';
 import type { UserRole } from './types';
 
-const ProtectedRoute: React.FC<{ children: React.ReactNode; allowedRole?: UserRole }> = ({
-  children,
-}) => {
-  const { isAuthenticated } = useAuth();
+// ── Strict Role-Based Protected Route ─────────────────────────────────────────
 
-  if (!isAuthenticated) {
+const ProtectedRoute: React.FC<{ children: React.ReactNode; allowedRole: UserRole }> = ({
+  children,
+  allowedRole,
+}) => {
+  const { isAuthenticated, user } = useAuth();
+
+  if (!isAuthenticated || !user) {
     return <Navigate to="/auth" replace />;
   }
 
+  // Strict RBAC Verification: If user attempts to access a dashboard outside their role, redirect them to their assigned role dashboard
+  if (allowedRole && user.role !== allowedRole) {
+    return <Navigate to={`/dashboard/${user.role}`} replace />;
+  }
+
   return <>{children}</>;
+};
+
+// ── Public Auth Route (Redirects authenticated users to their dashboard) ──────
+
+const PublicAuthRoute: React.FC = () => {
+  const { isAuthenticated, user } = useAuth();
+
+  if (isAuthenticated && user) {
+    return <Navigate to={`/dashboard/${user.role}`} replace />;
+  }
+
+  return <AuthPage />;
+};
+
+// ── Root Dispatcher ────────────────────────────────────────────────────────────
+
+const RootDispatcher: React.FC = () => {
+  const { isAuthenticated, user } = useAuth();
+
+  if (isAuthenticated && user) {
+    return <Navigate to={`/dashboard/${user.role}`} replace />;
+  }
+
+  return <Navigate to="/auth" replace />;
 };
 
 export function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        <Route index element={<LandingPage />} />
-        <Route path="auth" element={<AuthPage />} />
+        <Route index element={<RootDispatcher />} />
+        <Route path="auth" element={<PublicAuthRoute />} />
         <Route
           path="dashboard/driver"
           element={
@@ -60,7 +91,7 @@ export function AppRoutes() {
             </ProtectedRoute>
           }
         />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<RootDispatcher />} />
       </Route>
     </Routes>
   );

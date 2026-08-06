@@ -4,12 +4,11 @@ import { DEMO_ROLES } from '../mock/data';
 
 interface AuthContextType {
   user: User | null;
-  role: UserRole;
+  role: UserRole | null;
   isAuthenticated: boolean;
   loginAsRole: (targetRole: UserRole) => void;
   loginWithCredentials: (email: string, role?: UserRole, customName?: string) => void;
   logout: () => void;
-  switchRole: (newRole: UserRole) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -24,18 +23,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return null;
       }
     }
-    // Default logged in as Fleet Owner for immediate rich demo preview if wanted, or null
-    return {
-      id: 'usr-fleet-1',
-      name: 'Fleet Manager (Demo)',
-      email: 'fleet@cargoloop.ai',
-      role: 'fleet',
-      companyName: 'Apex Logistics Hub',
-      avatar: DEMO_ROLES.find(r => r.role === 'fleet')?.avatar,
-    };
+    return null;
   });
 
-  const role: UserRole = user?.role || 'fleet';
+  const role: UserRole | null = user?.role || null;
 
   useEffect(() => {
     if (user) {
@@ -88,7 +79,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const companies: Record<UserRole, string> = {
       driver: 'Express Freight Logistics',
       shipper: 'Global Supply Chain Co.',
-      fleet: 'Apex Fleet Fleet Command',
+      fleet: 'Apex Fleet Command',
       admin: 'CargoLoop Control Center',
     };
 
@@ -105,10 +96,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(newUser);
   };
 
-  const switchRole = (newRole: UserRole) => {
-    loginAsRole(newRole);
-  };
-
   const logout = () => {
     setUser(null);
   };
@@ -122,7 +109,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         loginAsRole,
         loginWithCredentials,
         logout,
-        switchRole,
       }}
     >
       {children}

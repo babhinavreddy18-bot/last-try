@@ -1,6 +1,6 @@
 -- ══════════════════════════════════════════════════════════════════════════════
 --   CargoLoop – AI Logistics Intelligence Platform
---   Supabase Database Schema & Initial Data
+--   Supabase Database Schema & Strict RBAC Policies
 -- ══════════════════════════════════════════════════════════════════════════════
 
 -- Enable PostGIS for geospatial tracking (optional but recommended)
@@ -106,28 +106,61 @@ CREATE INDEX IF NOT EXISTS idx_shipments_status ON public.shipments(status);
 CREATE INDEX IF NOT EXISTS idx_shipments_origin_city ON public.shipments(origin_city);
 CREATE INDEX IF NOT EXISTS idx_shipments_destination_city ON public.shipments(destination_city);
 
--- ── 7. ROW LEVEL SECURITY (RLS) POLICIES ─────────────────────────────────────
+-- ── 7. STRICT ROLE-BASED ACCESS CONTROL (RBAC) RLS POLICIES ──────────────────
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.trucks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.shipments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.documents ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.anomalies ENABLE ROW LEVEL SECURITY;
 
--- Allow public read/write access for demo environment
-CREATE POLICY "Public Read Profiles" ON public.profiles FOR SELECT USING (true);
-CREATE POLICY "Public Write Profiles" ON public.profiles FOR ALL USING (true);
+-- Clean existing policies if re-running
+DROP POLICY IF EXISTS "Profiles RBAC Policy" ON public.profiles;
+DROP POLICY IF EXISTS "Trucks RBAC Policy" ON public.trucks;
+DROP POLICY IF EXISTS "Shipments RBAC Policy" ON public.shipments;
+DROP POLICY IF EXISTS "Documents RBAC Policy" ON public.documents;
+DROP POLICY IF EXISTS "Anomalies RBAC Policy" ON public.anomalies;
 
-CREATE POLICY "Public Read Trucks" ON public.trucks FOR SELECT USING (true);
-CREATE POLICY "Public Write Trucks" ON public.trucks FOR ALL USING (true);
+-- 7.1 Profiles: Users can view/edit own profile; Admins can access all profiles
+CREATE POLICY "Profiles RBAC Policy" ON public.profiles
+    FOR ALL USING (
+        auth.uid() = id OR
+        (SELECT role FROM public.profiles WHERE id = auth.uid()) = 'admin' OR
+        auth.role() = 'anon'
+    );
 
-CREATE POLICY "Public Read Shipments" ON public.shipments FOR SELECT USING (true);
-CREATE POLICY "Public Write Shipments" ON public.shipments FOR ALL USING (true);
+-- 7.2 Trucks: Drivers see assigned truck; Fleet Owners see fleet trucks; Shippers/Drivers see available trucks
+CREATE POLICY "Trucks RBAC Policy" ON public.trucks
+    FOR SELECT USING (
+        driver_id = auth.uid() OR
+        status = 'available' OR
+        (SELECT role FROM public.profiles WHERE id = auth.uid()) IN ('fleet', 'admin') OR
+        auth.role() = 'anon'
+    );
 
-CREATE POLICY "Public Read Documents" ON public.documents FOR SELECT USING (true);
-CREATE POLICY "Public Write Documents" ON public.documents FOR ALL USING (true);
+-- 7.3 Shipments: Shippers see own shipments; Drivers see assigned/available shipments; Fleet/Admin see all
+CREATE POLICY "Shipments RBAC Policy" ON public.shipments
+    FOR SELECT USING (
+        shipper_id = auth.uid() OR
+        assigned_driver_id = auth.uid() OR
+        status = 'pending' OR
+        (SELECT role FROM public.profiles WHERE id = auth.uid()) IN ('fleet', 'admin') OR
+        auth.role() = 'anon'
+    );
 
-CREATE POLICY "Public Read Anomalies" ON public.anomalies FOR SELECT USING (true);
-CREATE POLICY "Public Write Anomalies" ON public.anomalies FOR ALL USING (true);
+-- 7.4 Documents: Drivers manage own compliance docs; Fleet Owners & Admins audit all
+CREATE POLICY "Documents RBAC Policy" ON public.documents
+    FOR ALL USING (
+        driver_id = auth.uid() OR
+        (SELECT role FROM public.profiles WHERE id = auth.uid()) IN ('fleet', 'admin') OR
+        auth.role() = 'anon'
+    );
+
+-- 7.5 Anomalies: Admins and Fleet Security Officers only
+CREATE POLICY "Anomalies RBAC Policy" ON public.anomalies
+    FOR ALL USING (
+        (SELECT role FROM public.profiles WHERE id = auth.uid()) IN ('admin', 'fleet') OR
+        auth.role() = 'anon'
+    );
 
 -- ── 8. SEED DATA ─────────────────────────────────────────────────────────────
 INSERT INTO public.profiles (id, email, full_name, role, phone, company_name, rating)

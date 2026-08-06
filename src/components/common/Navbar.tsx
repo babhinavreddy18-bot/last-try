@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import type { UserRole } from '../../types';
-import { Sparkles, Bell, Truck, UserCheck, Shield, ChevronDown, LogOut, CheckCircle2, AlertTriangle, Info } from 'lucide-react';
+import { Sparkles, Bell, Truck, UserCheck, Shield, LogOut, CheckCircle2, AlertTriangle, Info } from 'lucide-react';
 import { Badge } from './Badge';
 
 interface NavbarProps {
@@ -9,9 +9,10 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot }) => {
-  const { user, role, switchRole, logout } = useAuth();
-  const [showRoleDropdown, setShowRoleDropdown] = useState(false);
+  const { user, role, logout } = useAuth();
   const [showNotifications, setShowNotifications] = useState(false);
+
+  const activeRole = role || 'shipper';
 
   const notifications = [
     { id: 'n1', title: 'Document Verified', desc: 'Driver DL-MH12202000101 passed Gemini OCR trust check.', time: '2m ago', type: 'success' },
@@ -24,11 +25,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot }) => {
     shipper: { label: 'Shipper Hub', badge: 'blue', icon: <UserCheck className="w-3.5 h-3.5" /> },
     fleet: { label: 'Fleet Command', badge: 'amber', icon: <Truck className="w-3.5 h-3.5" /> },
     admin: { label: 'Admin Telemetry', badge: 'red', icon: <Shield className="w-3.5 h-3.5" /> },
-  };
-
-  const handleRoleSelect = (newRole: UserRole) => {
-    switchRole(newRole);
-    setShowRoleDropdown(false);
   };
 
   return (
@@ -79,57 +75,22 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot }) => {
           </div>
         </div>
         <div className="h-5 w-px mx-1 hidden sm:block" style={{ background: 'rgba(99,102,241,0.3)' }} />
-        <Badge variant={roleLabels[role].badge} icon={roleLabels[role].icon}>
-          {roleLabels[role].label}
+        <Badge variant={roleLabels[activeRole].badge} icon={roleLabels[activeRole].icon}>
+          {roleLabels[activeRole].label}
         </Badge>
       </div>
 
       {/* Right controls */}
       <div className="flex items-center gap-2">
-        {/* Role switcher */}
-        <div className="relative">
-          <button
-            onClick={() => { setShowRoleDropdown(!showRoleDropdown); setShowNotifications(false); }}
-            className="flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all"
-            style={{
-              background: 'rgba(99,102,241,0.12)',
-              color: '#A5B4FC',
-              border: '1px solid rgba(99,102,241,0.25)',
-            }}
-          >
-            <span>Role: <strong className="capitalize text-white">{role}</strong></span>
-            <ChevronDown className="w-3.5 h-3.5" />
-          </button>
-          {showRoleDropdown && (
-            <div
-              className="absolute right-0 mt-2 w-48 rounded-xl py-1.5 z-50"
-              style={{
-                background: 'rgba(8,12,24,0.97)',
-                backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(99,102,241,0.3)',
-                boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(99,102,241,0.1)',
-              }}
-            >
-              <div className="px-3 py-1.5 text-[10px] uppercase tracking-wider font-semibold text-indigo-400" style={{ borderBottom: '1px solid rgba(99,102,241,0.2)' }}>
-                Switch Demo Role
-              </div>
-              {(['driver', 'shipper', 'fleet', 'admin'] as UserRole[]).map((r) => (
-                <button
-                  key={r}
-                  onClick={() => handleRoleSelect(r)}
-                  className="w-full text-left px-3 py-2 text-xs flex items-center justify-between transition-all capitalize"
-                  style={role === r
-                    ? { background: 'rgba(99,102,241,0.2)', color: '#A5B4FC', fontWeight: 700 }
-                    : { color: '#94A3B8' }
-                  }
-                >
-                  <span>{r}</span>
-                  {role === r && <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#818CF8' }} />}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+        {/* User Info / Role Badge */}
+        {user && (
+          <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-xl" style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.2)' }}>
+            <span className="text-xs font-bold text-white">{user.name}</span>
+            <span className="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded" style={{ background: 'rgba(139,92,246,0.3)', color: '#A5B4FC' }}>
+              {user.role}
+            </span>
+          </div>
+        )}
 
         {/* AI Copilot */}
         <button
@@ -147,7 +108,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot }) => {
         {/* Notifications */}
         <div className="relative">
           <button
-            onClick={() => { setShowNotifications(!showNotifications); setShowRoleDropdown(false); }}
+            onClick={() => setShowNotifications(!showNotifications)}
             className="p-2 rounded-lg transition-all relative"
             style={{
               background: 'rgba(99,102,241,0.1)',

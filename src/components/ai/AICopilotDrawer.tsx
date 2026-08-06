@@ -54,7 +54,7 @@ I am powered by **Gemini 2.5 Flash**. Ask me anything about rate benchmarks, rou
     setLoading(true);
 
     try {
-      const responseText = await askLogisticsCopilot(query, role);
+      const responseText = await askLogisticsCopilot(query, role || 'shipper');
       const aiMsg: Message = {
         id: `ai-${Date.now()}`,
         sender: 'ai',
