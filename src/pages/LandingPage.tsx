@@ -1,21 +1,28 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
   Sparkles, Database, RotateCcw, FileCheck, MapPin,
   TrendingUp, ShieldAlert, Bot, ArrowRight, ShieldCheck,
-  Truck, CheckCircle2, Award, Building2, UserCheck, ChevronRight
+  Truck, CheckCircle2, Award, Building2, UserCheck, ChevronRight, Zap
 } from 'lucide-react';
 import { Badge } from '../components/common/Badge';
+
+const fadeUp = {
+  initial: { opacity: 0, y: 24 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.22, ease: [0.16, 1, 0.3, 1] },
+};
+
+const stagger = {
+  animate: { transition: { staggerChildren: 0.06 } },
+};
 
 export const LandingPage: React.FC = () => {
   const navigate = useNavigate();
 
   const handleGoToAuth = (role?: string) => {
-    if (role) {
-      navigate(`/auth?role=${role}`);
-    } else {
-      navigate('/auth');
-    }
+    navigate(role ? `/auth?role=${role}` : '/auth');
   };
 
   const featureCards = [
@@ -23,73 +30,73 @@ export const LandingPage: React.FC = () => {
       id: 'nlp-pricing',
       title: 'Natural Language Freight Creator',
       category: 'AI Logistics Parsing',
-      icon: <Sparkles className="w-6 h-6 text-[#2563EB]" />,
+      icon: <Sparkles className="w-6 h-6" />,
       badge: 'Gemini 2.5 Flash',
-      description:
-        'Enter plain text or voice instructions like "12 tons of frozen food from Mumbai to Pune" to instantly extract cargo parameters, temperature requirements, and route pricing.',
+      badgeVariant: 'orange' as const,
+      description: 'Enter plain text like "12 tons frozen food Mumbai→Pune" to instantly extract cargo parameters, temperature requirements, and route pricing.',
     },
     {
       id: 'erp-wms',
-      title: 'ERP & WMS Automated Data Sharing Hub',
+      title: 'ERP & WMS Data Sharing Hub',
       category: 'Enterprise Integration',
-      icon: <Database className="w-6 h-6 text-[#2563EB]" />,
-      badge: 'Bi-Directional Webhooks',
-      description:
-        'Seamless zero-code data pipelines connecting SAP S/4HANA, Oracle NetSuite, Manhattan WMS, Infor WMS, Tally Prime, and Govt GST e-Waybill portal.',
+      icon: <Database className="w-6 h-6" />,
+      badge: 'Bi-Directional Sync',
+      badgeVariant: 'purple' as const,
+      description: 'Zero-code pipelines for SAP S/4HANA, Oracle NetSuite, Manhattan WMS, Tally Prime, and Govt GST e-Waybill portal.',
     },
     {
       id: 'return-load',
-      title: 'AI Return Load Matcher (Deadhead Engine)',
+      title: 'AI Return Load Matcher',
       category: 'Route Optimization',
-      icon: <RotateCcw className="w-6 h-6 text-[#2563EB]" />,
-      badge: '0% Empty Return Miles',
-      description:
-        'Intelligent GPS proximity matching that finds high-payout return cargoes for drivers upon destination arrival, reducing empty miles by up to 34%.',
+      icon: <RotateCcw className="w-6 h-6" />,
+      badge: '0% Deadhead Miles',
+      badgeVariant: 'green' as const,
+      description: 'GPS proximity matching that finds high-payout return cargoes for drivers upon destination arrival, reducing empty miles by 34%.',
     },
     {
       id: 'doc-scanner',
-      title: 'AI Document Verification Center',
+      title: 'AI Document Verification',
       category: 'Compliance & OCR',
-      icon: <FileCheck className="w-6 h-6 text-[#2563EB]" />,
-      badge: 'Gemini OCR Trust Engine',
-      description:
-        'Instant mobile camera document scanning and AI trust scoring for Driver License, Vehicle RC, Insurance policy, and PUC certificates.',
+      icon: <FileCheck className="w-6 h-6" />,
+      badge: 'OCR Trust Engine',
+      badgeVariant: 'orange' as const,
+      description: 'Instant mobile camera scanning and AI trust scoring for Driver License, RC, Insurance, and PUC certificates.',
     },
     {
       id: 'live-telemetry',
-      title: 'Live Interactive Route Telemetry & Maps',
+      title: 'Live Route Telemetry & Maps',
       category: 'Real-Time Tracking',
-      icon: <MapPin className="w-6 h-6 text-[#2563EB]" />,
+      icon: <MapPin className="w-6 h-6" />,
       badge: 'Real-Time GPS',
-      description:
-        'Interactive Leaflet maps featuring real-time vehicle positions, speed telemetry, temperature monitoring, and turn-by-turn route navigation.',
+      badgeVariant: 'purple' as const,
+      description: 'Interactive Leaflet maps with real-time vehicle positions, speed telemetry, temperature monitoring, and turn-by-turn navigation.',
     },
     {
       id: 'dynamic-pricing',
-      title: 'Dynamic AI Pricing & ESG Carbon Hub',
-      category: 'Rate Intelligence & Sustainability',
-      icon: <TrendingUp className="w-6 h-6 text-[#2563EB]" />,
+      title: 'Dynamic AI Pricing & ESG Hub',
+      category: 'Rate Intelligence & ESG',
+      icon: <TrendingUp className="w-6 h-6" />,
       badge: 'ESG Carbon Score',
-      description:
-        'AI-backed spot rate benchmarks and interactive carbon emissions calculator predicting fuel savings, CO2 reduction, and green fleet efficiency.',
+      badgeVariant: 'green' as const,
+      description: 'AI-backed spot rate benchmarks with interactive carbon emissions calculator for green fleet efficiency and ESG compliance.',
     },
     {
       id: 'security-telemetry',
-      title: 'AI Security & Anti-Tampering Risk Monitor',
+      title: 'AI Security Risk Monitor',
       category: 'System Protection',
-      icon: <ShieldAlert className="w-6 h-6 text-[#2563EB]" />,
+      icon: <ShieldAlert className="w-6 h-6" />,
       badge: 'Fraud Detection',
-      description:
-        'Continuous automated risk auditing flagging route deviations, driver credential mismatches, and system tampering in real time.',
+      badgeVariant: 'orange' as const,
+      description: 'Continuous automated risk auditing flagging route deviations, driver credential mismatches, and system tampering in real time.',
     },
     {
       id: 'copilot-agent',
-      title: 'CargoLoop 24/7 AI Logistics Copilot',
+      title: 'CargoLoop 24/7 AI Copilot',
       category: 'Conversational Assistant',
-      icon: <Bot className="w-6 h-6 text-[#2563EB]" />,
-      badge: '24/7 Gemini Assistant',
-      description:
-        'Always-on conversational AI assistant answering complex queries about rate benchmarks, driver compliance, route traffic, and carbon metrics.',
+      icon: <Bot className="w-6 h-6" />,
+      badge: '24/7 Gemini AI',
+      badgeVariant: 'orange' as const,
+      description: 'Always-on conversational AI answering queries about rate benchmarks, driver compliance, route traffic, and carbon metrics.',
     },
   ];
 
@@ -97,200 +104,283 @@ export const LandingPage: React.FC = () => {
     {
       role: 'shipper',
       title: 'Shipper AI Logistics Hub',
-      icon: <Truck className="w-5 h-5 text-[#2563EB]" />,
+      icon: <Truck className="w-5 h-5" />,
       description: 'Book cargo via NLP, dynamic pricing & bi-directional ERP/WMS data sharing.',
+      color: '#6D4AFF',
     },
     {
       role: 'driver',
       title: 'Driver Companion App',
-      icon: <UserCheck className="w-5 h-5 text-[#2563EB]" />,
-      description: 'Turn-by-turn turn navigation, OCR document scanner & AI return load matcher.',
+      icon: <UserCheck className="w-5 h-5" />,
+      description: 'Turn-by-turn navigation, OCR document scanner & AI return load matcher.',
+      color: '#22C55E',
     },
     {
       role: 'fleet',
       title: 'Fleet Command Center',
-      icon: <Building2 className="w-5 h-5 text-[#2563EB]" />,
+      icon: <Building2 className="w-5 h-5" />,
       description: 'Multi-truck telemetry, AI capacity predictor & ESG carbon sustainability hub.',
+      color: '#F97316',
     },
     {
       role: 'admin',
       title: 'Admin Risk & Telemetry',
-      icon: <ShieldCheck className="w-5 h-5 text-[#2563EB]" />,
+      icon: <ShieldCheck className="w-5 h-5" />,
       description: 'Network node health, anti-tampering fraud alerts & security audit logs.',
+      color: '#EF4444',
     },
   ];
 
+  const stats = [
+    { label: 'On-Time Speed', value: '99.8%' },
+    { label: 'Avg Freight Savings', value: '14.2%' },
+    { label: 'ERP/WMS Systems', value: '6 Live' },
+    { label: 'Empty Miles Saved', value: '34%' },
+  ];
+
   return (
-    <div className="space-y-12 py-4">
-      {/* Hero Section */}
-      <div className="bg-[#0F172A] text-white rounded-3xl p-8 sm:p-12 border border-[#E2E8F0] shadow-card relative overflow-hidden">
-        <div className="max-w-3xl space-y-6 relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#2563EB]/20 border border-[#2563EB]/40 text-[#2563EB] text-xs font-bold">
-            <Sparkles className="w-3.5 h-3.5 text-[#2563EB]" />
-            <span>Autonomous AI Supply Chain Network</span>
-          </div>
+    <div
+      className="min-h-screen"
+      style={{ background: 'linear-gradient(135deg, #F8FAFC 0%, #EEF4FF 50%, #F8FAFC 100%)' }}
+    >
+      {/* Subtle background orbs */}
+      <div
+        className="fixed top-0 right-0 w-[700px] h-[700px] rounded-full opacity-25 pointer-events-none"
+        style={{ background: 'radial-gradient(circle, #6D4AFF 0%, transparent 70%)', filter: 'blur(100px)' }}
+      />
+      <div
+        className="fixed bottom-0 left-0 w-[500px] h-[500px] rounded-full opacity-15 pointer-events-none"
+        style={{ background: 'radial-gradient(circle, #8B5CF6 0%, transparent 70%)', filter: 'blur(120px)' }}
+      />
 
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">
-            CargoLoop Enterprise AI Logistics Platform
-          </h1>
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-20">
 
-          <p className="text-slate-300 text-sm sm:text-base leading-relaxed font-medium">
-            Discover all 8 core AI modules engineered to automate freight booking, ERP/WMS data pipelines, driver compliance, return load matching, and real-time route telemetry using Deep Navy & Electric Blue enterprise architecture.
-          </p>
+        {/* ═══ HERO ══════════════════════════════════════════════ */}
+        <motion.div
+          className="text-center space-y-8 pt-8"
+          variants={stagger}
+          initial="initial"
+          animate="animate"
+        >
+          <motion.div variants={fadeUp}>
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#EDE9FE] border border-[#DDD6FE] text-[#6D4AFF] text-sm font-semibold">
+              <Zap className="w-4 h-4 text-[#F97316]" />
+              Autonomous AI Supply Chain Network
+            </span>
+          </motion.div>
 
-          <div className="flex flex-wrap items-center gap-4 pt-2">
+          <motion.h1
+            variants={fadeUp}
+            className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight text-[#111827] leading-none"
+          >
+            Freight Intelligence,{' '}
+            <span
+              className="bg-clip-text text-transparent"
+              style={{ backgroundImage: 'linear-gradient(135deg, #6D4AFF 0%, #8B5CF6 100%)' }}
+            >
+              Reinvented.
+            </span>
+          </motion.h1>
+
+          <motion.p
+            variants={fadeUp}
+            className="text-lg sm:text-xl text-[#6B7280] font-normal leading-relaxed max-w-2xl mx-auto"
+          >
+            Discover all 8 core AI modules engineered to automate freight booking, ERP/WMS data pipelines, driver compliance, return load matching, and real-time route telemetry.
+          </motion.p>
+
+          <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-4">
             <button
               onClick={() => handleGoToAuth()}
-              className="px-6 py-3.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-extrabold text-sm rounded-2xl shadow-md transition-all flex items-center gap-2 cursor-pointer"
+              className="btn-purple text-sm py-3.5 px-8"
             >
               <span>Launch Enterprise Portal</span>
               <ArrowRight className="w-4 h-4" />
             </button>
-
             <a
               href="#features-grid"
-              className="px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white font-bold text-sm rounded-2xl border border-white/20 transition-all flex items-center gap-2"
+              className="btn-outline text-sm py-3.5 px-8"
             >
-              <span>Explore Features Below</span>
-              <ChevronRight className="w-4 h-4 text-slate-400" />
+              <span>Explore All Features</span>
+              <ChevronRight className="w-4 h-4 text-[#6B7280]" />
             </a>
-          </div>
-        </div>
+          </motion.div>
 
-        {/* Live Telemetry Banner */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-10 pt-8 border-t border-slate-800 relative z-10">
-          <div className="bg-[#1E293B] p-4 rounded-2xl border border-[#334155]">
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">On-Time Speed</p>
-            <p className="text-xl font-black text-white mt-1">99.8%</p>
-          </div>
-          <div className="bg-[#1E293B] p-4 rounded-2xl border border-[#334155]">
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Avg Freight Savings</p>
-            <p className="text-xl font-black text-white mt-1">14.2%</p>
-          </div>
-          <div className="bg-[#1E293B] p-4 rounded-2xl border border-[#334155]">
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">ERP/WMS Sync</p>
-            <p className="text-xl font-black text-white mt-1">6 Live Systems</p>
-          </div>
-          <div className="bg-[#1E293B] p-4 rounded-2xl border border-[#334155]">
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Empty Miles Saved</p>
-            <p className="text-xl font-black text-white mt-1">34% Reduced</p>
-          </div>
-        </div>
-      </div>
+          {/* Stats Row */}
+          <motion.div
+            variants={fadeUp}
+            className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 max-w-3xl mx-auto"
+          >
+            {stats.map((s) => (
+              <div
+                key={s.label}
+                className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border border-[#E5E7EB] text-center"
+              >
+                <p className="text-2xl font-black text-[#6D4AFF]">{s.value}</p>
+                <p className="text-xs text-[#6B7280] font-medium mt-1">{s.label}</p>
+              </div>
+            ))}
+          </motion.div>
+        </motion.div>
 
-      {/* Feature Cards Grid */}
-      <div id="features-grid" className="space-y-6 scroll-mt-24">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E2E8F0] pb-4">
-          <div>
-            <h2 className="text-2xl font-black text-[#0F172A] tracking-tight">
-              Complete CargoLoop Feature Suite
+        {/* ═══ FEATURE CARDS ══════════════════════════════════════ */}
+        <div id="features-grid" className="space-y-8 scroll-mt-24">
+          <div className="text-center space-y-3">
+            <Badge variant="orange" icon={<CheckCircle2 className="w-3.5 h-3.5" />}>
+              8 Enterprise AI Features
+            </Badge>
+            <h2 className="text-4xl font-black text-[#111827] tracking-tight">
+              Complete Feature Suite
             </h2>
-            <p className="text-xs text-[#64748B] font-medium">
+            <p className="text-[#6B7280] text-base max-w-xl mx-auto">
               Explore all integrated modules powering Shippers, Drivers, Fleet Owners, and Admins.
             </p>
           </div>
-          <Badge variant="blue" icon={<CheckCircle2 className="w-3.5 h-3.5" />}>
-            8 Enterprise AI Features
-          </Badge>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {featureCards.map((feat) => (
-            <div
-              key={feat.id}
-              className="bg-white rounded-2xl p-6 border border-[#E2E8F0] shadow-card hover:shadow-md transition-all flex flex-col justify-between space-y-4 group"
-            >
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 rounded-2xl bg-[#EFF6FF] border border-[#BFDBFE] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                    {feat.icon}
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5"
+            variants={stagger}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: '-60px' }}
+          >
+            {featureCards.map((feat) => (
+              <motion.div
+                key={feat.id}
+                variants={fadeUp}
+                whileHover={{ y: -4, scale: 1.01 }}
+                transition={{ duration: 0.18 }}
+                className="bg-white rounded-3xl p-6 border border-[#E5E7EB] flex flex-col justify-between space-y-4 group cursor-default"
+                style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(109,74,255,0.04)' }}
+              >
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="w-12 h-12 rounded-2xl bg-[#F5F3FF] border border-[#EDE9FE] flex items-center justify-center text-[#6D4AFF] group-hover:scale-110 transition-transform duration-200">
+                      {feat.icon}
+                    </div>
+                    <Badge variant={feat.badgeVariant} size="sm">{feat.badge}</Badge>
                   </div>
-                  <Badge variant="blue" size="sm">
-                    {feat.badge}
-                  </Badge>
+
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#6B7280]">
+                      {feat.category}
+                    </span>
+                    <h3 className="font-bold text-[#111827] text-[15px] mt-1 leading-snug group-hover:text-[#6D4AFF] transition-colors">
+                      {feat.title}
+                    </h3>
+                  </div>
+
+                  <p className="text-sm text-[#6B7280] leading-relaxed">
+                    {feat.description}
+                  </p>
                 </div>
 
-                <div>
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
-                    {feat.category}
-                  </span>
-                  <h3 className="font-extrabold text-[#0F172A] text-base mt-0.5 group-hover:text-[#2563EB] transition-colors">
-                    {feat.title}
-                  </h3>
+                <div className="pt-3 border-t border-[#F3F4F6] flex items-center gap-1.5 text-xs text-[#6D4AFF] font-semibold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E]" />
+                  <span>Active & Fully Live</span>
+                  <ChevronRight className="w-3.5 h-3.5 ml-auto group-hover:translate-x-1 transition-transform" />
                 </div>
-
-                <p className="text-xs text-[#64748B] leading-relaxed font-medium">
-                  {feat.description}
-                </p>
-              </div>
-
-              <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-between text-xs text-[#2563EB] font-bold">
-                <span>Active & Fully Live</span>
-                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </div>
-          ))}
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
-      </div>
 
-      {/* Role Portal Access Section */}
-      <div className="bg-white rounded-3xl p-8 border border-[#E2E8F0] shadow-card space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E2E8F0] pb-4">
-          <div>
-            <h2 className="text-xl font-black text-[#0F172A] tracking-tight">
-              Select Your Role & Launch Portal
+        {/* ═══ ROLE PORTALS ════════════════════════════════════════ */}
+        <div className="space-y-8">
+          <div className="text-center space-y-3">
+            <Badge variant="purple" icon={<Award className="w-3.5 h-3.5" />}>
+              4 Specialized Role Interfaces
+            </Badge>
+            <h2 className="text-4xl font-black text-[#111827] tracking-tight">
+              Your Role. Your Portal.
             </h2>
-            <p className="text-xs text-[#64748B] font-medium">
+            <p className="text-[#6B7280] text-base max-w-xl mx-auto">
               CargoLoop provides tailored interfaces optimized for every supply chain stakeholder.
             </p>
           </div>
-          <Badge variant="blue" icon={<Award className="w-3.5 h-3.5" />}>
-            4 Specialized Role Interfaces
-          </Badge>
-        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {rolePortals.map((p) => (
-            <div
-              key={p.role}
-              onClick={() => handleGoToAuth(p.role)}
-              className="p-5 rounded-2xl bg-[#F8FAFC] hover:bg-[#EFF6FF] border border-[#E2E8F0] hover:border-[#BFDBFE] transition-all cursor-pointer flex flex-col justify-between space-y-4 group shadow-2xs"
-            >
-              <div className="space-y-2">
-                <div className="w-10 h-10 rounded-xl bg-white border border-[#E2E8F0] flex items-center justify-center shadow-2xs">
-                  {p.icon}
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
+            variants={stagger}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: '-60px' }}
+          >
+            {rolePortals.map((p) => (
+              <motion.div
+                key={p.role}
+                variants={fadeUp}
+                whileHover={{ y: -4, scale: 1.01 }}
+                transition={{ duration: 0.18 }}
+                onClick={() => handleGoToAuth(p.role)}
+                className="bg-white rounded-3xl p-6 border border-[#E5E7EB] cursor-pointer flex flex-col justify-between space-y-5 group"
+                style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(109,74,255,0.04)' }}
+              >
+                <div className="space-y-3">
+                  <div
+                    className="w-11 h-11 rounded-2xl flex items-center justify-center transition-all group-hover:scale-110 duration-200"
+                    style={{ background: `${p.color}18`, color: p.color }}
+                  >
+                    {p.icon}
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-[#111827] text-[15px] group-hover:text-[#6D4AFF] transition-colors">
+                      {p.title}
+                    </h3>
+                    <p className="text-sm text-[#6B7280] leading-relaxed mt-1">
+                      {p.description}
+                    </p>
+                  </div>
                 </div>
-                <h3 className="font-extrabold text-[#0F172A] text-sm group-hover:text-[#2563EB] transition-colors">
-                  {p.title}
-                </h3>
-                <p className="text-xs text-[#64748B] font-medium leading-relaxed">
-                  {p.description}
-                </p>
-              </div>
 
-              <div className="flex items-center gap-1.5 text-xs font-extrabold text-[#2563EB]">
-                <span>Log in as {p.role}</span>
-                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Footer Banner */}
-      <div className="p-8 bg-[#0F172A] text-white rounded-3xl border border-[#E2E8F0] flex flex-col sm:flex-row items-center justify-between gap-6 shadow-card">
-        <div className="space-y-1 text-center sm:text-left">
-          <h3 className="font-extrabold text-lg text-white">Ready to automate your freight operations?</h3>
-          <p className="text-xs text-slate-300">Sign in to your CargoLoop account or register a new enterprise workspace.</p>
+                <div
+                  className="flex items-center gap-1.5 text-xs font-semibold"
+                  style={{ color: p.color }}
+                >
+                  <span>Log in as {p.role}</span>
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
 
-        <button
-          onClick={() => handleGoToAuth()}
-          className="px-6 py-3 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-extrabold text-xs rounded-2xl shadow-sm transition-all flex items-center gap-2 shrink-0 cursor-pointer"
+        {/* ═══ CTA BANNER ══════════════════════════════════════════ */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.25 }}
+          className="relative rounded-3xl p-10 sm:p-14 overflow-hidden text-center space-y-6"
+          style={{ background: 'linear-gradient(135deg, #6D4AFF 0%, #8B5CF6 100%)' }}
         >
-          <span>Go to Log In Page</span>
-          <ArrowRight className="w-4 h-4" />
-        </button>
+          {/* Orb */}
+          <div
+            className="absolute top-[-50%] left-[-10%] w-[500px] h-[500px] rounded-full pointer-events-none opacity-30"
+            style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%)', filter: 'blur(60px)' }}
+          />
+
+          <div className="relative z-10 space-y-4">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/20 border border-white/30 text-white text-sm font-semibold">
+              <Zap className="w-4 h-4 text-[#F97316]" />
+              Ready to automate your freight operations?
+            </span>
+            <h3 className="text-3xl sm:text-4xl font-black text-white leading-tight">
+              Start using CargoLoop today.
+            </h3>
+            <p className="text-white/75 text-base max-w-md mx-auto">
+              Sign in to your account or register a new enterprise workspace in seconds.
+            </p>
+            <button
+              onClick={() => handleGoToAuth()}
+              className="inline-flex items-center gap-2 bg-white text-[#6D4AFF] font-bold text-sm py-3.5 px-8 rounded-full transition-all hover:scale-105 hover:shadow-lg cursor-pointer"
+            >
+              <span>Go to Log In Page</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+        </motion.div>
+
       </div>
     </div>
   );

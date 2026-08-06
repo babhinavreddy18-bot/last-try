@@ -10,7 +10,7 @@ interface StatCardProps {
   changeType?: 'positive' | 'negative' | 'neutral';
   subtitle?: string;
   icon: React.ReactNode;
-  accentColor?: 'blue' | 'teal' | 'emerald' | 'amber' | 'rose';
+  accentColor?: 'purple' | 'orange' | 'blue' | 'teal' | 'emerald' | 'amber' | 'rose';
   className?: string;
   onClick?: () => void;
 }
@@ -27,38 +27,41 @@ export const StatCard: React.FC<StatCardProps> = ({
 }) => {
   return (
     <motion.div
-      whileHover={{ y: -2, scale: 1.01 }}
-      transition={{ duration: 0.18 }}
+      whileHover={{ y: -3, scale: 1.01 }}
+      transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
       onClick={onClick}
       className={clsx(
-        'relative rounded-2xl p-5 bg-white border border-[#E2E8F0] shadow-card flex flex-col justify-between overflow-hidden cursor-pointer group transition-all',
+        'relative rounded-3xl p-6 bg-white border border-[#E5E7EB] overflow-hidden cursor-pointer group',
+        'shadow-[0_1px_3px_rgba(0,0,0,0.04),_0_4px_12px_rgba(109,74,255,0.04)]',
+        'hover:border-[#DDD6FE] hover:shadow-[0_8px_28px_-4px_rgba(109,74,255,0.12),_0_2px_8px_rgba(0,0,0,0.04)]',
+        'transition-all duration-200',
         className
       )}
     >
-      {/* Top Electric Blue Highlight Line */}
-      <div className="absolute top-0 inset-x-0 h-0.5 bg-[#2563EB] opacity-0 group-hover:opacity-100 transition-opacity" />
+      {/* Top purple accent line on hover */}
+      <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-[#6D4AFF] to-[#8B5CF6] opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-t-3xl" />
 
       <div className="flex items-start justify-between">
-        <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-[#64748B]">{title}</span>
-          <div className="mt-1 flex items-baseline gap-2">
-            <h3 className="text-2xl sm:text-3xl font-black tracking-tight text-[#0F172A]">{value}</h3>
+        <div className="flex-1">
+          <span className="text-xs font-semibold uppercase tracking-widest text-[#6B7280]">{title}</span>
+          <div className="mt-2">
+            <h3 className="text-3xl font-black tracking-tight text-[#111827]">{value}</h3>
           </div>
         </div>
-        <div className="p-3 rounded-xl bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE] shadow-2xs transition-all group-hover:scale-105">
+        <div className="p-3 rounded-2xl bg-[#F5F3FF] border border-[#EDE9FE] text-[#6D4AFF] transition-all group-hover:scale-110 duration-200 shrink-0">
           {icon}
         </div>
       </div>
 
       {(change || subtitle) && (
-        <div className="mt-4 pt-3 border-t border-[#F1F5F9] flex items-center justify-between text-xs">
+        <div className="mt-5 pt-4 border-t border-[#F3F4F6] flex items-center justify-between text-xs">
           {change && (
             <span
               className={clsx(
-                'inline-flex items-center gap-1 font-bold px-2 py-0.5 rounded-lg border',
-                changeType === 'positive' && 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                changeType === 'negative' && 'bg-rose-50 text-rose-700 border-rose-200',
-                changeType === 'neutral' && 'bg-slate-100 text-slate-700 border-slate-200'
+                'inline-flex items-center gap-1 font-bold px-2.5 py-1 rounded-full',
+                changeType === 'positive' && 'bg-[#DCFCE7] text-[#22C55E]',
+                changeType === 'negative' && 'bg-[#FEE2E2] text-[#EF4444]',
+                changeType === 'neutral' && 'bg-[#F3F4F6] text-[#6B7280]'
               )}
             >
               {changeType === 'positive' && <ArrowUpRight className="w-3.5 h-3.5" />}
@@ -67,7 +70,7 @@ export const StatCard: React.FC<StatCardProps> = ({
               {change}
             </span>
           )}
-          {subtitle && <span className="text-[#64748B] font-semibold truncate">{subtitle}</span>}
+          {subtitle && <span className="text-[#6B7280] font-medium truncate">{subtitle}</span>}
         </div>
       )}
     </motion.div>

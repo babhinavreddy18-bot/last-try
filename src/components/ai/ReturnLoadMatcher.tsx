@@ -617,7 +617,7 @@ export const ReturnLoadMatcher: React.FC<ReturnLoadMatcherProps> = ({
                         <div className="flex-1 min-w-0">
                           <div className="flex flex-wrap items-center gap-1.5 mb-1">
                             <span className="font-bold text-slate-900 text-sm">{match.shipment.title}</span>
-                            <Badge variant={match.shipment.temperatureControlled ? 'teal' : 'slate'}>{translateMaterial(match.shipment.material)}</Badge>
+                            <Badge variant={match.shipment.temperatureControlled ? 'teal' : 'gray'}>{translateMaterial(match.shipment.material)}</Badge>
                           </div>
                           <div className="flex items-center gap-1.5 text-xs text-slate-600">
                             <MapPin className="w-3 h-3 text-blue-500 shrink-0" />

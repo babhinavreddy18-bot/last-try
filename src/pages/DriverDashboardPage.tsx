@@ -326,7 +326,7 @@ export const DriverDashboardPage: React.FC = () => {
                     {shipment.temperatureControlled && (
                       <Badge variant="teal">❄️ {t.coldChain}</Badge>
                     )}
-                    <Badge variant="slate">{translateMaterial(shipment.material)}</Badge>
+                    <Badge variant="gray">{translateMaterial(shipment.material)}</Badge>
                   </div>
 
                   {/* Row 2: Route */}

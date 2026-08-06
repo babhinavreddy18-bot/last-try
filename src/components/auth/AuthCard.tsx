@@ -381,58 +381,58 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
   const strength = tab === 'signup' && password.length > 0 ? getPasswordStrength(password) : null;
 
   return (
-    <div className="w-full max-w-md bg-slate-950/80 backdrop-blur-3xl rounded-3xl p-6 sm:p-8 border border-slate-800/80 shadow-[0_0_50px_rgba(37,99,235,0.2)] space-y-6 relative text-white">
-      {/* Subtle blue edge aura highlight */}
-      <div className="absolute inset-0 rounded-3xl pointer-events-none border border-blue-500/20 shadow-[inset_0_0_35px_rgba(59,130,246,0.15)]" />
+    <div className="w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 border border-[#E5E7EB] space-y-6 relative text-[#111827]" style={{ boxShadow: '0 8px 32px rgba(109,74,255,0.10), 0 1px 3px rgba(0,0,0,0.04)' }}>
+      {/* Purple top accent line */}
+      <div className="absolute top-0 inset-x-0 h-1 rounded-t-3xl" style={{ background: 'linear-gradient(90deg, #6D4AFF 0%, #8B5CF6 100%)' }} />
 
       {/* Header Section */}
-      <div className="text-center space-y-2 pt-1">
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
-          {tab === 'signin' ? 'Log in' : 'Create Account'}
+      <div className="text-center space-y-2 pt-2">
+        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#111827]">
+          {tab === 'signin' ? 'Welcome back' : 'Create Account'}
         </h1>
-        <p className="text-xs sm:text-sm text-slate-400 font-normal leading-relaxed max-w-xs mx-auto">
+        <p className="text-sm text-[#6B7280] font-normal leading-relaxed max-w-xs mx-auto">
           {tab === 'signin'
-            ? 'Log in to your account and seamlessly continue managing your logistics & progress just where you left off.'
+            ? 'Log in to your CargoLoop account and continue managing your logistics.'
             : 'Sign up for CargoLoop to access real-time AI freight dispatch & fleet intelligence.'}
         </p>
       </div>
 
       {/* ── Language Selector Dropdown ── */}
-      <div className="flex items-center justify-between text-xs border-b border-slate-800/80 pb-3">
+      <div className="flex items-center justify-between text-xs border-b border-[#F3F4F6] pb-4">
         <div className="flex items-center gap-2">
           <TruckLogo size="sm" />
-          <span className="font-extrabold text-white text-xs">CargoLoop</span>
+          <span className="font-bold text-[#111827] text-xs">CargoLoop</span>
         </div>
 
         <div className="relative">
           <button
             type="button"
             onClick={() => setShowLangDropdown(!showLangDropdown)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-800 bg-slate-900/90 hover:bg-slate-800 text-slate-200 text-xs font-bold transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[#E5E7EB] bg-white hover:bg-[#F5F3FF] hover:border-[#DDD6FE] text-[#111827] text-xs font-semibold transition-all cursor-pointer"
           >
-            <Globe className="w-3.5 h-3.5 text-blue-400" />
+            <Globe className="w-3.5 h-3.5 text-[#6D4AFF]" />
             <span>{activeLangObj.nativeName}</span>
-            <ChevronDown className="w-3 h-3 text-slate-400" />
+            <ChevronDown className="w-3 h-3 text-[#6B7280]" />
           </button>
 
           {showLangDropdown && (
-            <div className="absolute right-0 mt-2 w-44 rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl p-1.5 z-50 space-y-0.5 animate-in fade-in zoom-in-95">
+            <div className="absolute right-0 mt-2 w-44 rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_8px_28px_rgba(109,74,255,0.12)] p-1.5 z-50 space-y-0.5">
               {LANGUAGES.map((l) => (
                 <button
                   key={l.code}
                   type="button"
                   onClick={() => { setLang(l.code); setShowLangDropdown(false); }}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-colors ${
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
                     lang === l.code
-                      ? 'bg-blue-600 text-white'
-                      : 'text-slate-300 hover:bg-slate-800'
+                      ? 'bg-[#6D4AFF] text-white'
+                      : 'text-[#111827] hover:bg-[#F5F3FF] hover:text-[#6D4AFF]'
                   }`}
                 >
                   <span className="flex items-center gap-2">
                     <span>{l.flag}</span>
                     <span>{l.nativeName}</span>
                   </span>
-                  <span className="text-[10px] text-slate-400">{l.name}</span>
+                  <span className="text-[10px] opacity-60">{l.name}</span>
                 </button>
               ))}
             </div>
@@ -441,13 +441,13 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
       </div>
 
       {/* 1-Click Quick Demo Shortcuts */}
-      <div className="p-3 bg-slate-900/60 rounded-2xl border border-slate-800/80 space-y-2">
-        <div className="flex items-center justify-between px-1">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-            <Sparkles className="w-3 h-3 text-blue-400" />
+      <div className="p-4 bg-[#F9FAFB] rounded-2xl border border-[#E5E7EB] space-y-3">
+        <div className="flex items-center justify-between">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-[#6B7280] flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-[#F97316]" />
             {t.quickDemo}
           </span>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-950/60 text-emerald-400 border border-emerald-800/60">
+          <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#EDE9FE] text-[#6D4AFF] border border-[#DDD6FE]">
             {t.instantAuth}
           </span>
         </div>
@@ -460,20 +460,20 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
                 key={opt.role}
                 type="button"
                 onClick={() => fillDemoTile(opt)}
-                className={`flex items-center gap-2 p-2 rounded-xl text-left transition-all border ${
+                className={`flex items-center gap-2.5 p-2.5 rounded-xl text-left transition-all border cursor-pointer ${
                   active
-                    ? 'bg-blue-950/80 border-blue-600 text-white shadow-2xs'
-                    : 'bg-slate-900/80 hover:bg-slate-800 border-slate-800 text-slate-300'
+                    ? 'bg-[#EDE9FE] border-[#6D4AFF] shadow-sm'
+                    : 'bg-white border-[#E5E7EB] hover:bg-[#F5F3FF] hover:border-[#DDD6FE]'
                 }`}
               >
-                <span style={{ color: opt.color }}>{opt.icon}</span>
+                <span className={active ? 'text-[#6D4AFF]' : ''} style={!active ? { color: opt.color } : {}}>{opt.icon}</span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs font-bold truncate text-white">
+                  <p className={`text-xs font-semibold truncate ${active ? 'text-[#6D4AFF]' : 'text-[#111827]'}`}>
                     {t[opt.labelKey]}
                   </p>
-                  <p className="text-[9px] text-slate-400 truncate">{opt.email}</p>
+                  <p className="text-[9px] text-[#6B7280] truncate">{opt.email}</p>
                 </div>
-                {active && <CheckCircle2 className="w-3.5 h-3.5 shrink-0 text-blue-400" />}
+                {active && <CheckCircle2 className="w-3.5 h-3.5 shrink-0 text-[#6D4AFF]" />}
               </button>
             );
           })}
@@ -481,15 +481,18 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
       </div>
 
       {/* Form Tabs */}
-      <div className="flex p-1 bg-slate-900/90 rounded-full border border-slate-800">
+      <div className="flex p-1 bg-[#F3F4F6] rounded-full border border-[#E5E7EB]">
         {(['signin', 'signup'] as const).map((tabKey) => (
           <button
             key={tabKey}
             type="button"
             onClick={() => { setTab(tabKey); setError(''); setSuccess(''); }}
-            className={`flex-1 py-2 text-xs font-bold rounded-full transition-all ${
-              tab === tabKey ? 'bg-slate-800 text-white shadow-md' : 'text-slate-400 hover:text-white'
+            className={`flex-1 py-2 text-xs font-bold rounded-full transition-all cursor-pointer ${
+              tab === tabKey
+                ? 'text-white shadow-sm'
+                : 'text-[#6B7280] hover:text-[#111827]'
             }`}
+            style={tab === tabKey ? { background: 'linear-gradient(135deg, #6D4AFF 0%, #8B5CF6 100%)' } : {}}
           >
             {tabKey === 'signin' ? t.signIn : t.signUp}
           </button>
@@ -500,8 +503,8 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
       <form onSubmit={handleSubmit} className="space-y-4" autoComplete="on">
 
         {/* Target Portal Role */}
-        <div className="space-y-1.5">
-          <label className="text-xs font-bold text-[#64748B] px-1">
+        <div className="space-y-2">
+          <label className="text-xs font-semibold text-[#6B7280] px-1">
             {t.selectRole}
           </label>
           <div className="grid grid-cols-4 gap-1.5">
@@ -512,13 +515,13 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
                   key={opt.role}
                   type="button"
                   onClick={() => setSelectedRole(opt.role)}
-                  className={`py-2 px-1 rounded-xl text-[10px] font-bold flex flex-col items-center gap-1 transition-all border cursor-pointer ${
+                  className={`py-2.5 px-1 rounded-xl text-[10px] font-semibold flex flex-col items-center gap-1.5 transition-all border cursor-pointer ${
                     isSelected
-                      ? 'bg-[#EFF6FF] border-[#2563EB] text-[#2563EB] shadow-2xs'
-                      : 'bg-white border-[#E2E8F0] text-[#64748B] hover:bg-[#F8FAFC]'
+                      ? 'bg-[#EDE9FE] border-[#6D4AFF] text-[#6D4AFF]'
+                      : 'bg-white border-[#E5E7EB] text-[#6B7280] hover:bg-[#F5F3FF] hover:border-[#DDD6FE] hover:text-[#6D4AFF]'
                   }`}
                 >
-                  <span className={isSelected ? 'text-[#2563EB]' : 'text-[#64748B]'}>{opt.icon}</span>
+                  <span className={isSelected ? 'text-[#6D4AFF]' : 'text-[#6B7280]'}>{opt.icon}</span>
                   <span className="truncate w-full text-center">{t[opt.labelKey]}</span>
                 </button>
               );
@@ -537,7 +540,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
               className="space-y-1 overflow-hidden"
             >
               <div className="relative">
-                <UserIcon className="w-4 h-4 absolute left-4 top-3.5 text-[#94A3B8]" />
+                <UserIcon className="w-4 h-4 absolute left-4 top-3.5 text-[#9CA3AF]" />
                 <input
                   type="text"
                   value={fullName}
@@ -545,7 +548,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
                   placeholder="Enter your full name"
                   required
                   autoComplete="name"
-                  className="w-full pl-11 pr-4 py-3 text-xs font-medium rounded-2xl border border-[#E2E8F0] bg-white text-[#0F172A] placeholder:text-[#94A3B8] focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 focus:outline-none transition-all shadow-2xs"
+                  className="w-full pl-11 pr-4 py-3 text-sm font-normal rounded-2xl border border-[#E5E7EB] bg-white text-[#111827] placeholder:text-[#9CA3AF] focus:border-[#6D4AFF] focus:ring-2 focus:ring-[#6D4AFF]/15 focus:outline-none transition-all"
                 />
               </div>
             </motion.div>
@@ -554,7 +557,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
 
         {/* Email Address Input */}
         <div className="relative">
-          <Mail className="w-4 h-4 absolute left-4 top-3.5 text-[#94A3B8]" />
+          <Mail className="w-4 h-4 absolute left-4 top-3.5 text-[#9CA3AF]" />
           <input
             type="email"
             value={email}
@@ -562,14 +565,14 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
             placeholder="Enter your email address"
             required
             autoComplete="email"
-            className="w-full pl-11 pr-4 py-3 text-xs font-medium rounded-2xl border border-[#E2E8F0] bg-white text-[#0F172A] placeholder:text-[#94A3B8] focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 focus:outline-none transition-all shadow-2xs"
+            className="w-full pl-11 pr-4 py-3 text-sm font-normal rounded-2xl border border-[#E5E7EB] bg-white text-[#111827] placeholder:text-[#9CA3AF] focus:border-[#6D4AFF] focus:ring-2 focus:ring-[#6D4AFF]/15 focus:outline-none transition-all"
           />
         </div>
 
         {/* Password Input */}
         <div className="space-y-1">
           <div className="relative">
-            <Lock className="w-4 h-4 absolute left-4 top-3.5 text-[#94A3B8]" />
+            <Lock className="w-4 h-4 absolute left-4 top-3.5 text-[#9CA3AF]" />
             <input
               type={showPass ? 'text' : 'password'}
               value={password}
@@ -577,26 +580,26 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
               placeholder={t.enterPass}
               required
               autoComplete={tab === 'signin' ? 'current-password' : 'new-password'}
-              className="w-full pl-11 pr-11 py-3 text-xs font-medium rounded-2xl border border-[#E2E8F0] bg-white text-[#0F172A] placeholder:text-[#94A3B8] focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 focus:outline-none transition-all shadow-2xs"
+              className="w-full pl-11 pr-11 py-3 text-sm font-normal rounded-2xl border border-[#E5E7EB] bg-white text-[#111827] placeholder:text-[#9CA3AF] focus:border-[#6D4AFF] focus:ring-2 focus:ring-[#6D4AFF]/15 focus:outline-none transition-all"
             />
             <button
               type="button"
               onClick={() => setShowPass((v) => !v)}
-              className="absolute right-4 top-3.5 text-[#94A3B8] hover:text-[#0F172A] transition-colors"
+              className="absolute right-4 top-3.5 text-[#9CA3AF] hover:text-[#6D4AFF] transition-colors cursor-pointer"
               tabIndex={-1}
             >
-              {showPass ? <EyeOff className="w-4 h-4 text-[#2563EB]" /> : <Eye className="w-4 h-4" />}
+              {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
 
           {strength && (
-            <div className="px-3 pt-1 space-y-1">
+            <div className="px-1 pt-1.5 space-y-1">
               <div className="flex gap-1">
                 {[1, 2, 3, 4].map((i) => (
                   <div
                     key={i}
                     className="h-1 flex-1 rounded-full transition-all duration-300"
-                    style={{ background: i <= strength.bars ? strength.color : '#E2E8F0' }}
+                    style={{ background: i <= strength.bars ? strength.color : '#E5E7EB' }}
                   />
                 ))}
               </div>
@@ -619,11 +622,12 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
           </div>
         )}
 
-        {/* Log In Solid Electric Blue Submit Button */}
+        {/* Submit Button — Purple Gradient Pill */}
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3.5 bg-[#2563EB] hover:bg-[#1D4ED8] active:scale-[0.99] disabled:opacity-50 text-white font-extrabold text-sm rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+          className="w-full py-3.5 rounded-2xl font-bold text-sm text-white transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 active:scale-[0.99]"
+          style={{ background: 'linear-gradient(135deg, #6D4AFF 0%, #8B5CF6 100%)', boxShadow: '0 4px 14px rgba(109,74,255,0.35)' }}
         >
           {loading ? (
             <>
@@ -632,7 +636,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
             </>
           ) : (
             <>
-              <span>{tab === 'signin' ? 'Log in' : t.createAccount}</span>
+              <span>{tab === 'signin' ? 'Sign in' : t.createAccount}</span>
               <ArrowRight className="w-4 h-4" />
             </>
           )}
@@ -640,16 +644,16 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
       </form>
 
       {/* Toggle Sign In / Sign Up Footer Link */}
-      <div className="pt-2 text-center text-xs text-[#64748B]">
+      <div className="pt-2 text-center text-sm text-[#6B7280]">
         <span>
-          {tab === 'signin' ? "Didn't have an account? " : 'Already have an account? '}
+          {tab === 'signin' ? "Don't have an account? " : 'Already have an account? '}
         </span>
         <button
           type="button"
           onClick={() => { setTab(tab === 'signin' ? 'signup' : 'signin'); setError(''); }}
-          className="text-[#2563EB] font-extrabold hover:underline cursor-pointer"
+          className="text-[#6D4AFF] font-bold hover:underline cursor-pointer"
         >
-          {tab === 'signin' ? 'Sign up' : 'Log in'}
+          {tab === 'signin' ? 'Sign up' : 'Sign in'}
         </button>
       </div>
     </div>
