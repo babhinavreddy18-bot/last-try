@@ -58,7 +58,11 @@ const RootDispatcher: React.FC = () => {
     return <Navigate to={`/dashboard/${user.role}`} replace />;
   }
 
-  return <PublicAuthRoute />;
+  return (
+    <Suspense fallback={<PageFallback />}>
+      <LandingPage />
+    </Suspense>
+  );
 };
 
 export function AppRoutes() {
