@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Navbar } from './Navbar';
-import { Sidebar } from './Sidebar';
 import { AICopilotDrawer } from '../ai/AICopilotDrawer';
 
 export const Layout: React.FC = () => {
   const [isCopilotOpen, setIsCopilotOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <div
@@ -33,18 +31,11 @@ export const Layout: React.FC = () => {
       <div className="relative z-10 flex flex-col min-h-screen">
         <Navbar
           onOpenCopilot={() => setIsCopilotOpen(true)}
-          onToggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         />
 
-        <div className="flex flex-1">
-          <Sidebar
-            isMobileMenuOpen={isMobileMenuOpen}
-            onCloseMobile={() => setIsMobileMenuOpen(false)}
-          />
-          <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
-            <Outlet />
-          </main>
-        </div>
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+          <Outlet />
+        </main>
 
         <AICopilotDrawer isOpen={isCopilotOpen} onClose={() => setIsCopilotOpen(false)} />
       </div>
