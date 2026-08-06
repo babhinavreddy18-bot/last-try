@@ -36,15 +36,15 @@ export const DriverDashboardPage: React.FC = () => {
   const activeTruck = MOCK_TRUCKS[0];
 
   useEffect(() => {
-    if (location.hash === '#document-scanner') {
-      setTimeout(() => {
-        document.getElementById('ai-document-scanner')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-    } else if (location.hash === '#return-load-matcher') {
-      setTimeout(() => {
-        document.getElementById('ai-return-load-matcher')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-    }
+    if (!location.hash) return;
+    const cleanHash = location.hash.replace('#', '');
+    const targetId = cleanHash.startsWith('ai-') ? cleanHash : 'ai-' + cleanHash;
+    setTimeout(() => {
+      const el = document.getElementById(targetId) || document.getElementById(cleanHash);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
   }, [location.hash]);
 
   const filteredDeliveries = MOCK_SHIPMENTS.filter((s) => {

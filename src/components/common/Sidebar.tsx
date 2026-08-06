@@ -96,11 +96,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileMenuOpen = false, onCl
           </h4>
           <nav className="space-y-1">
             {currentAiItems.map((item, idx) => {
-              const isActive = (location.pathname + location.hash) === item.path;
+              const currentFull = location.pathname + location.hash;
+              const isActive = currentFull === item.path || (location.hash && item.path.includes(location.hash));
               return (
                 <NavLink
                   key={idx}
                   to={item.path}
+                  onClick={() => {
+                    if (item.path.includes('#')) {
+                      const hashPart = item.path.substring(item.path.indexOf('#') + 1);
+                      const targetId = hashPart.startsWith('ai-') ? hashPart : 'ai-' + hashPart;
+                      const el = document.getElementById(targetId) || document.getElementById(hashPart);
+                      if (el) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }
+                    }
+                    if (onCloseMobile) onCloseMobile();
+                  }}
                   className={clsx(
                     'flex items-center justify-between px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-2xs group',
                     isActive

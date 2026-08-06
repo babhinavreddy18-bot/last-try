@@ -12,15 +12,15 @@ export const AdminDashboardPage: React.FC = () => {
   const [anomalies, setAnomalies] = useState<AnomalyFlag[]>(MOCK_ANOMALIES);
 
   useEffect(() => {
-    if (location.hash === '#security-alerts') {
-      setTimeout(() => {
-        document.getElementById('ai-security-alerts')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-    } else if (location.hash === '#system-telemetry') {
-      setTimeout(() => {
-        document.getElementById('ai-system-telemetry')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-    }
+    if (!location.hash) return;
+    const cleanHash = location.hash.replace('#', '');
+    const targetId = cleanHash.startsWith('ai-') ? cleanHash : 'ai-' + cleanHash;
+    setTimeout(() => {
+      const el = document.getElementById(targetId) || document.getElementById(cleanHash);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
   }, [location.hash]);
 
   const toggleResolve = (id: string) => {

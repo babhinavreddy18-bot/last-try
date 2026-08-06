@@ -16,19 +16,15 @@ export const ShipperDashboardPage: React.FC = () => {
   const [trackedShipment, setTrackedShipment] = useState<Shipment | null>(null);
 
   useEffect(() => {
-    if (location.hash === '#erp-wms-sharing') {
-      setTimeout(() => {
-        document.getElementById('ai-erp-wms-sharing')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-    } else if (location.hash === '#nlp-pricing') {
-      setTimeout(() => {
-        document.getElementById('ai-nlp-pricing')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-    } else if (location.hash === '#dynamic-benchmarks') {
-      setTimeout(() => {
-        document.getElementById('ai-dynamic-benchmarks')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-    }
+    if (!location.hash) return;
+    const cleanHash = location.hash.replace('#', '');
+    const targetId = cleanHash.startsWith('ai-') ? cleanHash : 'ai-' + cleanHash;
+    setTimeout(() => {
+      const el = document.getElementById(targetId) || document.getElementById(cleanHash);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
   }, [location.hash]);
 
   const selectedTrackedTruck = trackedShipment?.assignedTruckId

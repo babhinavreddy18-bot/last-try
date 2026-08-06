@@ -16,19 +16,15 @@ export const FleetDashboardPage: React.FC = () => {
   const [distanceKmInput, setDistanceKmInput] = useState(15000);
 
   useEffect(() => {
-    if (location.hash === '#erp-wms-sharing') {
-      setTimeout(() => {
-        document.getElementById('ai-erp-wms-sharing')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-    } else if (location.hash === '#availability-predictor') {
-      setTimeout(() => {
-        document.getElementById('ai-availability-predictor')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-    } else if (location.hash === '#carbon-hub') {
-      setTimeout(() => {
-        document.getElementById('ai-carbon-hub')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-    }
+    if (!location.hash) return;
+    const cleanHash = location.hash.replace('#', '');
+    const targetId = cleanHash.startsWith('ai-') ? cleanHash : 'ai-' + cleanHash;
+    setTimeout(() => {
+      const el = document.getElementById(targetId) || document.getElementById(cleanHash);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
   }, [location.hash]);
 
   const predictions = MOCK_AVAILABILITY_PREDICTIONS.filter((p) => p.timeframe === timeframe);
