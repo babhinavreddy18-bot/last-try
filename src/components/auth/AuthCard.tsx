@@ -469,6 +469,39 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
         </div>
       </div>
 
+      {/* 🌐 5 Major Indian Languages Quick Pill Bar */}
+      <div className="space-y-1.5 p-2 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-800">
+        <div className="flex items-center justify-between px-1">
+          <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 flex items-center gap-1">
+            <Globe className="w-3 h-3 text-blue-600 dark:text-indigo-400" />
+            Translate (5 Indian Languages)
+          </span>
+          <span className="text-[10px] font-bold text-blue-600 dark:text-indigo-400">
+            {activeLangObj.nativeName} ({activeLangObj.name})
+          </span>
+        </div>
+        <div className="grid grid-cols-3 sm:grid-cols-6 gap-1">
+          {LANGUAGES.map((l) => {
+            const isSelected = lang === l.code;
+            return (
+              <button
+                key={l.code}
+                type="button"
+                onClick={() => setLang(l.code)}
+                className={`py-1.5 px-1 rounded-xl text-center text-xs font-extrabold transition-all border ${
+                  isSelected
+                    ? 'bg-blue-600 text-white border-blue-600 shadow-2xs'
+                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700'
+                }`}
+                title={`Translate to ${l.name} (${l.nativeName})`}
+              >
+                <span className="block text-[11px] font-extrabold truncate">{l.nativeName}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Tabs */}
       <div className="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
         {(['signin', 'signup'] as const).map(tabKey => (
