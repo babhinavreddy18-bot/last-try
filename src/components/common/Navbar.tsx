@@ -37,28 +37,28 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot }) => {
   };
 
   return (
-    <header className="sticky top-0 z-30 h-16 px-4 md:px-6 flex items-center justify-between glass-panel">
+    <header className="sticky top-0 z-30 h-16 px-4 md:px-6 flex items-center justify-between glass-panel border-b border-slate-200 dark:border-slate-800 shadow-xs">
       {/* Logo */}
       <div className="flex items-center gap-3">
         <Link to="/" className="flex items-center gap-2.5 group cursor-pointer transition-opacity hover:opacity-90" title="Return to Home Dashboard">
           <TruckLogo size="sm" />
           <div className="hidden sm:block">
-            <span className="font-extrabold text-lg tracking-tight text-gradient-blue group-hover:underline">
+            <span className="font-black text-lg tracking-tight text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">
               {t.platformName}
             </span>
             <span
-              className="text-[10px] font-bold ml-2 px-1.5 py-0.5 rounded border"
+              className="text-[10px] font-extrabold ml-2 px-1.5 py-0.5 rounded border shadow-2xs"
               style={{
                 background: theme === 'dark' ? 'rgba(99,102,241,0.2)' : '#EFF6FF',
-                color: theme === 'dark' ? '#A5B4FC' : '#2563EB',
-                borderColor: theme === 'dark' ? 'rgba(99,102,241,0.35)' : '#BFDBFE',
+                color: theme === 'dark' ? '#A5B4FC' : '#1D4ED8',
+                borderColor: theme === 'dark' ? 'rgba(99,102,241,0.35)' : '#93C5FD',
               }}
             >
               {t.aiPlatform}
             </span>
           </div>
         </Link>
-        <div className="h-5 w-px mx-1 bg-slate-200 dark:bg-slate-700 hidden sm:block" />
+        <div className="h-5 w-px mx-1 bg-slate-300 dark:bg-slate-700 hidden sm:block" />
         <Badge variant={roleLabels[activeRole].badge} icon={roleLabels[activeRole].icon}>
           {roleLabels[activeRole].label}
         </Badge>
@@ -68,9 +68,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot }) => {
       <div className="flex items-center gap-2.5">
         {/* User Info */}
         {user && (
-          <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
-            <span className="text-xs font-bold">{user.name}</span>
-            <span className="text-[10px] uppercase font-extrabold px-1.5 py-0.5 rounded bg-blue-100 dark:bg-indigo-900/60 text-blue-700 dark:text-indigo-300">
+          <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 shadow-2xs">
+            <span className="text-xs font-extrabold text-slate-900 dark:text-white">{user.name}</span>
+            <span className="text-[10px] uppercase font-black px-1.5 py-0.5 rounded bg-blue-100 dark:bg-indigo-900/60 text-blue-800 dark:text-indigo-300 border border-blue-200 dark:border-indigo-800">
               {user.role}
             </span>
           </div>
@@ -81,17 +81,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot }) => {
           <button
             type="button"
             onClick={() => setShowLangDropdown(!showLangDropdown)}
-            className="flex items-center gap-1.5 px-2.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all shadow-2xs"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 text-xs font-extrabold transition-all shadow-xs cursor-pointer"
             title="Translate CargoLoop into 5 Major Indian Languages"
           >
             <Globe className="w-4 h-4 text-blue-600 dark:text-indigo-400" />
             <span className="hidden sm:inline">{activeLangObj.nativeName}</span>
-            <ChevronDown className="w-3 h-3 text-slate-400" />
+            <ChevronDown className="w-3 h-3 text-slate-500 dark:text-slate-400" />
           </button>
 
           {showLangDropdown && (
-            <div className="absolute right-0 mt-2 w-48 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-1.5 z-50 space-y-0.5 animate-in fade-in zoom-in-95 duration-150">
-              <div className="px-2.5 py-1 text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 tracking-wider">
+            <div className="absolute right-0 mt-2 w-48 rounded-2xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 shadow-2xl p-1.5 z-50 space-y-0.5 animate-in fade-in zoom-in-95 duration-150">
+              <div className="px-2.5 py-1 text-[10px] uppercase font-black text-slate-500 dark:text-slate-400 tracking-wider">
                 5 Major Indian Languages
               </div>
               {LANGUAGES.map((l) => (
@@ -99,17 +99,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot }) => {
                   key={l.code}
                   type="button"
                   onClick={() => { setLang(l.code); setShowLangDropdown(false); }}
-                  className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-bold transition-colors ${
+                  className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
                     lang === l.code
-                      ? 'bg-blue-50 dark:bg-indigo-950/60 text-blue-700 dark:text-indigo-300'
-                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+                      ? 'bg-blue-600 text-white shadow-2xs'
+                      : 'text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
                   }`}
                 >
                   <span className="flex items-center gap-2">
                     <span>{l.flag}</span>
                     <span>{l.nativeName}</span>
                   </span>
-                  <span className="text-[10px] text-slate-400 font-normal">{l.name}</span>
+                  <span className="text-[10px] font-semibold opacity-75">{l.name}</span>
                 </button>
               ))}
             </div>
@@ -119,18 +119,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot }) => {
         {/* Sun / Moon Theme Toggle */}
         <button
           onClick={toggleTheme}
-          className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center gap-1.5 shadow-2xs"
+          className="p-2 px-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
           title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
         >
           {theme === 'light' ? (
             <>
               <Moon className="w-4 h-4 text-indigo-600" />
-              <span className="text-xs font-bold hidden sm:inline">Dark</span>
+              <span className="text-xs font-extrabold hidden sm:inline text-slate-900">Dark</span>
             </>
           ) : (
             <>
               <Sun className="w-4 h-4 text-amber-400" />
-              <span className="text-xs font-bold hidden sm:inline">Light</span>
+              <span className="text-xs font-extrabold hidden sm:inline text-slate-100">Light</span>
             </>
           )}
         </button>
@@ -138,7 +138,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot }) => {
         {/* AI Copilot */}
         <button
           onClick={onOpenCopilot}
-          className="flex items-center gap-2 px-3.5 py-1.5 text-xs font-bold text-white rounded-xl shadow-sm hover:shadow transition-all group cursor-pointer"
+          className="flex items-center gap-2 px-3.5 py-1.5 text-xs font-black text-white rounded-xl shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all group cursor-pointer"
           style={{
             background: 'linear-gradient(135deg, #2563EB 0%, #0D9488 100%)',
           }}
@@ -151,33 +151,34 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot }) => {
         <div className="relative">
           <button
             onClick={() => setShowNotifications(!showNotifications)}
-            className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all relative"
+            className="p-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all relative shadow-xs cursor-pointer"
+            title="Notifications"
           >
-            <Bell className="w-4 h-4" />
+            <Bell className="w-4 h-4 text-slate-700 dark:text-slate-200" />
             <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
           </button>
 
           {showNotifications && (
-            <div className="absolute right-0 mt-2 w-72 sm:w-80 rounded-2xl p-3 z-50 space-y-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl">
-              <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800 text-xs">
-                <span className="font-bold">{t.telemetryAlerts}</span>
-                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 dark:bg-indigo-900/50 text-blue-600 dark:text-indigo-300">3 New</span>
+            <div className="absolute right-0 mt-2 w-72 sm:w-80 rounded-2xl p-3 z-50 space-y-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 shadow-2xl">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800 text-xs">
+                <span className="font-extrabold text-slate-900 dark:text-white">{t.telemetryAlerts}</span>
+                <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-blue-100 dark:bg-indigo-900/50 text-blue-700 dark:text-indigo-300 border border-blue-200 dark:border-indigo-800">3 New</span>
               </div>
               {notifications.map((n) => (
                 <div
                   key={n.id}
-                  className="p-2.5 rounded-xl space-y-1 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 hover:bg-blue-50/50 transition-colors cursor-pointer"
+                  className="p-2.5 rounded-xl space-y-1 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 hover:bg-blue-50/80 transition-colors cursor-pointer"
                 >
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-bold flex items-center gap-1.5">
-                      {n.type === 'success' && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />}
-                      {n.type === 'info' && <Info className="w-3.5 h-3.5 text-blue-500" />}
-                      {n.type === 'warning' && <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />}
+                    <span className="font-bold flex items-center gap-1.5 text-slate-900 dark:text-slate-100">
+                      {n.type === 'success' && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />}
+                      {n.type === 'info' && <Info className="w-3.5 h-3.5 text-blue-600" />}
+                      {n.type === 'warning' && <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />}
                       {n.title}
                     </span>
-                    <span className="text-[10px] text-slate-400">{n.time}</span>
+                    <span className="text-[10px] text-slate-500 font-bold">{n.time}</span>
                   </div>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-normal">{n.desc}</p>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-normal font-medium">{n.desc}</p>
                 </div>
               ))}
             </div>
@@ -186,16 +187,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot }) => {
 
         {/* Avatar & logout */}
         {user && (
-          <div className="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-700">
+          <div className="flex items-center gap-2 pl-2 border-l border-slate-300 dark:border-slate-700">
             <img
               src={user.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100'}
               alt={user.name}
-              className="w-8 h-8 rounded-full object-cover border border-slate-200 dark:border-slate-700 shadow-xs"
+              className="w-8 h-8 rounded-full object-cover border-2 border-slate-300 dark:border-slate-700 shadow-xs"
             />
             <button
               onClick={logout}
               title={t.signOut}
-              className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl transition-colors cursor-pointer"
+              className="p-1.5 text-slate-600 dark:text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl transition-colors border border-slate-200 dark:border-slate-700/60 cursor-pointer"
             >
               <LogOut className="w-4 h-4" />
             </button>

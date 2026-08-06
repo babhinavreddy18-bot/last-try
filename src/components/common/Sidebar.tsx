@@ -60,33 +60,33 @@ export const Sidebar: React.FC = () => {
       <div className="space-y-6">
         {/* Role Portal Section */}
         <div>
-          <h4 className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 px-3 mb-2">
+          <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 px-3 mb-2">
             {t.myWorkspace}
           </h4>
           <nav className="space-y-1">
             <NavLink
               to={currentDashboardItem.path}
               className={clsx(
-                'flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all shadow-2xs',
+                'flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-black transition-all shadow-xs',
                 location.pathname === currentDashboardItem.path
-                  ? 'bg-blue-50 dark:bg-indigo-950/60 text-blue-700 dark:text-indigo-300 border border-blue-200 dark:border-indigo-800'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border border-transparent'
+                  ? 'bg-blue-600 text-white shadow-sm border border-blue-600'
+                  : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:text-slate-900 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700'
               )}
             >
               <div className="flex items-center gap-2.5">
-                <span className="text-blue-600 dark:text-indigo-400">
+                <span className={location.pathname === currentDashboardItem.path ? 'text-white' : 'text-blue-600 dark:text-indigo-400'}>
                   {currentDashboardItem.icon}
                 </span>
                 <span>{currentDashboardItem.label}</span>
               </div>
-              <ChevronRight className="w-3.5 h-3.5 text-blue-600 dark:text-indigo-400" />
+              <ChevronRight className={location.pathname === currentDashboardItem.path ? 'text-white w-3.5 h-3.5' : 'text-slate-400 w-3.5 h-3.5'} />
             </NavLink>
           </nav>
         </div>
 
         {/* AI Intelligence Modules for Role */}
         <div>
-          <h4 className="text-[10px] font-extrabold uppercase tracking-widest text-teal-600 dark:text-teal-400 px-3 mb-2">
+          <h4 className="text-[10px] font-black uppercase tracking-widest text-teal-700 dark:text-teal-400 px-3 mb-2">
             {t.roleAiModules}
           </h4>
           <nav className="space-y-1">
@@ -94,15 +94,15 @@ export const Sidebar: React.FC = () => {
               <NavLink
                 key={idx}
                 to={item.path}
-                className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 bg-white dark:bg-slate-800/60 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700/80 transition-all shadow-2xs"
+                className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-slate-900 dark:text-slate-200 hover:text-blue-700 bg-white dark:bg-slate-800/80 hover:bg-blue-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 transition-all shadow-2xs group"
               >
                 <div className="flex items-center gap-2.5">
-                  <span style={{ color: item.color }}>
+                  <span style={{ color: item.color }} className="group-hover:scale-110 transition-transform">
                     {item.icon}
                   </span>
-                  <span>{item.label}</span>
+                  <span className="group-hover:text-blue-700 transition-colors">{item.label}</span>
                 </div>
-                <span className="w-1.5 h-1.5 rounded-full" style={{ background: item.color }} />
+                <span className="w-2 h-2 rounded-full shadow-2xs" style={{ background: item.color }} />
               </NavLink>
             ))}
           </nav>
@@ -113,25 +113,25 @@ export const Sidebar: React.FC = () => {
         {/* Quick Theme Switcher Pill in Sidebar */}
         <button
           onClick={toggleTheme}
-          className="w-full flex items-center justify-between p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800 text-xs font-bold transition-all hover:bg-slate-50 dark:hover:bg-slate-700"
+          className="w-full flex items-center justify-between p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs font-extrabold transition-all hover:bg-slate-100 dark:hover:bg-slate-700 shadow-xs cursor-pointer"
         >
           <span className="flex items-center gap-2">
             {theme === 'light' ? <Sun className="w-4 h-4 text-amber-500" /> : <Moon className="w-4 h-4 text-indigo-400" />}
             <span>Theme Mode</span>
           </span>
-          <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200">
+          <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-600">
             {theme}
           </span>
         </button>
 
         {/* Role active status badge */}
-        <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 space-y-2">
-          <div className="flex items-center gap-2 text-xs font-bold">
+        <div className="p-3.5 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 shadow-xs space-y-2">
+          <div className="flex items-center gap-2 text-xs font-black text-slate-900 dark:text-white">
             <Sparkles className="w-4 h-4 text-blue-600 dark:text-indigo-400" />
             <span className="capitalize">{userRole} Scope Active</span>
             <span className="ml-auto w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           </div>
-          <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+          <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed font-semibold">
             Strict RBAC active. Showing features authorized for {userRole} role.
           </p>
         </div>
