@@ -112,9 +112,9 @@ export const ShipperDashboardPage: React.FC = () => {
         <div className="lg:col-span-2 space-y-4">
           <div className="glass-card rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-card space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <h3 className="font-bold text-slate-900 dark:text-white text-base">Active Cargo Listings & Status</h3>
-              <span className="text-[11px] text-purple-300 font-extrabold bg-purple-500/20 border border-purple-500/40 px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
-                <ArrowUpDown className="w-3.5 h-3.5 text-purple-400" />
+              <h3 className="font-bold text-[#0F172A] text-base">Active Cargo Listings & Status</h3>
+              <span className="text-[11px] text-[#2563EB] font-extrabold bg-[#EFF6FF] border border-[#BFDBFE] px-3 py-1 rounded-full flex items-center gap-1.5 shadow-2xs">
+                <ArrowUpDown className="w-3.5 h-3.5 text-[#2563EB]" />
                 <span>Sorted by pickup priority</span>
               </span>
             </div>

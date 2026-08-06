@@ -36,34 +36,35 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot, onToggleMobileMen
   };
 
   return (
-    <header className="sticky top-0 z-30 h-16 px-3 sm:px-4 md:px-6 flex items-center justify-between bg-[#12131C] border-b border-[#1F2133] relative text-white">
-      {/* Top Gradient Highlight Bar */}
-      <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-400 opacity-90" />
+    <header className="sticky top-0 z-30 h-16 px-3 sm:px-4 md:px-6 flex items-center justify-between bg-white border-b border-[#E2E8F0] shadow-2xs relative text-[#0F172A]">
+      {/* Top Subtle Electric Blue Bar */}
+      <div className="absolute top-0 inset-x-0 h-0.5 bg-[#2563EB]" />
+
       {/* Logo & Mobile Menu Toggle */}
       <div className="flex items-center gap-2 sm:gap-3">
         {onToggleMobileMenu && (
           <button
             onClick={onToggleMobileMenu}
-            className="p-1.5 rounded-xl border border-[#1F2133] bg-[#181926] text-slate-200 md:hidden cursor-pointer"
+            className="p-1.5 rounded-xl border border-[#E2E8F0] bg-white text-[#0F172A] hover:bg-[#F8FAFC] md:hidden cursor-pointer transition-colors"
             title="Open Menu"
           >
-            <Menu className="w-5 h-5 text-slate-200" />
+            <Menu className="w-5 h-5 text-[#0F172A]" />
           </button>
         )}
 
         <Link to="/" className="flex items-center gap-2 sm:gap-2.5 group cursor-pointer transition-opacity hover:opacity-90" title="Return to Home Dashboard">
           <TruckLogo size="sm" />
           <div className="hidden xs:block sm:block">
-            <span className="font-black text-base sm:text-lg tracking-tight text-white group-hover:text-purple-400 transition-colors">
+            <span className="font-extrabold text-base sm:text-lg tracking-tight text-[#0F172A] group-hover:text-[#2563EB] transition-colors">
               {t.platformName}
             </span>
-            <span className="text-[10px] font-extrabold ml-1.5 px-1.5 py-0.5 rounded border bg-purple-500/20 text-purple-300 border-purple-500/35 hidden sm:inline-block">
+            <span className="text-[10px] font-bold ml-1.5 px-2 py-0.5 rounded-full bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE] hidden sm:inline-block">
               {t.aiPlatform}
             </span>
           </div>
         </Link>
 
-        <div className="h-5 w-px mx-0.5 bg-[#1F2133] hidden sm:block" />
+        <div className="h-5 w-px mx-0.5 bg-[#E2E8F0] hidden sm:block" />
 
         <div className="hidden sm:block">
           <Badge variant={roleLabels[activeRole].badge} icon={roleLabels[activeRole].icon}>
@@ -72,28 +73,28 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot, onToggleMobileMen
         </div>
       </div>
 
-      {/* Center Search Input matching reference image */}
-      <div className="hidden md:flex items-center gap-2 bg-[#181926] border border-[#26283D] rounded-xl px-3 py-1.5 w-64 lg:w-80 focus-within:border-purple-500 transition-colors">
-        <Search className="w-4 h-4 text-slate-400 shrink-0" />
+      {/* Center Search Input */}
+      <div className="hidden md:flex items-center gap-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3.5 py-1.5 w-64 lg:w-80 focus-within:border-[#2563EB] focus-within:bg-white transition-all shadow-2xs">
+        <Search className="w-4 h-4 text-[#64748B] shrink-0" />
         <input
           type="text"
-          placeholder="Search here..."
-          className="bg-transparent text-xs text-white placeholder-slate-400 outline-none w-full font-medium"
+          placeholder="Search shipments, carriers..."
+          className="bg-transparent text-xs text-[#0F172A] placeholder-[#94A3B8] outline-none w-full font-medium"
         />
       </div>
 
       {/* Right controls */}
       <div className="flex items-center gap-2 sm:gap-3">
-        {/* User Info Avatar matching reference image */}
+        {/* User Info Avatar */}
         {user && (
-          <div className="flex items-center gap-2.5 px-2.5 py-1 rounded-xl bg-[#181926] border border-[#26283D]">
+          <div className="flex items-center gap-2.5 px-3 py-1 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] shadow-2xs">
             <img
               src={`https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80`}
               alt="Profile"
-              className="w-7 h-7 rounded-full object-cover border border-purple-400/40"
+              className="w-7 h-7 rounded-full object-cover border border-[#2563EB]/40"
             />
-            <span className="text-xs font-bold text-white hidden sm:inline">{user.name}</span>
-            <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+            <span className="text-xs font-bold text-[#0F172A] hidden sm:inline">{user.name}</span>
+            <ChevronDown className="w-3.5 h-3.5 text-[#64748B]" />
           </div>
         )}
 
@@ -102,12 +103,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot, onToggleMobileMen
           <button
             type="button"
             onClick={() => setShowLangDropdown(!showLangDropdown)}
-            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 text-xs font-extrabold transition-all shadow-xs cursor-pointer"
+            className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border border-[#E2E8F0] bg-white hover:bg-[#F8FAFC] text-[#0F172A] text-xs font-bold transition-all shadow-2xs cursor-pointer"
             title="Translate CargoLoop into 5 Major Indian Languages"
           >
-            <Globe className="w-4 h-4 text-blue-600 dark:text-indigo-400" />
-            <span className="text-[11px] sm:text-xs font-black">{activeLangObj.code.toUpperCase()}</span>
-            <ChevronDown className="w-3 h-3 text-slate-500 dark:text-slate-400 hidden sm:block" />
+            <Globe className="w-4 h-4 text-[#2563EB]" />
+            <span className="text-[11px] sm:text-xs font-extrabold">{activeLangObj.code.toUpperCase()}</span>
+            <ChevronDown className="w-3 h-3 text-[#64748B] hidden sm:block" />
           </button>
 
           {showLangDropdown && (

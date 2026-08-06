@@ -494,7 +494,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
 
         {/* Target Portal Role */}
         <div className="space-y-1.5">
-          <label className="text-xs font-semibold text-slate-300 px-1">
+          <label className="text-xs font-bold text-[#64748B] px-1">
             {t.selectRole}
           </label>
           <div className="grid grid-cols-4 gap-1.5">
@@ -505,13 +505,13 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
                   key={opt.role}
                   type="button"
                   onClick={() => setSelectedRole(opt.role)}
-                  className={`py-2 px-1 rounded-xl text-[10px] font-bold flex flex-col items-center gap-1 transition-all border ${
+                  className={`py-2 px-1 rounded-xl text-[10px] font-bold flex flex-col items-center gap-1 transition-all border cursor-pointer ${
                     isSelected
-                      ? 'bg-blue-950/80 border-blue-500 text-white shadow-md'
-                      : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:bg-slate-800'
+                      ? 'bg-[#EFF6FF] border-[#2563EB] text-[#2563EB] shadow-2xs'
+                      : 'bg-white border-[#E2E8F0] text-[#64748B] hover:bg-[#F8FAFC]'
                   }`}
                 >
-                  <span style={{ color: opt.color }}>{opt.icon}</span>
+                  <span className={isSelected ? 'text-[#2563EB]' : 'text-[#64748B]'}>{opt.icon}</span>
                   <span className="truncate w-full text-center">{t[opt.labelKey]}</span>
                 </button>
               );
@@ -530,7 +530,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
               className="space-y-1 overflow-hidden"
             >
               <div className="relative">
-                <UserIcon className="w-4 h-4 absolute left-4 top-3.5 text-slate-400" />
+                <UserIcon className="w-4 h-4 absolute left-4 top-3.5 text-[#94A3B8]" />
                 <input
                   type="text"
                   value={fullName}
@@ -538,16 +538,16 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
                   placeholder="Enter your full name"
                   required
                   autoComplete="name"
-                  className="w-full pl-11 pr-4 py-3 text-xs font-medium rounded-full border border-slate-800 bg-slate-900/90 text-white placeholder:text-slate-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 focus:outline-none transition-all"
+                  className="w-full pl-11 pr-4 py-3 text-xs font-medium rounded-2xl border border-[#E2E8F0] bg-white text-[#0F172A] placeholder:text-[#94A3B8] focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 focus:outline-none transition-all shadow-2xs"
                 />
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Email Address Pill Input */}
+        {/* Email Address Input */}
         <div className="relative">
-          <Mail className="w-4 h-4 absolute left-4 top-3.5 text-slate-400" />
+          <Mail className="w-4 h-4 absolute left-4 top-3.5 text-[#94A3B8]" />
           <input
             type="email"
             value={email}
@@ -555,14 +555,14 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
             placeholder="Enter your email address"
             required
             autoComplete="email"
-            className="w-full pl-11 pr-4 py-3 text-xs font-medium rounded-full border border-slate-800 bg-slate-900/90 text-white placeholder:text-slate-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 focus:outline-none transition-all"
+            className="w-full pl-11 pr-4 py-3 text-xs font-medium rounded-2xl border border-[#E2E8F0] bg-white text-[#0F172A] placeholder:text-[#94A3B8] focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 focus:outline-none transition-all shadow-2xs"
           />
         </div>
 
-        {/* Password Pill Input */}
+        {/* Password Input */}
         <div className="space-y-1">
           <div className="relative">
-            <Lock className="w-4 h-4 absolute left-4 top-3.5 text-slate-400" />
+            <Lock className="w-4 h-4 absolute left-4 top-3.5 text-[#94A3B8]" />
             <input
               type={showPass ? 'text' : 'password'}
               value={password}
@@ -570,15 +570,15 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
               placeholder={t.enterPass}
               required
               autoComplete={tab === 'signin' ? 'current-password' : 'new-password'}
-              className="w-full pl-11 pr-11 py-3 text-xs font-medium rounded-full border border-slate-800 bg-slate-900/90 text-white placeholder:text-slate-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 focus:outline-none transition-all"
+              className="w-full pl-11 pr-11 py-3 text-xs font-medium rounded-2xl border border-[#E2E8F0] bg-white text-[#0F172A] placeholder:text-[#94A3B8] focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 focus:outline-none transition-all shadow-2xs"
             />
             <button
               type="button"
               onClick={() => setShowPass((v) => !v)}
-              className="absolute right-4 top-3.5 text-slate-400 hover:text-white transition-colors"
+              className="absolute right-4 top-3.5 text-[#94A3B8] hover:text-[#0F172A] transition-colors"
               tabIndex={-1}
             >
-              {showPass ? <EyeOff className="w-4 h-4 text-blue-400" /> : <Eye className="w-4 h-4" />}
+              {showPass ? <EyeOff className="w-4 h-4 text-[#2563EB]" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
 
@@ -589,7 +589,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
                   <div
                     key={i}
                     className="h-1 flex-1 rounded-full transition-all duration-300"
-                    style={{ background: i <= strength.bars ? strength.color : '#1E293B' }}
+                    style={{ background: i <= strength.bars ? strength.color : '#E2E8F0' }}
                   />
                 ))}
               </div>
@@ -599,28 +599,28 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
 
         {/* Errors & Success Feedback */}
         {error && (
-          <div className="flex items-center gap-2 p-3 rounded-2xl text-xs bg-rose-950/80 border border-rose-800 text-rose-300 font-medium">
-            <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+          <div className="flex items-center gap-2 p-3 rounded-2xl text-xs bg-rose-50 border border-rose-200 text-rose-700 font-medium">
+            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
         {success && (
-          <div className="flex items-center gap-2 p-3 rounded-2xl text-xs bg-emerald-950/80 border border-emerald-800 text-emerald-300 font-medium">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+          <div className="flex items-center gap-2 p-3 rounded-2xl text-xs bg-emerald-50 border border-emerald-200 text-emerald-700 font-medium">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
             <span>{success}</span>
           </div>
         )}
 
-        {/* Log In Pill Submit Button */}
+        {/* Log In Solid Electric Blue Submit Button */}
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3.5 bg-slate-800 hover:bg-slate-700 active:bg-blue-600 disabled:opacity-50 text-white font-extrabold text-sm rounded-full shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer border border-slate-700 hover:border-slate-600"
+          className="w-full py-3.5 bg-[#2563EB] hover:bg-[#1D4ED8] active:scale-[0.99] disabled:opacity-50 text-white font-extrabold text-sm rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
         >
           {loading ? (
             <>
-              <Loader2 className="w-4 h-4 animate-spin text-blue-400" />
+              <Loader2 className="w-4 h-4 animate-spin text-white" />
               <span>{t.authenticating}</span>
             </>
           ) : (
@@ -633,14 +633,14 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
       </form>
 
       {/* Toggle Sign In / Sign Up Footer Link */}
-      <div className="pt-2 text-center text-xs text-slate-400">
+      <div className="pt-2 text-center text-xs text-[#64748B]">
         <span>
           {tab === 'signin' ? "Didn't have an account? " : 'Already have an account? '}
         </span>
         <button
           type="button"
           onClick={() => { setTab(tab === 'signin' ? 'signup' : 'signin'); setError(''); }}
-          className="text-blue-400 font-bold hover:underline cursor-pointer"
+          className="text-[#2563EB] font-extrabold hover:underline cursor-pointer"
         >
           {tab === 'signin' ? 'Sign up' : 'Log in'}
         </button>

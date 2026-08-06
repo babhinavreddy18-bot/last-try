@@ -65,33 +65,33 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileMenuOpen = false, onCl
       <div className="space-y-6">
         {/* Role Portal Section */}
         <div>
-          <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 px-3 mb-2">
+          <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#64748B] px-3 mb-2">
             {t.myWorkspace}
           </h4>
           <nav className="space-y-1">
             <NavLink
               to={currentDashboardItem.path}
               className={clsx(
-                'flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-black transition-all shadow-xs',
+                'flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-2xs',
                 location.pathname === currentDashboardItem.path
-                  ? 'bg-blue-600 text-white shadow-sm border border-blue-600'
-                  : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:text-slate-900 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700'
+                  ? 'bg-[#2563EB] text-white shadow-sm font-extrabold'
+                  : 'bg-white text-[#0F172A] hover:bg-[#F8FAFC] border border-[#E2E8F0]'
               )}
             >
               <div className="flex items-center gap-2.5">
-                <span className={location.pathname === currentDashboardItem.path ? 'text-white' : 'text-blue-600 dark:text-indigo-400'}>
+                <span className={location.pathname === currentDashboardItem.path ? 'text-white' : 'text-[#2563EB]'}>
                   {currentDashboardItem.icon}
                 </span>
                 <span>{currentDashboardItem.label}</span>
               </div>
-              <ChevronRight className={location.pathname === currentDashboardItem.path ? 'text-white w-3.5 h-3.5' : 'text-slate-400 w-3.5 h-3.5'} />
+              <ChevronRight className={location.pathname === currentDashboardItem.path ? 'text-white w-3.5 h-3.5' : 'text-[#94A3B8] w-3.5 h-3.5'} />
             </NavLink>
           </nav>
         </div>
 
         {/* AI Intelligence Modules for Role */}
         <div>
-          <h4 className="text-[10px] font-black uppercase tracking-widest text-teal-700 dark:text-teal-400 px-3 mb-2">
+          <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#64748B] px-3 mb-2">
             {t.roleAiModules}
           </h4>
           <nav className="space-y-1">
@@ -102,19 +102,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileMenuOpen = false, onCl
                   key={idx}
                   to={item.path}
                   className={clsx(
-                    'flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all shadow-2xs group',
+                    'flex items-center justify-between px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-2xs group',
                     isActive
-                      ? 'bg-blue-50 dark:bg-indigo-950/60 text-blue-700 dark:text-indigo-300 border border-blue-300 dark:border-indigo-700 font-extrabold'
-                      : 'bg-white dark:bg-slate-800/80 text-slate-900 dark:text-slate-200 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700'
+                      ? 'bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE] font-extrabold'
+                      : 'bg-white text-[#0F172A] hover:bg-[#F8FAFC] border border-[#E2E8F0]'
                   )}
                 >
                   <div className="flex items-center gap-2.5">
-                    <span style={{ color: item.color }} className="group-hover:scale-110 transition-transform">
+                    <span className={isActive ? 'text-[#2563EB]' : 'text-[#64748B] group-hover:text-[#2563EB] transition-colors'}>
                       {item.icon}
                     </span>
-                    <span className="group-hover:text-blue-700 transition-colors">{item.label}</span>
+                    <span className="group-hover:text-[#2563EB] transition-colors">{item.label}</span>
                   </div>
-                  <span className="w-2 h-2 rounded-full shadow-2xs" style={{ background: item.color }} />
+                  <span className={clsx('w-2 h-2 rounded-full', isActive ? 'bg-[#2563EB]' : 'bg-[#CBD5E1]')} />
                 </NavLink>
               );
             })}
@@ -123,16 +123,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileMenuOpen = false, onCl
       </div>
 
       <div className="space-y-3">
-
         {/* Role active status badge */}
-        <div className="p-3.5 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 shadow-xs space-y-2">
-          <div className="flex items-center gap-2 text-xs font-black text-slate-900 dark:text-white">
-            <Sparkles className="w-4 h-4 text-blue-600 dark:text-indigo-400" />
+        <div className="p-3.5 rounded-2xl bg-white border border-[#E2E8F0] shadow-2xs space-y-2">
+          <div className="flex items-center gap-2 text-xs font-extrabold text-[#0F172A]">
+            <Sparkles className="w-4 h-4 text-[#2563EB]" />
             <span className="capitalize">{userRole} Scope Active</span>
-            <span className="ml-auto w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="ml-auto w-2 h-2 rounded-full bg-[#2563EB] animate-pulse" />
           </div>
-          <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed font-semibold">
-            Strict RBAC active. Showing features authorized for {userRole} role.
+          <p className="text-[11px] text-[#64748B] leading-relaxed font-semibold">
+            Strict RBAC active. Authorized for {userRole} role.
           </p>
         </div>
       </div>
@@ -142,7 +141,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileMenuOpen = false, onCl
   return (
     <>
       {/* Desktop Sticky Sidebar */}
-      <aside className="w-64 hidden md:flex flex-col justify-between p-4 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto shrink-0 z-20 glass-panel border-r border-slate-200/80 dark:border-slate-800/80 backdrop-blur-2xl">
+      <aside className="w-64 hidden md:flex flex-col justify-between p-4 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto shrink-0 z-20 bg-white border-r border-[#E2E8F0] shadow-2xs">
         {sidebarContent}
       </aside>
 
@@ -151,12 +150,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileMenuOpen = false, onCl
         <div className="fixed inset-0 z-50 md:hidden flex">
           {/* Backdrop */}
           <div
-            className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity"
+            className="fixed inset-0 bg-[#0F172A]/40 backdrop-blur-xs transition-opacity"
             onClick={onCloseMobile}
           />
 
           {/* Drawer content */}
-          <div className="relative w-72 max-w-[80vw] bg-white dark:bg-slate-900 h-full p-4 overflow-y-auto shadow-2xl flex flex-col justify-between z-10 border-r border-slate-200 dark:border-slate-800 animate-in slide-in-from-left duration-200">
+          <div className="relative w-72 max-w-[80vw] bg-white h-full p-4 overflow-y-auto shadow-2xl flex flex-col justify-between z-10 border-r border-[#E2E8F0] animate-in slide-in-from-left duration-200">
             {sidebarContent}
           </div>
         </div>
