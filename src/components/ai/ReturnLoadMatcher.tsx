@@ -210,14 +210,19 @@ export const ReturnLoadMatcher: React.FC<ReturnLoadMatcherProps> = ({
         setMatches([]);
       },
       (err) => {
-        setGpsStatus('error');
-        setGpsError(
-          err.code === 1 ? 'Location access denied. Please enable GPS permissions.'
-          : err.code === 2 ? 'GPS signal unavailable. Move to an open area.'
-          : 'GPS timed out. Please try again.'
-        );
+        // Only set error if user explicitly denied permission or position unavailable
+        if (err.code === 1) {
+          setGpsStatus('error');
+          setGpsError('Location access denied. Please enable GPS permissions in browser settings.');
+        } else if (err.code === 2) {
+          setGpsStatus('error');
+          setGpsError('GPS signal unavailable. Continuing to search for satellite fix…');
+        } else {
+          // Keep acquiring if searching for satellites without timing out
+          setGpsStatus('acquiring');
+        }
       },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 }
+      { enableHighAccuracy: true, timeout: Infinity, maximumAge: 0 }
     );
   }, []);
 
