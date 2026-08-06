@@ -10,14 +10,14 @@ interface Lane {
 }
 
 const LANES: Lane[] = [
-  { y: 0.08, speed: 38, scale: 0.55, color: '#6366F1', startFraction: 0.05, dir: 1 },
-  { y: 0.18, speed: 26, scale: 0.44, color: '#8B5CF6', startFraction: 0.70, dir: -1 },
-  { y: 0.30, speed: 52, scale: 0.62, color: '#14B8A6', startFraction: 0.20, dir: 1 },
-  { y: 0.42, speed: 20, scale: 0.40, color: '#F59E0B', startFraction: 0.85, dir: -1 },
-  { y: 0.55, speed: 44, scale: 0.58, color: '#EF4444', startFraction: 0.10, dir: 1 },
-  { y: 0.67, speed: 30, scale: 0.48, color: '#10B981', startFraction: 0.55, dir: -1 },
-  { y: 0.78, speed: 58, scale: 0.65, color: '#EC4899', startFraction: 0.30, dir: 1 },
-  { y: 0.88, speed: 22, scale: 0.42, color: '#06B6D4', startFraction: 0.90, dir: -1 },
+  { y: 0.08, speed: 38, scale: 0.55, color: '#2563EB', startFraction: 0.05, dir: 1 },
+  { y: 0.18, speed: 26, scale: 0.44, color: '#7C3AED', startFraction: 0.70, dir: -1 },
+  { y: 0.30, speed: 52, scale: 0.62, color: '#0D9488', startFraction: 0.20, dir: 1 },
+  { y: 0.42, speed: 20, scale: 0.40, color: '#D97706', startFraction: 0.85, dir: -1 },
+  { y: 0.55, speed: 44, scale: 0.58, color: '#DC2626', startFraction: 0.10, dir: 1 },
+  { y: 0.67, speed: 30, scale: 0.48, color: '#059669', startFraction: 0.55, dir: -1 },
+  { y: 0.78, speed: 58, scale: 0.65, color: '#DB2777', startFraction: 0.30, dir: 1 },
+  { y: 0.88, speed: 22, scale: 0.42, color: '#0284C7', startFraction: 0.90, dir: -1 },
 ];
 
 function drawTruck(
@@ -31,8 +31,8 @@ function drawTruck(
   ctx.scale(dir * scale, scale);
 
   // Trailer
-  ctx.fillStyle = color + '28';
-  ctx.strokeStyle = color + '55';
+  ctx.fillStyle = color + '15';
+  ctx.strokeStyle = color + '40';
   ctx.lineWidth = 1.5 / scale;
   ctx.beginPath();
   (ctx as any).roundRect(-90, -18, 80, 34, 4);
@@ -40,27 +40,27 @@ function drawTruck(
   ctx.stroke();
 
   // Trailer stripe
-  ctx.fillStyle = color + '45';
+  ctx.fillStyle = color + '30';
   ctx.beginPath();
   (ctx as any).roundRect(-86, -13, 72, 6, 2);
   ctx.fill();
 
   // Cab
-  ctx.fillStyle = color + '38';
-  ctx.strokeStyle = color + '70';
+  ctx.fillStyle = color + '25';
+  ctx.strokeStyle = color + '55';
   ctx.beginPath();
-  (ctx as any).roundRect(-10, -22, 32, 36, [6,4,0,0]);
+  (ctx as any).roundRect(-10, -22, 32, 36, [6, 4, 0, 0]);
   ctx.fill();
   ctx.stroke();
 
   // Windshield
-  ctx.fillStyle = color + '50';
+  ctx.fillStyle = color + '40';
   ctx.beginPath();
   (ctx as any).roundRect(-6, -18, 20, 11, 2);
   ctx.fill();
 
   // Exhaust
-  ctx.strokeStyle = color + '60';
+  ctx.strokeStyle = color + '50';
   ctx.lineWidth = 2 / scale;
   ctx.beginPath();
   ctx.moveTo(16, -24);
@@ -70,11 +70,11 @@ function drawTruck(
   // Wheels
   const wPositions = [[-70, 16], [-50, 16], [-28, 16], [12, 16]];
   for (const [wx, wy] of wPositions) {
-    ctx.fillStyle = color + '65';
+    ctx.fillStyle = color + '50';
     ctx.beginPath();
     ctx.arc(wx, wy, 7, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = '#ffffff15';
+    ctx.fillStyle = '#FFFFFF';
     ctx.beginPath();
     ctx.arc(wx, wy, 3, 0, Math.PI * 2);
     ctx.fill();
@@ -82,12 +82,12 @@ function drawTruck(
 
   // Headlight glow
   const glowX = dir === 1 ? 24 : -88;
-  const grd = ctx.createRadialGradient(glowX, 0, 0, glowX, 0, 30);
-  grd.addColorStop(0, color + '35');
+  const grd = ctx.createRadialGradient(glowX, 0, 0, glowX, 0, 26);
+  grd.addColorStop(0, color + '20');
   grd.addColorStop(1, color + '00');
   ctx.fillStyle = grd;
   ctx.beginPath();
-  ctx.arc(glowX, 0, 30, 0, Math.PI * 2);
+  ctx.arc(glowX, 0, 26, 0, Math.PI * 2);
   ctx.fill();
 
   ctx.restore();
@@ -141,7 +141,7 @@ export const LiveTruckBackground: React.FC = () => {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 w-full h-full pointer-events-none"
-      style={{ zIndex: 0, opacity: 1 }}
+      style={{ zIndex: 0, opacity: 0.95 }}
     />
   );
 };

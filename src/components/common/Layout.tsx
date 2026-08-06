@@ -9,21 +9,21 @@ export const Layout: React.FC = () => {
   const [isCopilotOpen, setIsCopilotOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col font-sans" style={{ background: 'linear-gradient(135deg, #0A0F1E 0%, #0D1525 40%, #0A1628 70%, #06111E 100%)' }}>
+    <div className="min-h-screen flex flex-col font-sans" style={{ background: 'linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 50%, #EFF6FF 100%)' }}>
 
       {/* Live animated truck background */}
       <LiveTruckBackground />
 
-      {/* Ambient glow orbs */}
+      {/* Soft ambient glow orbs */}
       <div className="bg-orb-1" />
       <div className="bg-orb-2" />
       <div className="bg-orb-3" />
       <div className="bg-orb-4" />
 
-      {/* Grid overlay */}
+      {/* Light grid overlay */}
       <div className="bg-grid-overlay" />
 
-      {/* App content — sits above background */}
+      {/* App content layer */}
       <div className="relative z-10 flex flex-col min-h-screen">
         <Navbar onOpenCopilot={() => setIsCopilotOpen(true)} />
 

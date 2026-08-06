@@ -28,8 +28,8 @@ const ROLE_OPTIONS: RoleOption[] = [
     role: 'driver',
     label: 'Driver',
     icon: <Truck className="w-4 h-4" />,
-    color: '#34D399',
-    bg: 'rgba(52,211,153,0.12)',
+    color: '#0D9488',
+    bg: '#CCFBF1',
     email: 'driver@cargoloop.ai',
     pass: 'demo1234',
   },
@@ -37,8 +37,8 @@ const ROLE_OPTIONS: RoleOption[] = [
     role: 'shipper',
     label: 'Shipper',
     icon: <Package className="w-4 h-4" />,
-    color: '#60A5FA',
-    bg: 'rgba(96,165,250,0.12)',
+    color: '#2563EB',
+    bg: '#EFF6FF',
     email: 'shipper@cargoloop.ai',
     pass: 'demo1234',
   },
@@ -46,8 +46,8 @@ const ROLE_OPTIONS: RoleOption[] = [
     role: 'fleet',
     label: 'Fleet Owner',
     icon: <Building2 className="w-4 h-4" />,
-    color: '#FBBF24',
-    bg: 'rgba(251,191,36,0.12)',
+    color: '#D97706',
+    bg: '#FEF3C7',
     email: 'fleet@cargoloop.ai',
     pass: 'demo1234',
   },
@@ -55,8 +55,8 @@ const ROLE_OPTIONS: RoleOption[] = [
     role: 'admin',
     label: 'Admin',
     icon: <Shield className="w-4 h-4" />,
-    color: '#F87171',
-    bg: 'rgba(248,113,113,0.12)',
+    color: '#DC2626',
+    bg: '#FEE2E2',
     email: 'admin@cargoloop.ai',
     pass: 'demo1234',
   },
@@ -74,8 +74,8 @@ function inferRoleFromEmail(email: string): UserRole | null {
 function getPasswordStrength(pass: string) {
   if (pass.length < 3) return { label: 'Too short', color: '#EF4444', bars: 1 };
   if (pass.length < 6) return { label: 'Fair', color: '#F59E0B', bars: 2 };
-  if (pass.length < 9) return { label: 'Good', color: '#3B82F6', bars: 3 };
-  return { label: 'Strong', color: '#10B981', bars: 4 };
+  if (pass.length < 9) return { label: 'Good', color: '#2563EB', bars: 3 };
+  return { label: 'Strong', color: '#059669', bars: 4 };
 }
 
 export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
@@ -90,7 +90,6 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [focused, setFocused] = useState<string | null>(null);
 
   const fillDemoTile = (option: RoleOption) => {
     setEmail(option.email);
@@ -164,7 +163,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
       }
     }
 
-    // Brief realistic processing delay
+    // Processing delay
     await new Promise(r => setTimeout(r, 650));
     setLoading(false);
 
@@ -183,67 +182,31 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
   const strength = tab === 'signup' && password.length > 0 ? getPasswordStrength(password) : null;
   const activeRoleOption = ROLE_OPTIONS.find(r => r.role === selectedRole);
 
-  const inputStyle = (field: string): React.CSSProperties => ({
-    background: 'rgba(255,255,255,0.05)',
-    border: focused === field
-      ? '1px solid rgba(99,102,241,0.65)'
-      : '1px solid rgba(255,255,255,0.1)',
-    color: '#F1F5F9',
-    boxShadow: focused === field ? '0 0 0 3px rgba(99,102,241,0.18)' : 'none',
-    transition: 'all 0.2s',
-  });
-
   return (
-    <div
-      className="w-full max-w-md rounded-3xl p-6 sm:p-8 space-y-5"
-      style={{
-        background: 'rgba(10,15,30,0.92)',
-        backdropFilter: 'blur(32px)',
-        WebkitBackdropFilter: 'blur(32px)',
-        border: '1px solid rgba(99,102,241,0.25)',
-        boxShadow: '0 0 0 1px rgba(99,102,241,0.08), 0 32px 80px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.05)',
-      }}
-    >
+    <div className="w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-float space-y-5">
       {/* Brand Header */}
       <div className="text-center space-y-2">
-        <div
-          className="inline-flex items-center justify-center w-14 h-14 rounded-2xl text-white font-black text-xl"
-          style={{
-            background: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 55%, #EC4899 100%)',
-            boxShadow: '0 0 28px rgba(99,102,241,0.6), 0 0 60px rgba(99,102,241,0.2)',
-          }}
-        >
+        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-blue-600 text-white font-black text-xl shadow-md">
           CL
         </div>
         <div>
-          <h2
-            className="text-2xl font-extrabold tracking-tight"
-            style={{
-              background: 'linear-gradient(135deg, #818CF8 0%, #A78BFA 50%, #F472B6 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
-          >
+          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900">
             CargoLoop
           </h2>
-          <p className="text-xs font-medium mt-0.5" style={{ color: '#64748B' }}>
+          <p className="text-xs font-medium text-slate-500 mt-0.5">
             AI Logistics Intelligence Platform
           </p>
         </div>
       </div>
 
       {/* 1-Click Quick Demo Shortcuts */}
-      <div
-        className="p-3 rounded-2xl space-y-2"
-        style={{ background: 'rgba(99,102,241,0.07)', border: '1px solid rgba(99,102,241,0.18)' }}
-      >
+      <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
         <div className="flex items-center justify-between px-0.5">
-          <span className="text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5" style={{ color: '#818CF8' }}>
-            <Sparkles className="w-3 h-3 text-amber-400" />
+          <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500 flex items-center gap-1.5">
+            <Sparkles className="w-3 h-3 text-blue-600" />
             Quick Demo Shortcuts
           </span>
-          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded" style={{ background: 'rgba(52,211,153,0.18)', color: '#34D399' }}>
+          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
             1-Click Fill
           </span>
         </div>
@@ -256,21 +219,18 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
                 key={opt.role}
                 type="button"
                 onClick={() => fillDemoTile(opt)}
-                className="flex items-center gap-2 p-2 rounded-xl text-left transition-all"
-                style={{
-                  background: active ? opt.bg : 'rgba(255,255,255,0.03)',
-                  border: active ? `1px solid ${opt.color}55` : '1px solid rgba(255,255,255,0.07)',
-                  boxShadow: active ? `0 0 14px ${opt.color}25` : 'none',
-                }}
+                className={`flex items-center gap-2 p-2 rounded-xl text-left transition-all border ${
+                  active ? 'bg-blue-50 border-blue-300 shadow-2xs' : 'bg-white hover:bg-slate-100/80 border-slate-200'
+                }`}
               >
                 <span style={{ color: opt.color }}>{opt.icon}</span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs font-bold truncate" style={{ color: active ? opt.color : '#CBD5E1' }}>
+                  <p className={`text-xs font-bold truncate ${active ? 'text-blue-700' : 'text-slate-800'}`}>
                     {opt.label}
                   </p>
-                  <p className="text-[9px] truncate" style={{ color: '#475569' }}>{opt.email}</p>
+                  <p className="text-[9px] text-slate-400 truncate">{opt.email}</p>
                 </div>
-                {active && <CheckCircle2 className="w-3.5 h-3.5 shrink-0" style={{ color: opt.color }} />}
+                {active && <CheckCircle2 className="w-3.5 h-3.5 shrink-0 text-blue-600" />}
               </button>
             );
           })}
@@ -278,20 +238,15 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
       </div>
 
       {/* Tabs */}
-      <div
-        className="flex p-1 rounded-xl"
-        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(99,102,241,0.15)' }}
-      >
+      <div className="flex p-1 bg-slate-100 rounded-xl border border-slate-200">
         {(['signin', 'signup'] as const).map(t => (
           <button
             key={t}
             type="button"
             onClick={() => { setTab(t); setError(''); setSuccess(''); }}
-            className="flex-1 py-2 text-xs font-bold rounded-lg transition-all"
-            style={tab === t
-              ? { background: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)', color: '#fff', boxShadow: '0 0 12px rgba(99,102,241,0.4)' }
-              : { color: '#475569' }
-            }
+            className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
+              tab === t ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'
+            }`}
           >
             {t === 'signin' ? 'Sign In' : 'Sign Up'}
           </button>
@@ -299,11 +254,11 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
       </div>
 
       {/* Auth Form */}
-      <form onSubmit={handleSubmit} className="space-y-3" autoComplete="on">
+      <form onSubmit={handleSubmit} className="space-y-3.5" autoComplete="on">
 
         {/* Role Selector Bar */}
         <div className="space-y-1">
-          <label className="text-[11px] font-semibold flex items-center justify-between" style={{ color: '#94A3B8' }}>
+          <label className="text-[11px] font-semibold text-slate-600 flex items-center justify-between">
             <span>Select Target Portal Role</span>
             {activeRoleOption && (
               <span className="text-[10px] font-bold flex items-center gap-1" style={{ color: activeRoleOption.color }}>
@@ -320,15 +275,11 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
                   key={opt.role}
                   type="button"
                   onClick={() => setSelectedRole(opt.role)}
-                  className="py-1.5 px-1 rounded-lg text-[10px] font-bold flex flex-col items-center gap-0.5 transition-all"
-                  style={{
-                    background: isSelected ? opt.bg : 'rgba(255,255,255,0.03)',
-                    border: isSelected ? `1px solid ${opt.color}66` : '1px solid rgba(255,255,255,0.06)',
-                    color: isSelected ? opt.color : '#64748B',
-                    boxShadow: isSelected ? `0 0 10px ${opt.color}20` : 'none',
-                  }}
+                  className={`py-1.5 px-1 rounded-xl text-[10px] font-bold flex flex-col items-center gap-0.5 transition-all border ${
+                    isSelected ? 'bg-blue-50 border-blue-300 text-blue-700 shadow-2xs' : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                  }`}
                 >
-                  <span>{opt.icon}</span>
+                  <span style={{ color: opt.color }}>{opt.icon}</span>
                   <span className="truncate w-full text-center">{opt.label}</span>
                 </button>
               );
@@ -346,19 +297,16 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
               exit={{ opacity: 0, height: 0 }}
               className="space-y-1 overflow-hidden"
             >
-              <label className="text-[11px] font-semibold" style={{ color: '#94A3B8' }}>Full Name</label>
+              <label className="text-[11px] font-semibold text-slate-700">Full Name</label>
               <div className="relative">
-                <UserIcon className="w-4 h-4 absolute left-3 top-3" style={{ color: focused === 'name' ? '#818CF8' : '#475569' }} />
+                <UserIcon className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
                 <input
                   type="text"
                   value={fullName}
                   onChange={e => { setFullName(e.target.value); setError(''); }}
-                  onFocus={() => setFocused('name')}
-                  onBlur={() => setFocused(null)}
                   placeholder="e.g. Abhinav Reddy"
                   autoComplete="name"
-                  className="w-full pl-9 pr-4 py-2.5 text-xs font-medium rounded-xl outline-none"
-                  style={inputStyle('name')}
+                  className="w-full pl-9 pr-4 py-2.5 text-xs font-medium rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
                 />
               </div>
             </motion.div>
@@ -367,46 +315,39 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
 
         {/* Email Address */}
         <div className="space-y-1">
-          <label className="text-[11px] font-semibold" style={{ color: '#94A3B8' }}>Email Address</label>
+          <label className="text-[11px] font-semibold text-slate-700">Email Address</label>
           <div className="relative">
-            <Mail className="w-4 h-4 absolute left-3 top-3" style={{ color: focused === 'email' ? '#818CF8' : '#475569' }} />
+            <Mail className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
             <input
               type="email"
               value={email}
               onChange={e => handleEmailChange(e.target.value)}
-              onFocus={() => setFocused('email')}
-              onBlur={() => setFocused(null)}
               placeholder="e.g. user@gmail.com"
               required
               autoComplete="email"
-              className="w-full pl-9 pr-4 py-2.5 text-xs font-medium rounded-xl outline-none"
-              style={inputStyle('email')}
+              className="w-full pl-9 pr-4 py-2.5 text-xs font-medium rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
             />
           </div>
         </div>
 
         {/* Password */}
         <div className="space-y-1">
-          <label className="text-[11px] font-semibold" style={{ color: '#94A3B8' }}>Password</label>
+          <label className="text-[11px] font-semibold text-slate-700">Password</label>
           <div className="relative">
-            <Lock className="w-4 h-4 absolute left-3 top-3" style={{ color: focused === 'pass' ? '#818CF8' : '#475569' }} />
+            <Lock className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
             <input
               type={showPass ? 'text' : 'password'}
               value={password}
               onChange={e => { setPassword(e.target.value); setError(''); }}
-              onFocus={() => setFocused('pass')}
-              onBlur={() => setFocused(null)}
               placeholder="Enter your password"
               required
               autoComplete={tab === 'signin' ? 'current-password' : 'new-password'}
-              className="w-full pl-9 pr-10 py-2.5 text-xs font-medium rounded-xl outline-none"
-              style={inputStyle('pass')}
+              className="w-full pl-9 pr-10 py-2.5 text-xs font-medium rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
             />
             <button
               type="button"
               onClick={() => setShowPass(v => !v)}
-              className="absolute right-3 top-3 transition-colors"
-              style={{ color: '#475569' }}
+              className="absolute right-3 top-3 text-slate-400 hover:text-slate-600 transition-colors"
               tabIndex={-1}
             >
               {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -428,7 +369,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
                     <div
                       key={i}
                       className="h-1 flex-1 rounded-full transition-all duration-300"
-                      style={{ background: i <= strength.bars ? strength.color : 'rgba(255,255,255,0.08)' }}
+                      style={{ background: i <= strength.bars ? strength.color : '#E2E8F0' }}
                     />
                   ))}
                 </div>
@@ -446,10 +387,9 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
-              className="flex items-start gap-2 p-2.5 rounded-xl text-xs"
-              style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.3)', color: '#FCA5A5' }}
+              className="flex items-start gap-2 p-2.5 rounded-xl text-xs bg-rose-50 border border-rose-200 text-rose-700 font-medium"
             >
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-400" />
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-500" />
               <span>{error}</span>
             </motion.div>
           )}
@@ -462,10 +402,9 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
               key="success"
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-2 p-2.5 rounded-xl text-xs"
-              style={{ background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.3)', color: '#6EE7B7' }}
+              className="flex items-center gap-2 p-2.5 rounded-xl text-xs bg-emerald-50 border border-emerald-200 text-emerald-700 font-medium"
             >
-              <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
               <span>{success}</span>
             </motion.div>
           )}
@@ -475,14 +414,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3 text-white font-bold text-sm rounded-xl flex items-center justify-center gap-2 transition-all mt-1"
-          style={{
-            background: loading
-              ? 'rgba(99,102,241,0.45)'
-              : 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #EC4899 100%)',
-            boxShadow: loading ? 'none' : '0 0 24px rgba(99,102,241,0.45)',
-            cursor: loading ? 'not-allowed' : 'pointer',
-          }}
+          className="w-full py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold text-sm rounded-xl shadow-md hover:shadow flex items-center justify-center gap-2 transition-all mt-1 cursor-pointer"
         >
           {loading
             ? <><Loader2 className="w-4 h-4 animate-spin" /><span>Authenticating…</span></>
@@ -492,9 +424,9 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
       </form>
 
       {/* Footer */}
-      <div className="text-center pt-2 space-y-1" style={{ borderTop: '1px solid rgba(99,102,241,0.15)' }}>
-        <p className="text-[11px] flex items-center justify-center gap-1.5" style={{ color: '#475569' }}>
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+      <div className="text-center pt-2 space-y-1 border-t border-slate-100">
+        <p className="text-[11px] text-slate-500 flex items-center justify-center gap-1.5 font-medium">
+          <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
           {isSupabaseConfigured() ? 'Supabase Database & Auth Live' : 'Demo & Custom Auth Active'}
         </p>
       </div>
