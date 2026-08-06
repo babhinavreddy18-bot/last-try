@@ -38,7 +38,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot, onToggleMobileMen
   };
 
   return (
-    <header className="sticky top-0 z-30 h-16 px-3 sm:px-4 md:px-6 flex items-center justify-between glass-panel border-b border-slate-200 dark:border-slate-800 shadow-xs">
+    <header className="sticky top-0 z-30 h-16 px-3 sm:px-4 md:px-6 flex items-center justify-between glass-panel border-b border-slate-200/80 dark:border-slate-800/80 shadow-float backdrop-blur-2xl relative">
+      {/* Top Gradient Highlight Bar */}
+      <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-blue-600 via-teal-500 to-indigo-600 opacity-90" />
       {/* Logo & Mobile Menu Toggle */}
       <div className="flex items-center gap-2 sm:gap-3">
         {onToggleMobileMenu && (

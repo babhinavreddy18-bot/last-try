@@ -10,7 +10,7 @@ export const Layout: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col font-sans" style={{ background: 'linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 50%, #EFF6FF 100%)' }}>
+    <div className="min-h-screen flex flex-col font-sans relative">
 
       {/* Live animated truck background */}
       <LiveTruckBackground />
@@ -46,3 +46,4 @@ export const Layout: React.FC = () => {
     </div>
   );
 };
+

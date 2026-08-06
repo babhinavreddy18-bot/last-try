@@ -77,15 +77,15 @@ export const AdminDashboardPage: React.FC = () => {
       </div>
 
       {/* System Throughput Line Chart */}
-      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card space-y-4">
+      <div className="glass-card rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-card space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="font-bold text-slate-900 text-base">Network Telemetry & Trip Throughput</h3>
-          <span className="text-xs text-slate-500 font-medium">Live Telemetry Stream</span>
+          <h3 className="font-bold text-slate-900 dark:text-white text-base">Network Telemetry & Trip Throughput</h3>
+          <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Live Telemetry Stream</span>
         </div>
         <div className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={MOCK_TIME_SERIES}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.2)" />
               <XAxis dataKey="month" stroke="#94A3B8" fontSize={12} tickLine={false} />
               <YAxis stroke="#94A3B8" fontSize={12} tickLine={false} />
               <Tooltip formatter={(value: any) => [`${value} trips`, 'Completed Trips']} />
@@ -96,18 +96,18 @@ export const AdminDashboardPage: React.FC = () => {
       </div>
 
       {/* AI Fraud & Anomaly Monitor Table */}
-      <div id="ai-security-alerts" className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card space-y-4 scroll-mt-20">
+      <div id="ai-security-alerts" className="glass-card rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-card space-y-4 scroll-mt-20">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <ShieldAlert className="w-5 h-5 text-rose-600" />
-            <h3 className="font-bold text-slate-900 text-base">AI Fraud & Anomaly Risk Monitor</h3>
+            <ShieldAlert className="w-5 h-5 text-rose-600 dark:text-rose-400" />
+            <h3 className="font-bold text-slate-900 dark:text-white text-base">AI Fraud & Anomaly Risk Monitor</h3>
           </div>
-          <span className="text-xs text-slate-500 font-medium">Auto-flagged by Gemini Security Engine</span>
+          <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Auto-flagged by Gemini Security Engine</span>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-slate-700">
-            <thead className="bg-slate-50 text-slate-400 font-bold uppercase tracking-wider border-b border-slate-200">
+          <table className="w-full text-left text-xs text-slate-700 dark:text-slate-300">
+            <thead className="bg-slate-50/80 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">
               <tr>
                 <th className="p-3">Severity</th>
                 <th className="p-3">Flag Type</th>
@@ -117,9 +117,9 @@ export const AdminDashboardPage: React.FC = () => {
                 <th className="p-3 text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
               {anomalies.map((anom) => (
-                <tr key={anom.id} className={anom.resolved ? 'bg-slate-50/50 opacity-60' : 'hover:bg-slate-50/80'}>
+                <tr key={anom.id} className={anom.resolved ? 'bg-slate-50/30 dark:bg-slate-800/20 opacity-60' : 'hover:bg-slate-50/80 dark:hover:bg-slate-800/50'}>
                   <td className="p-3">
                     <Badge
                       variant={
@@ -133,21 +133,21 @@ export const AdminDashboardPage: React.FC = () => {
                       {anom.severity}
                     </Badge>
                   </td>
-                  <td className="p-3 font-semibold text-slate-800 uppercase tracking-wider text-[10px]">
+                  <td className="p-3 font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider text-[10px]">
                     {anom.type.replace('_', ' ')}
                   </td>
                   <td className="p-3 max-w-xs">
-                    <p className="font-bold text-slate-900">{anom.title}</p>
-                    <p className="text-slate-500 text-[11px] truncate">{anom.description}</p>
+                    <p className="font-bold text-slate-900 dark:text-white">{anom.title}</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">{anom.description}</p>
                   </td>
-                  <td className="p-3 font-mono font-medium text-blue-600">{anom.entityId}</td>
-                  <td className="p-3 text-slate-400 font-medium">{anom.timestamp}</td>
+                  <td className="p-3 font-semibold text-slate-800 dark:text-slate-200 font-mono">{anom.entityId}</td>
+                  <td className="p-3 text-slate-500 dark:text-slate-400">{anom.timestamp}</td>
                   <td className="p-3 text-right">
                     <button
                       onClick={() => toggleResolve(anom.id)}
-                      className={`px-3 py-1 rounded-lg font-bold text-xs transition-colors ${
+                      className={`px-3 py-1.5 rounded-lg font-bold text-xs transition-colors cursor-pointer ${
                         anom.resolved
-                          ? 'bg-slate-200 text-slate-700'
+                          ? 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
                           : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs'
                       }`}
                     >

@@ -67,7 +67,7 @@ export const DriverDashboardPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Top Banner & Live GPS Status Toggle */}
-      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="glass-card rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-card flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <img
             src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"
@@ -76,37 +76,37 @@ export const DriverDashboardPage: React.FC = () => {
           />
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold text-slate-900">{driver.name}</h1>
+              <h1 className="text-xl font-bold text-slate-900 dark:text-white">{driver.name}</h1>
               <Badge variant="teal" icon={<Award className="w-3.5 h-3.5" />}>
                 ⭐ {driver.rating} Rating
               </Badge>
             </div>
-            <p className="text-xs text-slate-500 font-medium">
-              Lic: {driver.licenseNumber} | Assigned Vehicle: <strong className="text-slate-800">{activeTruck.plateNumber}</strong>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+              Lic: {driver.licenseNumber} | Assigned Vehicle: <strong className="text-slate-800 dark:text-slate-200">{activeTruck.plateNumber}</strong>
             </p>
           </div>
         </div>
 
         {/* Live GPS Status & Destination Selector */}
-        <div className="flex flex-wrap items-center gap-3 bg-slate-50 p-2.5 rounded-2xl border border-slate-200">
-          <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 px-2">
-            <Navigation className="w-4 h-4 text-blue-600 animate-pulse" />
+        <div className="flex flex-wrap items-center gap-3 bg-slate-50/80 dark:bg-slate-800/60 p-2.5 rounded-2xl border border-slate-200 dark:border-slate-700/80">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 px-2">
+            <Navigation className="w-4 h-4 text-blue-600 dark:text-indigo-400 animate-pulse" />
             <span>GPS Status:</span>
           </div>
 
-          <div className="flex items-center bg-white p-1 rounded-xl border border-slate-200 text-xs font-semibold">
+          <div className="flex items-center bg-white dark:bg-slate-900 p-1 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold">
             {(['available', 'in-transit', 'offline'] as const).map((st) => (
               <button
                 key={st}
                 onClick={() => setGpsStatus(st)}
-                className={`px-3 py-1.5 rounded-lg capitalize transition-all ${
+                className={`px-3 py-1.5 rounded-lg capitalize transition-all cursor-pointer ${
                   gpsStatus === st
                     ? st === 'available'
                       ? 'bg-teal-600 text-white shadow-2xs'
                       : st === 'in-transit'
                       ? 'bg-blue-600 text-white shadow-2xs'
-                      : 'bg-slate-700 text-white'
-                    : 'text-slate-500 hover:text-slate-800'
+                      : 'bg-slate-600 text-white shadow-2xs'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 {st}
@@ -117,7 +117,7 @@ export const DriverDashboardPage: React.FC = () => {
           <select
             value={destination}
             onChange={(e) => setDestination(e.target.value)}
-            className="px-3 py-1.5 bg-white border border-slate-200 text-slate-800 text-xs font-semibold rounded-xl focus:outline-none cursor-pointer"
+            className="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold rounded-xl focus:outline-none cursor-pointer"
           >
             <option value="Pune NH-48 Hub">Dest: Pune NH-48</option>
             <option value="Bengaluru Logistics Park">Dest: Bengaluru LP</option>

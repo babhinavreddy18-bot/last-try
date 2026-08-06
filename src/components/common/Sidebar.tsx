@@ -157,7 +157,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileMenuOpen = false, onCl
   return (
     <>
       {/* Desktop Sticky Sidebar */}
-      <aside className="w-64 hidden md:flex flex-col justify-between p-4 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto shrink-0 z-20 glass-panel">
+      <aside className="w-64 hidden md:flex flex-col justify-between p-4 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto shrink-0 z-20 glass-panel border-r border-slate-200/80 dark:border-slate-800/80 backdrop-blur-2xl">
         {sidebarContent}
       </aside>
 

@@ -102,8 +102,8 @@ export const LandingPage: React.FC = () => {
       {/* Quick Demo Role Cards Grid */}
       <section className="space-y-6">
         <div className="text-center space-y-1">
-          <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Explore Role-Specific Dashboards</h2>
-          <p className="text-xs text-slate-500 font-medium">Click any persona to instantly jump into their live operational portal</p>
+          <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">Explore Role-Specific Dashboards</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold">Click any persona to instantly jump into their live operational portal</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -112,25 +112,25 @@ export const LandingPage: React.FC = () => {
               key={roleInfo.role}
               whileHover={{ y: -4 }}
               onClick={() => handleRoleLaunch(roleInfo.role)}
-              className="bg-white rounded-2xl p-5 border border-slate-200 shadow-subtle hover:shadow-card cursor-pointer transition-all flex flex-col justify-between space-y-4 group"
+              className="glass-card rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-subtle hover:shadow-float cursor-pointer transition-all flex flex-col justify-between space-y-4 group"
             >
               <div className="flex items-center gap-3">
                 <img
                   src={roleInfo.avatar}
                   alt={roleInfo.label}
-                  className="w-12 h-12 rounded-xl object-cover border border-slate-200"
+                  className="w-12 h-12 rounded-xl object-cover border border-slate-200 dark:border-slate-700"
                 />
                 <div>
-                  <h3 className="font-bold text-slate-900 text-base group-hover:text-blue-600 transition-colors">
+                  <h3 className="font-bold text-slate-900 dark:text-white text-base group-hover:text-blue-600 dark:group-hover:text-indigo-400 transition-colors">
                     {roleInfo.label}
                   </h3>
                   <span className="text-[11px] text-slate-400 capitalize font-medium">{roleInfo.email}</span>
                 </div>
               </div>
 
-              <p className="text-xs text-slate-500 leading-normal">{roleInfo.subtitle}</p>
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-normal font-medium">{roleInfo.subtitle}</p>
 
-              <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-blue-600">
+              <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-blue-600 dark:text-indigo-400">
                 <span>Enter Portal</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
@@ -142,30 +142,30 @@ export const LandingPage: React.FC = () => {
       {/* Feature Matrix Grid */}
       <section className="space-y-6">
         <div className="text-center space-y-1">
-          <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Core AI Intelligence Modules</h2>
-          <p className="text-xs text-slate-500 font-medium">High-impact features engineered for logistics transparency</p>
+          <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">Core AI Intelligence Modules</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold">High-impact features engineered for logistics transparency</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {featureCards.map((feat, i) => (
-            <div key={i} className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card space-y-3">
+            <div key={i} className="glass-card rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-card space-y-3">
               <div className="flex items-center justify-between">
-                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">{feat.icon}</div>
+                <div className="p-3 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700">{feat.icon}</div>
                 <Badge variant="blue">{feat.badge}</Badge>
               </div>
-              <h3 className="font-bold text-slate-900 text-lg">{feat.title}</h3>
-              <p className="text-xs text-slate-600 leading-relaxed font-medium">{feat.desc}</p>
+              <h3 className="font-bold text-slate-900 dark:text-white text-lg">{feat.title}</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">{feat.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* Interactive Map Live Telemetry Preview */}
-      <section className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-card space-y-6">
+      <section className="glass-card rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800/80 shadow-card space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h2 className="text-xl font-bold text-slate-900">National Corridor Telemetry Grid</h2>
-            <p className="text-xs text-slate-500 font-medium">250 active fleet vehicles tracked across major corridors & ports</p>
+            <h2 className="text-xl font-black text-slate-900 dark:text-white">National Corridor Telemetry Grid</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold">250 active fleet vehicles tracked across major corridors & ports</p>
           </div>
           <Badge variant="teal" icon={<CheckCircle2 className="w-3.5 h-3.5" />}>
             System Online • 99.9% Telemetry Signal
@@ -176,3 +176,4 @@ export const LandingPage: React.FC = () => {
     </div>
   );
 };
+

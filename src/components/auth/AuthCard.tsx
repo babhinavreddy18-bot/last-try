@@ -375,7 +375,9 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
   const activeRoleOption = ROLE_OPTIONS.find(r => r.role === selectedRole);
 
   return (
-    <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-float space-y-5 relative">
+    <div className="w-full max-w-md glass-card rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800/80 shadow-float space-y-5 relative backdrop-blur-2xl">
+      {/* Glow accent bar at top */}
+      <div className="absolute top-0 inset-x-6 h-1 bg-gradient-to-r from-blue-500 via-teal-500 to-indigo-500 rounded-t-full opacity-80" />
 
       {/* ── Top Bar: Brand & Language Picker ── */}
       <div className="flex items-start justify-between gap-2">
