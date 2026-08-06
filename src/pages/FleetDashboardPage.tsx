@@ -19,12 +19,17 @@ export const FleetDashboardPage: React.FC = () => {
     if (!location.hash) return;
     const cleanHash = location.hash.replace('#', '');
     const targetId = cleanHash.startsWith('ai-') ? cleanHash : 'ai-' + cleanHash;
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       const el = document.getElementById(targetId) || document.getElementById(cleanHash);
       if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        el.classList.add('ring-2', 'ring-[#2563EB]', 'ring-offset-2', 'transition-all', 'duration-500');
+        setTimeout(() => {
+          el.classList.remove('ring-2', 'ring-[#2563EB]', 'ring-offset-2');
+        }, 2000);
       }
-    }, 100);
+    }, 120);
+    return () => clearTimeout(timer);
   }, [location.hash]);
 
   const predictions = MOCK_AVAILABILITY_PREDICTIONS.filter((p) => p.timeframe === timeframe);

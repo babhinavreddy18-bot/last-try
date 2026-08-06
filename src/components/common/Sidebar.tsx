@@ -106,9 +106,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileMenuOpen = false, onCl
                     if (item.path.includes('#')) {
                       const hashPart = item.path.substring(item.path.indexOf('#') + 1);
                       const targetId = hashPart.startsWith('ai-') ? hashPart : 'ai-' + hashPart;
+                      window.location.hash = hashPart;
                       const el = document.getElementById(targetId) || document.getElementById(hashPart);
                       if (el) {
                         el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        el.classList.add('ring-2', 'ring-[#2563EB]', 'ring-offset-2', 'transition-all', 'duration-500');
+                        setTimeout(() => {
+                          el.classList.remove('ring-2', 'ring-[#2563EB]', 'ring-offset-2');
+                        }, 2000);
                       }
                     }
                     if (onCloseMobile) onCloseMobile();
