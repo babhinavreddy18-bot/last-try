@@ -13,8 +13,8 @@ const FleetDashboardPage = lazy(() => import('./pages/FleetDashboardPage').then(
 const AdminDashboardPage = lazy(() => import('./pages/AdminDashboardPage').then(m => ({ default: m.AdminDashboardPage })));
 
 const PageFallback = () => (
-  <div className="flex items-center justify-center min-h-[60vh]">
-    <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+  <div className="flex items-center justify-center min-h-screen">
+    <Loader2 className="w-8 h-8 text-[#6D4AFF] animate-spin" />
   </div>
 );
 
@@ -49,9 +49,15 @@ const PublicAuthRoute: React.FC = () => {
   return <AuthPage />;
 };
 
-// ── Root Dispatcher (Feature Showcase for Unauthenticated Users) ───────────────
+// ── Root Dispatcher ─────────────────────────────────────────────────────────
 
 const RootDispatcher: React.FC = () => {
+  const { isAuthenticated, user } = useAuth();
+
+  if (isAuthenticated && user) {
+    return <Navigate to={`/dashboard/${user.role}`} replace />;
+  }
+
   return (
     <Suspense fallback={<PageFallback />}>
       <LandingPage />
@@ -62,17 +68,20 @@ const RootDispatcher: React.FC = () => {
 export function AppRoutes() {
   return (
     <Routes>
+      {/* ── Pre-login pages: NO navbar, NO layout wrapper ── */}
+      <Route path="/" element={<RootDispatcher />} />
+      <Route path="/auth" element={<PublicAuthRoute />} />
+      <Route
+        path="/features"
+        element={
+          <Suspense fallback={<PageFallback />}>
+            <LandingPage />
+          </Suspense>
+        }
+      />
+
+      {/* ── Authenticated dashboard pages: full Layout with Navbar ── */}
       <Route path="/" element={<Layout />}>
-        <Route index element={<RootDispatcher />} />
-        <Route path="auth" element={<PublicAuthRoute />} />
-        <Route
-          path="features"
-          element={
-            <Suspense fallback={<PageFallback />}>
-              <LandingPage />
-            </Suspense>
-          }
-        />
         <Route
           path="dashboard/driver"
           element={
@@ -105,8 +114,10 @@ export function AppRoutes() {
             </ProtectedRoute>
           }
         />
-        <Route path="*" element={<RootDispatcher />} />
       </Route>
+
+      {/* ── Catch-all → landing ── */}
+      <Route path="*" element={<RootDispatcher />} />
     </Routes>
   );
 }

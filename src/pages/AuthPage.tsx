@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { AuthCard } from '../components/auth/AuthCard';
 import { ArrowLeft, Sparkles, Zap, CheckCircle2 } from 'lucide-react';
+import { TruckLogo } from '../components/common/TruckLogo';
 
 const perks = [
   'AI-powered freight booking via natural language',
@@ -24,7 +25,7 @@ export const AuthPage: React.FC = () => {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center relative"
+      className="min-h-screen flex flex-col relative"
       style={{ background: 'linear-gradient(135deg, #F8FAFC 0%, #EEF4FF 50%, #F8FAFC 100%)' }}
     >
       {/* Background orbs */}
@@ -37,17 +38,33 @@ export const AuthPage: React.FC = () => {
         style={{ background: 'radial-gradient(circle, #8B5CF6 0%, transparent 70%)', filter: 'blur(100px)' }}
       />
 
-      <div className="relative z-10 w-full max-w-5xl mx-auto px-4 py-12">
-        {/* Back link */}
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-[#6D4AFF] hover:underline mb-8"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Features Showcase
-        </Link>
+      {/* ── Minimal Sticky Header ─────────────────────────────── */}
+      <header className="sticky top-0 z-30 border-b border-[#E5E7EB]"
+        style={{ background: 'rgba(255,255,255,0.88)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
+      >
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <TruckLogo size="sm" />
+            <span className="font-extrabold text-base tracking-tight text-[#111827]">CargoLoop</span>
+            <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EDE9FE] text-[#6D4AFF] border border-[#DDD6FE]">
+              <Zap className="w-2.5 h-2.5" />
+              AI
+            </span>
+          </div>
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-[#6D4AFF] hover:underline"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span className="hidden sm:inline">View Features</span>
+          </Link>
+        </div>
+      </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+      {/* ── Main Content ─────────────────────────────────────── */}
+      <div className="relative z-10 flex-1 flex items-center justify-center w-full max-w-5xl mx-auto px-4 py-10">
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center w-full">
 
           {/* Left: Value Proposition */}
           <motion.div

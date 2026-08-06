@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   Sparkles, Database, RotateCcw, FileCheck, MapPin,
@@ -7,6 +7,7 @@ import {
   Truck, CheckCircle2, Award, Building2, UserCheck, ChevronRight, Zap
 } from 'lucide-react';
 import { Badge } from '../components/common/Badge';
+import { TruckLogo } from '../components/common/TruckLogo';
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -152,6 +153,29 @@ export const LandingPage: React.FC = () => {
         className="fixed bottom-0 left-0 w-[500px] h-[500px] rounded-full opacity-15 pointer-events-none"
         style={{ background: 'radial-gradient(circle, #8B5CF6 0%, transparent 70%)', filter: 'blur(120px)' }}
       />
+
+      {/* ── Minimal Sticky Header ─────────────────────────────── */}
+      <header className="sticky top-0 z-30 border-b border-[#E5E7EB]"
+        style={{ background: 'rgba(255,255,255,0.88)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <TruckLogo size="sm" />
+            <span className="font-extrabold text-base tracking-tight text-[#111827]">CargoLoop</span>
+            <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EDE9FE] text-[#6D4AFF] border border-[#DDD6FE]">
+              <Zap className="w-2.5 h-2.5" />
+              AI
+            </span>
+          </div>
+          <Link
+            to="/auth"
+            className="btn-purple text-sm py-2 px-6"
+          >
+            <span>Sign In</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+      </header>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-20">
 
