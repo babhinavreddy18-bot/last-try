@@ -6,6 +6,7 @@ import type { UserRole } from '../../types';
 import { Sparkles, Bell, Truck, UserCheck, Shield, LogOut, CheckCircle2, AlertTriangle, Info, Sun, Moon, Globe, ChevronDown } from 'lucide-react';
 import { Badge } from './Badge';
 
+import { Link } from 'react-router-dom';
 import { TruckLogo } from './TruckLogo';
 
 interface NavbarProps {
@@ -39,10 +40,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot }) => {
     <header className="sticky top-0 z-30 h-16 px-4 md:px-6 flex items-center justify-between glass-panel">
       {/* Logo */}
       <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2.5">
+        <Link to="/" className="flex items-center gap-2.5 group cursor-pointer transition-opacity hover:opacity-90" title="Return to Home Dashboard">
           <TruckLogo size="sm" />
           <div className="hidden sm:block">
-            <span className="font-extrabold text-lg tracking-tight text-gradient-blue">
+            <span className="font-extrabold text-lg tracking-tight text-gradient-blue group-hover:underline">
               {t.platformName}
             </span>
             <span
@@ -56,7 +57,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot }) => {
               {t.aiPlatform}
             </span>
           </div>
-        </div>
+        </Link>
         <div className="h-5 w-px mx-1 bg-slate-200 dark:bg-slate-700 hidden sm:block" />
         <Badge variant={roleLabels[activeRole].badge} icon={roleLabels[activeRole].icon}>
           {roleLabels[activeRole].label}
