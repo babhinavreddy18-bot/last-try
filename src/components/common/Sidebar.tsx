@@ -35,8 +35,8 @@ export const Sidebar: React.FC = () => {
 
   const aiIntelligenceItems: Record<UserRole, NavItem[]> = {
     driver: [
-      { label: t.documentScanner, path: '/dashboard/driver', icon: <FileCheck className="w-4 h-4" />, roleAllowed: 'driver', color: '#0D9488' },
-      { label: t.returnLoadMatcher, path: '/dashboard/driver', icon: <Sparkles className="w-4 h-4" />, roleAllowed: 'driver', color: '#2563EB' },
+      { label: t.documentScanner, path: '/dashboard/driver#document-scanner', icon: <FileCheck className="w-4 h-4" />, roleAllowed: 'driver', color: '#0D9488' },
+      { label: t.returnLoadMatcher, path: '/dashboard/driver#return-load-matcher', icon: <Sparkles className="w-4 h-4" />, roleAllowed: 'driver', color: '#2563EB' },
     ],
     shipper: [
       { label: t.freightPricingEngine, path: '/dashboard/shipper', icon: <Sparkles className="w-4 h-4" />, roleAllowed: 'shipper', color: '#7C3AED' },
@@ -90,21 +90,29 @@ export const Sidebar: React.FC = () => {
             {t.roleAiModules}
           </h4>
           <nav className="space-y-1">
-            {currentAiItems.map((item, idx) => (
-              <NavLink
-                key={idx}
-                to={item.path}
-                className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-slate-900 dark:text-slate-200 hover:text-blue-700 bg-white dark:bg-slate-800/80 hover:bg-blue-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 transition-all shadow-2xs group"
-              >
-                <div className="flex items-center gap-2.5">
-                  <span style={{ color: item.color }} className="group-hover:scale-110 transition-transform">
-                    {item.icon}
-                  </span>
-                  <span className="group-hover:text-blue-700 transition-colors">{item.label}</span>
-                </div>
-                <span className="w-2 h-2 rounded-full shadow-2xs" style={{ background: item.color }} />
-              </NavLink>
-            ))}
+            {currentAiItems.map((item, idx) => {
+              const isActive = (location.pathname + location.hash) === item.path;
+              return (
+                <NavLink
+                  key={idx}
+                  to={item.path}
+                  className={clsx(
+                    'flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all shadow-2xs group',
+                    isActive
+                      ? 'bg-blue-50 dark:bg-indigo-950/60 text-blue-700 dark:text-indigo-300 border border-blue-300 dark:border-indigo-700 font-extrabold'
+                      : 'bg-white dark:bg-slate-800/80 text-slate-900 dark:text-slate-200 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700'
+                  )}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span style={{ color: item.color }} className="group-hover:scale-110 transition-transform">
+                      {item.icon}
+                    </span>
+                    <span className="group-hover:text-blue-700 transition-colors">{item.label}</span>
+                  </div>
+                  <span className="w-2 h-2 rounded-full shadow-2xs" style={{ background: item.color }} />
+                </NavLink>
+              );
+            })}
           </nav>
         </div>
       </div>

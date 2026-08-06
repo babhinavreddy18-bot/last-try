@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { MOCK_DRIVERS, MOCK_SHIPMENTS, MOCK_TRUCKS } from '../mock/data';
 import type { TruckStatus, Shipment } from '../types';
 import { StatCard } from '../components/common/StatCard';
@@ -24,6 +25,7 @@ import { useLanguage } from '../context/LanguageContext';
 
 export const DriverDashboardPage: React.FC = () => {
   const { t, translateCity, translateMaterial, translateStatus } = useLanguage();
+  const location = useLocation();
   const driver = MOCK_DRIVERS[0];
   const [gpsStatus, setGpsStatus] = useState<TruckStatus>('in-transit');
   const [destination, setDestination] = useState('Pune NH-48 Hub');
@@ -32,6 +34,18 @@ export const DriverDashboardPage: React.FC = () => {
   const [visibleCount, setVisibleCount] = useState(24);
 
   const activeTruck = MOCK_TRUCKS[0];
+
+  useEffect(() => {
+    if (location.hash === '#document-scanner') {
+      setTimeout(() => {
+        document.getElementById('ai-document-scanner')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    } else if (location.hash === '#return-load-matcher') {
+      setTimeout(() => {
+        document.getElementById('ai-return-load-matcher')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }, [location.hash]);
 
   const filteredDeliveries = MOCK_SHIPMENTS.filter((s) => {
     if (deliveryFilter === 'in-transit') return s.status === 'in-transit';
@@ -145,18 +159,20 @@ export const DriverDashboardPage: React.FC = () => {
       </div>
 
       {/* ══ AI RETURN LOAD MATCHER ─ Core Feature ══ */}
-      <ReturnLoadMatcher
-        currentDropCity={activeTruck.destination?.city ?? destination}
-        currentDropLat={activeTruck.destination?.lat ?? activeTruck.currentLocation.lat}
-        currentDropLng={activeTruck.destination?.lng ?? activeTruck.currentLocation.lng}
-        truckCapacityTons={activeTruck.capacityTons}
-        onAccept={handleAcceptAndNavigate}
-      />
+      <div id="ai-return-load-matcher" className="scroll-mt-20">
+        <ReturnLoadMatcher
+          currentDropCity={activeTruck.destination?.city ?? destination}
+          currentDropLat={activeTruck.destination?.lat ?? activeTruck.currentLocation.lat}
+          currentDropLng={activeTruck.destination?.lng ?? activeTruck.currentLocation.lng}
+          truckCapacityTons={activeTruck.capacityTons}
+          onAccept={handleAcceptAndNavigate}
+        />
+      </div>
 
       {/* Main Content Grid: Document Verification & Deliveries */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column: AI Document Verification Center */}
-        <div className="lg:col-span-1 space-y-6">
+        <div id="ai-document-scanner" className="lg:col-span-1 space-y-6 scroll-mt-20">
           <DocumentScanner />
         </div>
 
