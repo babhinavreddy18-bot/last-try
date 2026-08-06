@@ -71,6 +71,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot, onToggleMobileMen
             {roleLabels[activeRole].label}
           </Badge>
         </div>
+
+        <Link
+          to="/features"
+          className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-xl border border-[#E2E8F0] bg-white hover:bg-[#F8FAFC] text-[#0F172A] text-xs font-bold transition-all shadow-2xs cursor-pointer"
+          title="View All Application Features Showcase"
+        >
+          <Sparkles className="w-3.5 h-3.5 text-[#2563EB]" />
+          <span>All Features</span>
+        </Link>
       </div>
 
       {/* Center Search Input */}

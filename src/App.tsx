@@ -6,6 +6,7 @@ import { AuthPage } from './pages/AuthPage';
 import type { UserRole } from './types';
 import { Loader2 } from 'lucide-react';
 
+const LandingPage = lazy(() => import('./pages/LandingPage').then(m => ({ default: m.LandingPage })));
 const DriverDashboardPage = lazy(() => import('./pages/DriverDashboardPage').then(m => ({ default: m.DriverDashboardPage })));
 const ShipperDashboardPage = lazy(() => import('./pages/ShipperDashboardPage').then(m => ({ default: m.ShipperDashboardPage })));
 const FleetDashboardPage = lazy(() => import('./pages/FleetDashboardPage').then(m => ({ default: m.FleetDashboardPage })));
@@ -48,7 +49,7 @@ const PublicAuthRoute: React.FC = () => {
   return <AuthPage />;
 };
 
-// ── Root Dispatcher ────────────────────────────────────────────────────────────
+// ── Root Dispatcher (Feature Showcase for Unauthenticated Users) ───────────────
 
 const RootDispatcher: React.FC = () => {
   const { isAuthenticated, user } = useAuth();
@@ -57,7 +58,11 @@ const RootDispatcher: React.FC = () => {
     return <Navigate to={`/dashboard/${user.role}`} replace />;
   }
 
-  return <Navigate to="/auth" replace />;
+  return (
+    <Suspense fallback={<PageFallback />}>
+      <LandingPage />
+    </Suspense>
+  );
 };
 
 export function AppRoutes() {
@@ -66,6 +71,14 @@ export function AppRoutes() {
       <Route path="/" element={<Layout />}>
         <Route index element={<RootDispatcher />} />
         <Route path="auth" element={<PublicAuthRoute />} />
+        <Route
+          path="features"
+          element={
+            <Suspense fallback={<PageFallback />}>
+              <LandingPage />
+            </Suspense>
+          }
+        />
         <Route
           path="dashboard/driver"
           element={

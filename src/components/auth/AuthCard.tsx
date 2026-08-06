@@ -273,7 +273,14 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
-  const [selectedRole, setSelectedRole] = useState<UserRole>('shipper');
+  const [selectedRole, setSelectedRole] = useState<UserRole>(() => {
+    const params = new URLSearchParams(window.location.search);
+    const r = params.get('role') as UserRole;
+    if (r && ['shipper', 'driver', 'fleet', 'admin'].includes(r)) {
+      return r;
+    }
+    return 'shipper';
+  });
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
