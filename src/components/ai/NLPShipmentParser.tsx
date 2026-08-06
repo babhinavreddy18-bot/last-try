@@ -57,14 +57,14 @@ export const NLPShipmentParser: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* NLP Prompt Box Card */}
-      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card space-y-4">
+      <div className="bg-white rounded-2xl p-6 border border-[#E2E8F0] shadow-card space-y-4">
         <div className="flex items-center gap-2">
-          <div className="p-2 rounded-xl bg-gradient-to-r from-blue-600 to-teal-600 text-white shadow-xs">
-            <Sparkles className="w-5 h-5" />
+          <div className="p-2 rounded-xl bg-[#2563EB] text-white shadow-2xs">
+            <Sparkles className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h3 className="font-bold text-slate-900 text-base">Natural Language Freight Creator</h3>
-            <p className="text-xs text-slate-500">Powered by Gemini 2.5 Flash for instant cargo extraction</p>
+            <h3 className="font-extrabold text-[#0F172A] text-base">Natural Language Freight Creator</h3>
+            <p className="text-xs text-[#64748B]">Powered by Gemini 2.5 Flash for instant cargo extraction</p>
           </div>
         </div>
 
@@ -75,21 +75,21 @@ export const NLPShipmentParser: React.FC = () => {
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               placeholder="e.g. Need to transport 12 tons of frozen food from Mumbai to Pune tomorrow morning..."
-              className="w-full p-3.5 text-xs sm:text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-slate-50 font-medium text-slate-900 resize-none"
+              className="w-full p-3.5 text-xs sm:text-sm border border-[#E2E8F0] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent bg-[#F8FAFC] font-medium text-[#0F172A] resize-none"
             />
             <button
               onClick={handleParse}
               disabled={parsing || !prompt.trim()}
-              className="absolute bottom-3 right-3 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-semibold text-xs rounded-lg shadow-xs flex items-center gap-1.5 transition-all cursor-pointer"
+              className="absolute bottom-3 right-3 px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] disabled:opacity-50 text-white font-extrabold text-xs rounded-xl shadow-2xs flex items-center gap-1.5 transition-all cursor-pointer"
             >
-              {parsing ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Zap className="w-3.5 h-3.5 text-amber-300" />}
+              {parsing ? <RefreshCw className="w-3.5 h-3.5 animate-spin text-white" /> : <Zap className="w-3.5 h-3.5 text-white" />}
               <span>{parsing ? 'Parsing...' : 'Generate Shipment'}</span>
             </button>
           </div>
 
           {/* Quick Prompt Chips */}
           <div className="flex flex-wrap items-center gap-1.5 pt-1">
-            <span className="text-[11px] font-semibold text-slate-400">Quick Samples:</span>
+            <span className="text-[11px] font-bold text-[#64748B]">Quick Samples:</span>
             {samplePrompts.map((s, idx) => (
               <button
                 key={idx}
@@ -97,7 +97,7 @@ export const NLPShipmentParser: React.FC = () => {
                   setPrompt(s);
                   parseShipmentPrompt(s).then(setDetails);
                 }}
-                className="text-[11px] font-medium text-slate-600 hover:text-blue-700 bg-slate-100 hover:bg-blue-50 px-2.5 py-1 rounded-md border border-slate-200 transition-colors truncate max-w-[280px] cursor-pointer"
+                className="text-[11px] font-bold text-[#0F172A] hover:text-[#2563EB] bg-[#F8FAFC] hover:bg-[#EFF6FF] px-2.5 py-1 rounded-md border border-[#E2E8F0] transition-colors truncate max-w-[280px] cursor-pointer"
               >
                 "{s}"
               </button>

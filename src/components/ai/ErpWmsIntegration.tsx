@@ -142,20 +142,20 @@ export const ErpWmsIntegration: React.FC = () => {
   return (
     <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-card overflow-hidden space-y-0">
       {/* Top Banner Header */}
-      <div className="p-6 bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-950 text-white space-y-4">
+      <div className="p-6 bg-[#0F172A] text-white space-y-4 border-b border-[#E2E8F0]">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-blue-600/30 border border-blue-400/40 flex items-center justify-center text-blue-400 shrink-0">
+            <div className="w-12 h-12 rounded-2xl bg-[#2563EB]/20 border border-[#2563EB]/40 flex items-center justify-center text-[#2563EB] shrink-0">
               <Database className="w-6 h-6 animate-pulse" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="font-black text-lg sm:text-xl tracking-tight">ERP & WMS Automated Data Sharing Hub</h2>
-                <span className="text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-400/30 px-2 py-0.5 rounded-full">
+                <h2 className="font-extrabold text-lg sm:text-xl tracking-tight text-white">ERP & WMS Automated Data Sharing Hub</h2>
+                <span className="text-[10px] font-bold bg-[#2563EB]/30 text-white border border-[#2563EB]/50 px-2 py-0.5 rounded-full">
                   Bi-Directional Sync
                 </span>
               </div>
-              <p className="text-slate-300 text-xs mt-0.5">
+              <p className="text-[#94A3B8] text-xs mt-0.5">
                 Real-time automated data pipelines between SAP, Oracle NetSuite, Manhattan WMS, Tally, & Govt e-Waybill.
               </p>
             </div>
@@ -164,48 +164,48 @@ export const ErpWmsIntegration: React.FC = () => {
           <button
             onClick={() => handleRunSync(selectedConnector.id)}
             disabled={isSimulatingSync}
-            className="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-2 shrink-0 cursor-pointer"
+            className="px-4 py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] disabled:opacity-50 text-white font-extrabold text-xs rounded-xl shadow-sm transition-all flex items-center gap-2 shrink-0 cursor-pointer"
           >
             {isSimulatingSync ? (
-              <><RefreshCw className="w-4 h-4 animate-spin text-amber-300" /><span>Syncing Payload…</span></>
+              <><RefreshCw className="w-4 h-4 animate-spin text-white" /><span>Syncing Payload…</span></>
             ) : (
-              <><Play className="w-4 h-4 text-emerald-400" /><span>Test Automated Data Exchange</span></>
+              <><Play className="w-4 h-4 text-white" /><span>Test Automated Data Exchange</span></>
             )}
           </button>
         </div>
 
-        {/* Live System Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-white/10">
-          <div className="bg-white/5 backdrop-blur-sm p-3 rounded-2xl border border-white/10">
-            <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Connected Systems</p>
+        {/* Telemetry Quick Bar */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+          <div className="bg-[#1E293B] p-3 rounded-2xl border border-[#334155]">
+            <p className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-wider">Connected Systems</p>
             <p className="font-extrabold text-white text-lg mt-0.5">6 Live Systems</p>
           </div>
-          <div className="bg-white/5 backdrop-blur-sm p-3 rounded-2xl border border-white/10">
-            <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Today's Data Syncs</p>
-            <p className="font-extrabold text-emerald-400 text-lg mt-0.5">
+          <div className="bg-[#1E293B] p-3 rounded-2xl border border-[#334155]">
+            <p className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-wider">Today's Data Syncs</p>
+            <p className="font-extrabold text-white text-lg mt-0.5">
               {connectors.reduce((acc, c) => acc + c.recordsSyncedToday, 0).toLocaleString()} Records
             </p>
           </div>
-          <div className="bg-white/5 backdrop-blur-sm p-3 rounded-2xl border border-white/10">
-            <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Schema AI Mapping</p>
-            <p className="font-extrabold text-blue-300 text-lg mt-0.5">100% Zero Code</p>
+          <div className="bg-[#1E293B] p-3 rounded-2xl border border-[#334155]">
+            <p className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-wider">Schema AI Mapping</p>
+            <p className="font-extrabold text-white text-lg mt-0.5">100% Zero Code</p>
           </div>
-          <div className="bg-white/5 backdrop-blur-sm p-3 rounded-2xl border border-white/10">
-            <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Sync Frequency</p>
-            <p className="font-extrabold text-teal-300 text-lg mt-0.5">Real-Time Webhook</p>
+          <div className="bg-[#1E293B] p-3 rounded-2xl border border-[#334155]">
+            <p className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-wider">Sync Frequency</p>
+            <p className="font-extrabold text-white text-lg mt-0.5">Real-Time Webhook</p>
           </div>
         </div>
       </div>
 
       {/* Grid Content */}
-      <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 bg-white">
 
         {/* Left Column: Active ERP/WMS Connectors List */}
         <div className="lg:col-span-1 space-y-3">
-          <h3 className="font-extrabold text-slate-900 dark:text-white text-xs uppercase tracking-wider flex items-center justify-between">
+          <h3 className="font-extrabold text-[#0F172A] text-xs uppercase tracking-wider flex items-center justify-between">
             <span>Enterprise Systems ({connectors.length})</span>
-            <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-              <Radio className="w-3 h-3 animate-pulse" /> Active Listeners
+            <span className="text-[10px] font-bold text-[#2563EB] flex items-center gap-1">
+              <Radio className="w-3 h-3 animate-pulse text-[#2563EB]" /> Active Listeners
             </span>
           </h3>
 
@@ -218,32 +218,31 @@ export const ErpWmsIntegration: React.FC = () => {
                   onClick={() => setSelectedConnector(connector)}
                   className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
                     isSelected
-                      ? 'bg-blue-50/80 dark:bg-indigo-950/60 border-blue-300 dark:border-indigo-700 shadow-sm'
-                      : 'bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100/80 dark:hover:bg-slate-800 border-slate-200 dark:border-slate-800'
+                      ? 'bg-[#EFF6FF] border-[#2563EB] shadow-2xs'
+                      : 'bg-white hover:bg-[#F8FAFC] border-[#E2E8F0]'
                   }`}
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center font-extrabold text-white text-xs shrink-0 shadow-2xs"
-                      style={{ background: connector.color }}
+                      className="w-10 h-10 rounded-xl flex items-center justify-center font-extrabold text-white text-xs shrink-0 shadow-2xs bg-[#2563EB]"
                     >
                       {connector.category}
                     </div>
                     <div className="min-w-0">
-                      <p className="font-bold text-slate-900 dark:text-white text-xs truncate">
+                      <p className="font-bold text-[#0F172A] text-xs truncate">
                         {connector.name}
                       </p>
-                      <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
+                      <p className="text-[10px] text-[#64748B] truncate">
                         {connector.apiProtocol} • Sync: {connector.lastSync}
                       </p>
                     </div>
                   </div>
 
                   <div className="text-right shrink-0">
-                    <Badge variant={connector.status === 'syncing' ? 'amber' : 'green'} size="sm">
+                    <Badge variant="blue" size="sm">
                       {connector.status === 'syncing' ? 'Syncing...' : 'Connected'}
                     </Badge>
-                    <p className="text-[10px] font-bold text-slate-600 dark:text-slate-400 mt-1">
+                    <p className="text-[10px] font-bold text-[#64748B] mt-1">
                       {connector.recordsSyncedToday} Recs
                     </p>
                   </div>

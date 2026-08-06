@@ -67,46 +67,42 @@ export const DriverDashboardPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Top Banner & Live GPS Status Toggle */}
-      <div className="glass-card rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-card flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white rounded-2xl p-6 border border-[#E2E8F0] shadow-card flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <img
             src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"
             alt={driver.name}
-            className="w-14 h-14 rounded-2xl object-cover border-2 border-blue-500 shadow-sm"
+            className="w-14 h-14 rounded-2xl object-cover border-2 border-[#2563EB] shadow-2xs"
           />
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold text-slate-900 dark:text-white">{driver.name}</h1>
-              <Badge variant="teal" icon={<Award className="w-3.5 h-3.5" />}>
+              <h1 className="text-xl font-extrabold text-[#0F172A]">{driver.name}</h1>
+              <Badge variant="blue" icon={<Award className="w-3.5 h-3.5" />}>
                 ⭐ {driver.rating} Rating
               </Badge>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-              Lic: {driver.licenseNumber} | Assigned Vehicle: <strong className="text-slate-800 dark:text-slate-200">{activeTruck.plateNumber}</strong>
+            <p className="text-xs text-[#64748B] font-medium">
+              Lic: {driver.licenseNumber} | Assigned Vehicle: <strong className="text-[#0F172A]">{activeTruck.plateNumber}</strong>
             </p>
           </div>
         </div>
 
         {/* Live GPS Status & Destination Selector */}
-        <div className="flex flex-wrap items-center gap-3 bg-slate-50/80 dark:bg-slate-800/60 p-2.5 rounded-2xl border border-slate-200 dark:border-slate-700/80">
-          <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 px-2">
-            <Navigation className="w-4 h-4 text-blue-600 dark:text-indigo-400 animate-pulse" />
+        <div className="flex flex-wrap items-center gap-3 bg-[#F8FAFC] p-2.5 rounded-2xl border border-[#E2E8F0]">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-[#0F172A] px-2">
+            <Navigation className="w-4 h-4 text-[#2563EB] animate-pulse" />
             <span>GPS Status:</span>
           </div>
 
-          <div className="flex items-center bg-white dark:bg-slate-900 p-1 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold">
+          <div className="flex items-center bg-white p-1 rounded-xl border border-[#E2E8F0] text-xs font-bold">
             {(['available', 'in-transit', 'offline'] as const).map((st) => (
               <button
                 key={st}
                 onClick={() => setGpsStatus(st)}
                 className={`px-3 py-1.5 rounded-lg capitalize transition-all cursor-pointer ${
                   gpsStatus === st
-                    ? st === 'available'
-                      ? 'bg-teal-600 text-white shadow-2xs'
-                      : st === 'in-transit'
-                      ? 'bg-blue-600 text-white shadow-2xs'
-                      : 'bg-slate-600 text-white shadow-2xs'
-                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    ? 'bg-[#2563EB] text-white shadow-2xs'
+                    : 'text-[#64748B] hover:text-[#0F172A]'
                 }`}
               >
                 {st}

@@ -319,15 +319,15 @@ export const ReturnLoadMatcher: React.FC<ReturnLoadMatcherProps> = ({
     <div className="bg-white rounded-2xl border border-slate-200 shadow-card overflow-hidden">
 
       {/* ── Header ── */}
-      <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 p-6">
+      <div className="bg-[#0F172A] p-6 text-white border-b border-[#E2E8F0]">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-              <RotateCcw className="w-5 h-5 text-white" />
+            <div className="w-10 h-10 bg-[#2563EB]/20 border border-[#2563EB]/40 rounded-xl flex items-center justify-center">
+              <RotateCcw className="w-5 h-5 text-[#2563EB]" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-bold text-white text-base">AI Return Load Matcher</h3>
+                <h3 className="font-extrabold text-white text-base">AI Return Load Matcher</h3>
                 <span className="text-[10px] font-bold bg-white/20 text-white px-2 py-0.5 rounded-full">
                   {usedAI && hasSearched ? '✦ Gemini AI' : 'Core Feature'}
                 </span>
