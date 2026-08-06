@@ -68,17 +68,18 @@ const MapViewController: React.FC<{
   useEffect(() => {
     if (highwayPolyline && highwayPolyline.length > 0) {
       const bounds = L.latLngBounds(highwayPolyline);
-      map.flyToBounds(bounds, { padding: [70, 70], animate: true, duration: 1.4 });
+      map.flyToBounds(bounds, { padding: [80, 80], animate: true, duration: 1.8, easeLinearity: 0.15 });
     } else if (activeRoute) {
       const bounds = L.latLngBounds([
         [activeRoute.origin.lat, activeRoute.origin.lng],
         [activeRoute.destination.lat, activeRoute.destination.lng],
       ]);
-      map.flyToBounds(bounds, { padding: [70, 70], animate: true, duration: 1.4 });
+      map.flyToBounds(bounds, { padding: [80, 80], animate: true, duration: 1.8, easeLinearity: 0.15 });
     } else if (selectedTruck) {
       map.flyTo([selectedTruck.currentLocation.lat, selectedTruck.currentLocation.lng], 10, {
         animate: true,
-        duration: 1.2,
+        duration: 1.5,
+        easeLinearity: 0.15,
       });
     }
   }, [activeRoute, highwayPolyline, selectedTruck, map]);
@@ -86,7 +87,7 @@ const MapViewController: React.FC<{
   useEffect(() => {
     if (resetTrigger > 0 && trucks.length > 0) {
       const bounds = L.latLngBounds(trucks.map((t) => [t.currentLocation.lat, t.currentLocation.lng]));
-      map.flyToBounds(bounds, { padding: [50, 50], animate: true, duration: 1.2 });
+      map.flyToBounds(bounds, { padding: [60, 60], animate: true, duration: 1.5, easeLinearity: 0.15 });
     }
   }, [resetTrigger, trucks, map]);
 
@@ -105,6 +106,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
   const [activeFilter, setActiveFilter] = useState<TruckStatus | 'all'>('all');
   const [resetTrigger, setResetTrigger] = useState(0);
   const [activeHighwayPolyline, setActiveHighwayPolyline] = useState<[number, number][] | null>(null);
+  const [glidingTruckPos, setGlidingTruckPos] = useState<[number, number] | null>(null);
 
   const filteredTrucks = singleRouteOnly
     ? trucks.filter((t) => t.id === selectedTruckId || t.status === 'in-transit').slice(0, 1)
@@ -115,6 +117,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
   useEffect(() => {
     if (!activeRoute) {
       setActiveHighwayPolyline(null);
+      setGlidingTruckPos(null);
       return;
     }
 
@@ -162,15 +165,46 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
     };
   }, [activeRoute]);
 
-  // Calculate truck position along active polyline (~42% along the route)
-  const activeHighwayTruckPos = activeHighwayPolyline && activeHighwayPolyline.length > 5
-    ? activeHighwayPolyline[Math.floor(activeHighwayPolyline.length * 0.42)]
-    : activeRoute
-    ? [
-        activeRoute.origin.lat + (activeRoute.destination.lat - activeRoute.origin.lat) * 0.42,
-        activeRoute.origin.lng + (activeRoute.destination.lng - activeRoute.origin.lng) * 0.42,
-      ] as [number, number]
-    : null;
+  // 60FPS Continuous Gliding Truck Motion Loop along turn-by-turn polyline
+  useEffect(() => {
+    if (!activeHighwayPolyline || activeHighwayPolyline.length < 2) {
+      if (activeRoute) {
+        setGlidingTruckPos([
+          activeRoute.origin.lat + (activeRoute.destination.lat - activeRoute.origin.lat) * 0.42,
+          activeRoute.origin.lng + (activeRoute.destination.lng - activeRoute.origin.lng) * 0.42,
+        ]);
+      } else {
+        setGlidingTruckPos(null);
+      }
+      return;
+    }
+
+    let animId: number;
+    let progress = 0.15;
+    const totalPoints = activeHighwayPolyline.length;
+
+    const animateTruck = () => {
+      progress += 0.0007; // smooth highway cruising speed
+      if (progress > 0.88) progress = 0.15;
+
+      const floatIndex = progress * (totalPoints - 1);
+      const index1 = Math.floor(floatIndex);
+      const index2 = Math.min(index1 + 1, totalPoints - 1);
+      const t = floatIndex - index1;
+
+      const p1 = activeHighwayPolyline[index1];
+      const p2 = activeHighwayPolyline[index2];
+
+      const lat = p1[0] + (p2[0] - p1[0]) * t;
+      const lng = p1[1] + (p2[1] - p1[1]) * t;
+
+      setGlidingTruckPos([lat, lng]);
+      animId = requestAnimationFrame(animateTruck);
+    };
+
+    animId = requestAnimationFrame(animateTruck);
+    return () => cancelAnimationFrame(animId);
+  }, [activeHighwayPolyline, activeRoute]);
 
   // Split active highway polyline into 3 segments: On Route (cyan), Stops (green), Traffic (red)
   const polyLen = activeHighwayPolyline ? activeHighwayPolyline.length : 0;
@@ -195,11 +229,8 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
     const html = `
       <div style="position: relative; display: flex; align-items: center; justify-content: center; width: 56px; height: 56px; cursor: pointer;">
-        <!-- Pulsing White Sonar Ring -->
         <div style="position: absolute; width: 52px; height: 52px; border-radius: 50%; border: 2px solid #FFFFFF; box-shadow: 0 0 16px rgba(6, 182, 212, 0.8); animation: pulse-ring 2s infinite cubic-bezier(0.4, 0, 0.6, 1);"></div>
-        <!-- Inner Glow -->
         <div style="position: absolute; width: 40px; height: 40px; border-radius: 50%; background: radial-gradient(circle, rgba(6, 182, 212, 0.4) 0%, transparent 70%);"></div>
-        <!-- Truck Capsule -->
         <div style="
           position: relative;
           width: ${isSelected ? '38px' : '32px'};
@@ -211,7 +242,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: all 0.25s ease;
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
           z-index: 10;
         ">
           <svg width="${isSelected ? '22' : '18'}" height="${isSelected ? '22' : '18'}" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -261,7 +292,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
   return (
     <div className={clsx('relative rounded-2xl overflow-hidden shadow-2xl border border-slate-800 bg-slate-950 font-sans', className)}>
       
-      {/* ── 1. Top Legend Overlay (Matches Screenshot: On Route / Stops / Traffic) ── */}
+      {/* ── 1. Top Legend Overlay ── */}
       <div className="absolute top-4 left-4 z-[400] bg-slate-900/90 backdrop-blur-md px-3.5 py-2 rounded-xl border border-slate-800 shadow-2xl flex items-center gap-4 text-xs text-white font-bold">
         <span className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-xs bg-cyan-400 shadow-glow-blue inline-block" />
@@ -303,7 +334,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
         </div>
       )}
 
-      {/* ── 2. Bottom Floating Telemetry HUD Card (Exact Match to Screenshot) ── */}
+      {/* ── 2. Bottom Floating Telemetry HUD Card ── */}
       {isNavActive && (
         <div className="absolute bottom-4 left-4 z-[400] bg-slate-900/95 backdrop-blur-xl p-4.5 rounded-2xl border border-slate-800 shadow-2xl text-white w-72 sm:w-80 space-y-3 font-sans animate-in slide-in-from-bottom duration-300">
           <div className="flex items-center justify-between">
@@ -350,15 +381,21 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
         </div>
       )}
 
-      {/* Leaflet Map Canvas with CartoDB Dark Matter Tiles */}
+      {/* Leaflet Map Canvas with Smooth Sub-pixel Motion */}
       <MapContainer
         center={[20.5937, 78.9629]}
         zoom={5}
-        zoomSnap={0.5}
-        zoomDelta={0.5}
+        zoomSnap={0.25}
+        zoomDelta={0.25}
+        zoomAnimation={true}
+        fadeAnimation={true}
+        markerZoomAnimation={true}
         wheelDebounceTime={40}
+        wheelPxPerZoomLevel={120}
         inertia={true}
         inertiaDeceleration={3000}
+        inertiaMaxSpeed={2000}
+        easeLinearity={0.15}
         scrollWheelZoom={true}
         className="w-full h-full min-h-[300px] z-10"
       >
@@ -401,17 +438,17 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
           )
         )}
 
-        {/* Live Truck Marker with White Pulsing Ring */}
-        {activeHighwayTruckPos && (
+        {/* 60FPS Live Animated Gliding Truck Marker with White Pulsing Sonar Ring */}
+        {glidingTruckPos && (
           <Marker
-            position={activeHighwayTruckPos}
+            position={glidingTruckPos}
             icon={createCustomTruckIcon(
               {
                 id: 'nav-truck-live',
                 plateNumber: activeTruckTitle,
                 status: 'in-transit',
                 driverName: activeDriverName,
-                currentLocation: { lat: activeHighwayTruckPos[0], lng: activeHighwayTruckPos[1], city: 'En Route' },
+                currentLocation: { lat: glidingTruckPos[0], lng: glidingTruckPos[1], city: 'En Route' },
                 capacityTons: 16,
                 rating: 4.9,
               } as unknown as Truck,

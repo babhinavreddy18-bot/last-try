@@ -81,7 +81,39 @@ html.dark ::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.45); }
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-color);
   box-shadow: var(--shadow-card);
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Smooth Leaflet Map & Navigation Hardware Acceleration ── */
+.leaflet-container {
+  font-family: inherit !important;
+  background-color: #070B14 !important;
+  outline: none !important;
+}
+
+.leaflet-tile-container {
+  will-change: transform;
+}
+
+.leaflet-tile {
+  will-change: transform, opacity;
+  transition: opacity 0.25s ease-in-out;
+}
+
+.leaflet-marker-icon,
+.custom-truck-marker,
+.custom-route-pin {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: transform;
+}
+
+.leaflet-zoom-animated {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.leaflet-interactive {
+  transition: stroke 0.3s ease, stroke-width 0.3s ease;
+  will-change: stroke-dashoffset, stroke;
 }
 
 .glass-card-hover:hover {
