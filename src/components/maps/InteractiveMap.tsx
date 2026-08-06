@@ -21,30 +21,63 @@ interface InteractiveMapProps {
   className?: string;
 }
 
+// Cache for OSRM highway route geometries
+const routePolylineCache: Record<string, [number, number][]> = {};
+
+// Fallback curve generator for National Highways when OSRM API is loading or offline
+const getCurvedHighwayPoints = (
+  p1: [number, number],
+  p2: [number, number],
+  steps: number = 24
+): [number, number][] => {
+  const points: [number, number][] = [];
+  const midLat = (p1[0] + p2[0]) / 2;
+  const midLng = (p1[1] + p2[1]) / 2;
+
+  // Realistic curve offset for National Highway corridors
+  const dx = p2[0] - p1[0];
+  const dy = p2[1] - p1[1];
+  const offset = 0.08;
+  const ctrlLat = midLat - dy * offset;
+  const ctrlLng = midLng + dx * offset;
+
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    const lat = (1 - t) * (1 - t) * p1[0] + 2 * (1 - t) * t * ctrlLat + t * t * p2[0];
+    const lng = (1 - t) * (1 - t) * p1[1] + 2 * (1 - t) * t * ctrlLng + t * t * p2[1];
+    points.push([lat, lng]);
+  }
+  return points;
+};
+
 // Controller component to handle map flying & bounds recalculation
 const MapViewController: React.FC<{
   trucks: Truck[];
   selectedTruck?: Truck;
   activeRoute?: ActiveRouteInfo | null;
+  highwayPolyline?: [number, number][] | null;
   resetTrigger: number;
-}> = ({ trucks, selectedTruck, activeRoute, resetTrigger }) => {
+}> = ({ trucks, selectedTruck, activeRoute, highwayPolyline, resetTrigger }) => {
   const map = useMap();
 
-  // Fly to active route when driver accepts a return load
+  // Fly to active route & fit exact highway polyline bounds
   useEffect(() => {
-    if (activeRoute) {
+    if (highwayPolyline && highwayPolyline.length > 0) {
+      const bounds = L.latLngBounds(highwayPolyline);
+      map.flyToBounds(bounds, { padding: [60, 60], animate: true, duration: 1.5 });
+    } else if (activeRoute) {
       const bounds = L.latLngBounds([
         [activeRoute.origin.lat, activeRoute.origin.lng],
         [activeRoute.destination.lat, activeRoute.destination.lng],
       ]);
-      map.flyToBounds(bounds, { padding: [70, 70], animate: true, duration: 1.5 });
+      map.flyToBounds(bounds, { padding: [60, 60], animate: true, duration: 1.5 });
     } else if (selectedTruck) {
       map.flyTo([selectedTruck.currentLocation.lat, selectedTruck.currentLocation.lng], 10, {
         animate: true,
         duration: 1.2,
       });
     }
-  }, [activeRoute, selectedTruck, map]);
+  }, [activeRoute, highwayPolyline, selectedTruck, map]);
 
   // Fit bounds when resetTrigger fires
   useEffect(() => {
@@ -67,12 +100,81 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
 }) => {
   const [activeFilter, setActiveFilter] = useState<TruckStatus | 'all'>('all');
   const [resetTrigger, setResetTrigger] = useState(0);
+  const [activeHighwayPolyline, setActiveHighwayPolyline] = useState<[number, number][] | null>(null);
+  const [highwaySummary, setHighwaySummary] = useState<string>('');
 
   const filteredTrucks = singleRouteOnly
     ? trucks.filter((t) => t.id === selectedTruckId || t.status === 'in-transit').slice(0, 1)
     : trucks.filter((t) => (activeFilter === 'all' ? true : t.status === activeFilter));
 
   const selectedTruck = trucks.find((t) => t.id === selectedTruckId) || trucks[0];
+
+  // Fetch OSRM real highway routing geometry for active navigation route
+  useEffect(() => {
+    if (!activeRoute) {
+      setActiveHighwayPolyline(null);
+      setHighwaySummary('');
+      return;
+    }
+
+    const key = `${activeRoute.origin.lat.toFixed(4)},${activeRoute.origin.lng.toFixed(4)}_${activeRoute.destination.lat.toFixed(4)},${activeRoute.destination.lng.toFixed(4)}`;
+
+    if (routePolylineCache[key]) {
+      setActiveHighwayPolyline(routePolylineCache[key]);
+      return;
+    }
+
+    let isMounted = true;
+
+    fetch(
+      `https://router.project-osrm.org/route/v1/driving/${activeRoute.origin.lng},${activeRoute.origin.lat};${activeRoute.destination.lng},${activeRoute.destination.lat}?overview=full&geometries=geojson`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        if (!isMounted) return;
+        if (data.routes && data.routes[0] && data.routes[0].geometry && data.routes[0].geometry.coordinates) {
+          const rawCoords = data.routes[0].geometry.coordinates as [number, number][];
+          const leafCoords: [number, number][] = rawCoords.map(([lng, lat]) => [lat, lng]);
+          routePolylineCache[key] = leafCoords;
+          setActiveHighwayPolyline(leafCoords);
+
+          if (data.routes[0].legs && data.routes[0].legs[0] && data.routes[0].legs[0].summary) {
+            setHighwaySummary(data.routes[0].legs[0].summary);
+          }
+        } else {
+          const fallback = getCurvedHighwayPoints(
+            [activeRoute.origin.lat, activeRoute.origin.lng],
+            [activeRoute.destination.lat, activeRoute.destination.lng]
+          );
+          routePolylineCache[key] = fallback;
+          setActiveHighwayPolyline(fallback);
+        }
+      })
+      .catch((err) => {
+        console.warn('OSRM route fetch fallback:', err);
+        if (isMounted) {
+          const fallback = getCurvedHighwayPoints(
+            [activeRoute.origin.lat, activeRoute.origin.lng],
+            [activeRoute.destination.lat, activeRoute.destination.lng]
+          );
+          setActiveHighwayPolyline(fallback);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [activeRoute]);
+
+  // Calculate truck position along the active highway polyline (~40% of route)
+  const activeHighwayTruckPos = activeHighwayPolyline && activeHighwayPolyline.length > 5
+    ? activeHighwayPolyline[Math.floor(activeHighwayPolyline.length * 0.42)]
+    : activeRoute
+    ? [
+        activeRoute.origin.lat + (activeRoute.destination.lat - activeRoute.origin.lat) * 0.42,
+        activeRoute.origin.lng + (activeRoute.destination.lng - activeRoute.origin.lng) * 0.42,
+      ] as [number, number]
+    : null;
 
   // Major Indian Logistics Corridors
   const corridorDelhiMumbaiPuneBengaluruChennai: [number, number][] = [
@@ -188,6 +290,21 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
         </div>
       )}
 
+      {/* Highway Route HUD Badge when activeRoute exists */}
+      {activeRoute && (
+        <div className="absolute top-3 right-3 z-[400] bg-slate-900/90 backdrop-blur-md text-white px-3 py-1.5 rounded-xl border border-emerald-500/50 shadow-xl text-xs flex items-center gap-2">
+          <Navigation className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+          <div>
+            <span className="font-extrabold text-emerald-300">
+              {activeRoute.origin.city} → {activeRoute.destination.city}
+            </span>
+            <p className="text-[10px] text-slate-300 font-medium">
+              {highwaySummary ? `via ${highwaySummary}` : 'National Highway OSRM Geometry Active'}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Leaflet Map Canvas */}
       <MapContainer
         center={[20.5937, 78.9629]}
@@ -200,7 +317,13 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
         scrollWheelZoom={true}
         className="w-full h-full min-h-[250px] z-10"
       >
-        <MapViewController trucks={filteredTrucks} selectedTruck={selectedTruck} activeRoute={activeRoute} resetTrigger={resetTrigger} />
+        <MapViewController
+          trucks={filteredTrucks}
+          selectedTruck={selectedTruck}
+          activeRoute={activeRoute}
+          highwayPolyline={activeHighwayPolyline}
+          resetTrigger={resetTrigger}
+        />
 
         <TileLayer
           attribution='&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -215,24 +338,93 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
           </>
         )}
 
-        {/* Active Accepted Return Load Navigation Route Line */}
+        {/* Active Accepted Return Load Navigation Route Line (Exact OSRM Highway Geometry) */}
         {activeRoute && (
           <>
+            {/* 1. Outer Glow Polyline for High Visibility */}
             <Polyline
-              positions={[
-                [activeRoute.origin.lat, activeRoute.origin.lng],
-                [activeRoute.destination.lat, activeRoute.destination.lng],
-              ]}
-              pathOptions={{ color: '#059669', weight: 6, opacity: 0.95 }}
+              positions={
+                activeHighwayPolyline && activeHighwayPolyline.length > 0
+                  ? activeHighwayPolyline
+                  : [
+                      [activeRoute.origin.lat, activeRoute.origin.lng],
+                      [activeRoute.destination.lat, activeRoute.destination.lng],
+                    ]
+              }
+              pathOptions={{ color: '#059669', weight: 10, opacity: 0.35, lineCap: 'round', lineJoin: 'round' }}
             />
+
+            {/* 2. Main Solid Highway Polyline */}
+            <Polyline
+              positions={
+                activeHighwayPolyline && activeHighwayPolyline.length > 0
+                  ? activeHighwayPolyline
+                  : [
+                      [activeRoute.origin.lat, activeRoute.origin.lng],
+                      [activeRoute.destination.lat, activeRoute.destination.lng],
+                    ]
+              }
+              pathOptions={{ color: '#047857', weight: 5, opacity: 0.95, lineCap: 'round', lineJoin: 'round' }}
+            />
+
+            {/* 3. Directional Flow Line Overlay */}
+            <Polyline
+              positions={
+                activeHighwayPolyline && activeHighwayPolyline.length > 0
+                  ? activeHighwayPolyline
+                  : [
+                      [activeRoute.origin.lat, activeRoute.origin.lng],
+                      [activeRoute.destination.lat, activeRoute.destination.lng],
+                    ]
+              }
+              pathOptions={{ color: '#34D399', weight: 2, dashArray: '8, 12', opacity: 0.9 }}
+            />
+
+            {/* Pickup Location Marker */}
             <Marker
               position={[activeRoute.origin.lat, activeRoute.origin.lng]}
               icon={createPinIcon('#2563EB', `Pickup: ${activeRoute.origin.city}`)}
             />
+
+            {/* Drop Location Marker */}
             <Marker
               position={[activeRoute.destination.lat, activeRoute.destination.lng]}
               icon={createPinIcon('#059669', `Drop: ${activeRoute.destination.city}`)}
             />
+
+            {/* Live Navigation Truck Marker along the exact highway polyline */}
+            {activeHighwayTruckPos && (
+              <Marker
+                position={activeHighwayTruckPos}
+                icon={createCustomTruckIcon(
+                  {
+                    id: 'nav-truck-live',
+                    plateNumber: 'MH-12-CL-3012',
+                    status: 'in-transit',
+                    driverName: 'Live Turn-by-Turn GPS',
+                    currentLocation: { lat: activeHighwayTruckPos[0], lng: activeHighwayTruckPos[1], city: 'En Route Highway' },
+                    capacityTons: 16,
+                    rating: 4.9,
+                  } as unknown as Truck,
+                  true
+                )}
+              >
+                <Popup className="custom-leaflet-popup">
+                  <div className="p-1 text-slate-800 font-sans text-xs space-y-1">
+                    <div className="font-extrabold text-blue-600 flex items-center gap-1">
+                      <Navigation className="w-3.5 h-3.5 animate-spin" />
+                      <span>Live GPS Highway Navigation</span>
+                    </div>
+                    <p className="text-[11px] text-slate-600 font-medium">
+                      Current: {activeRoute.origin.city} → {activeRoute.destination.city}
+                    </p>
+                    <p className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-1.5 py-0.5 rounded">
+                      Highway Polyline Mode: OSRM Turn-by-Turn
+                    </p>
+                  </div>
+                </Popup>
+              </Marker>
+            )}
           </>
         )}
 
