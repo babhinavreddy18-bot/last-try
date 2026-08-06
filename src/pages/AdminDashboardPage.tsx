@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { MOCK_ANOMALIES, MOCK_TIME_SERIES } from '../mock/data';
 import type { AnomalyFlag } from '../types';
 import { StatCard } from '../components/common/StatCard';
@@ -7,7 +8,20 @@ import { ShieldAlert, ShieldCheck, Activity, Cpu, DollarSign } from 'lucide-reac
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
 export const AdminDashboardPage: React.FC = () => {
+  const location = useLocation();
   const [anomalies, setAnomalies] = useState<AnomalyFlag[]>(MOCK_ANOMALIES);
+
+  useEffect(() => {
+    if (location.hash === '#security-alerts') {
+      setTimeout(() => {
+        document.getElementById('ai-security-alerts')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    } else if (location.hash === '#system-telemetry') {
+      setTimeout(() => {
+        document.getElementById('ai-system-telemetry')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }, [location.hash]);
 
   const toggleResolve = (id: string) => {
     setAnomalies((prev) =>
@@ -31,7 +45,7 @@ export const AdminDashboardPage: React.FC = () => {
       </div>
 
       {/* System Telemetry Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div id="ai-system-telemetry" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 scroll-mt-20">
         <StatCard
           title="Active Telemetry Nodes"
           value="50 / 50"
@@ -82,7 +96,7 @@ export const AdminDashboardPage: React.FC = () => {
       </div>
 
       {/* AI Fraud & Anomaly Monitor Table */}
-      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card space-y-4">
+      <div id="ai-security-alerts" className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card space-y-4 scroll-mt-20">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <ShieldAlert className="w-5 h-5 text-rose-600" />

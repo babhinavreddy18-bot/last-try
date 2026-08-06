@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { MOCK_TRUCKS, MOCK_AVAILABILITY_PREDICTIONS, MOCK_SUSTAINABILITY, MOCK_TIME_SERIES } from '../mock/data';
 import { StatCard } from '../components/common/StatCard';
 import { Badge } from '../components/common/Badge';
@@ -10,8 +11,25 @@ import { ResponsiveContainer, AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tool
 import { ErpWmsIntegration } from '../components/ai/ErpWmsIntegration';
 
 export const FleetDashboardPage: React.FC = () => {
+  const location = useLocation();
   const [timeframe, setTimeframe] = useState<'1h' | '6h' | '24h' | '3d'>('1h');
   const [distanceKmInput, setDistanceKmInput] = useState(15000);
+
+  useEffect(() => {
+    if (location.hash === '#erp-wms-sharing') {
+      setTimeout(() => {
+        document.getElementById('ai-erp-wms-sharing')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    } else if (location.hash === '#availability-predictor') {
+      setTimeout(() => {
+        document.getElementById('ai-availability-predictor')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    } else if (location.hash === '#carbon-hub') {
+      setTimeout(() => {
+        document.getElementById('ai-carbon-hub')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }, [location.hash]);
 
   const predictions = MOCK_AVAILABILITY_PREDICTIONS.filter((p) => p.timeframe === timeframe);
 
@@ -34,7 +52,9 @@ export const FleetDashboardPage: React.FC = () => {
       </div>
 
       {/* ══ ERP & WMS AUTOMATED DATA SHARING HUB ══ */}
-      <ErpWmsIntegration />
+      <div id="ai-erp-wms-sharing" className="scroll-mt-20">
+        <ErpWmsIntegration />
+      </div>
 
       {/* Fleet Overview Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -118,7 +138,7 @@ export const FleetDashboardPage: React.FC = () => {
       </div>
 
       {/* AI Future Availability Predictor Section */}
-      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card space-y-4">
+      <div id="ai-availability-predictor" className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card space-y-4 scroll-mt-20">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-xl bg-blue-50 text-blue-600 border border-blue-100">
@@ -175,7 +195,7 @@ export const FleetDashboardPage: React.FC = () => {
       </div>
 
       {/* Carbon Emissions & Sustainability Hub Interactive Calculator */}
-      <div className="bg-gradient-to-br from-teal-900 via-slate-900 to-slate-900 text-white rounded-2xl p-6 shadow-card space-y-6">
+      <div id="ai-carbon-hub" className="bg-gradient-to-br from-teal-900 via-slate-900 to-slate-900 text-white rounded-2xl p-6 shadow-card space-y-6 scroll-mt-20">
         <div className="flex items-center justify-between border-b border-teal-800/60 pb-4">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-xl bg-teal-500/20 text-teal-400 border border-teal-500/30">

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { MOCK_SHIPMENTS, MOCK_TRUCKS } from '../mock/data';
 import type { Shipment } from '../types';
 import { NLPShipmentParser } from '../components/ai/NLPShipmentParser';
@@ -11,7 +12,24 @@ import { PackageCheck, Truck as TruckIcon, Clock, DollarSign, ArrowRight, Shield
 import { ErpWmsIntegration } from '../components/ai/ErpWmsIntegration';
 
 export const ShipperDashboardPage: React.FC = () => {
+  const location = useLocation();
   const [trackedShipment, setTrackedShipment] = useState<Shipment | null>(null);
+
+  useEffect(() => {
+    if (location.hash === '#erp-wms-sharing') {
+      setTimeout(() => {
+        document.getElementById('ai-erp-wms-sharing')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    } else if (location.hash === '#nlp-pricing') {
+      setTimeout(() => {
+        document.getElementById('ai-nlp-pricing')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    } else if (location.hash === '#dynamic-benchmarks') {
+      setTimeout(() => {
+        document.getElementById('ai-dynamic-benchmarks')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }, [location.hash]);
 
   const selectedTrackedTruck = trackedShipment?.assignedTruckId
     ? MOCK_TRUCKS.find((t) => t.id === trackedShipment.assignedTruckId) || MOCK_TRUCKS[0]
@@ -33,10 +51,12 @@ export const ShipperDashboardPage: React.FC = () => {
       </div>
 
       {/* ══ ERP & WMS AUTOMATED DATA SHARING HUB ══ */}
-      <ErpWmsIntegration />
+      <div id="ai-erp-wms-sharing" className="scroll-mt-20">
+        <ErpWmsIntegration />
+      </div>
 
       {/* Metrics Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div id="ai-dynamic-benchmarks" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 scroll-mt-20">
         <StatCard
           title="Active Shipments"
           value="18 Cargoes"
@@ -68,7 +88,9 @@ export const ShipperDashboardPage: React.FC = () => {
       </div>
 
       {/* Natural Language Creator & Pricing Engine */}
-      <NLPShipmentParser />
+      <div id="ai-nlp-pricing" className="scroll-mt-20">
+        <NLPShipmentParser />
+      </div>
 
       {/* Live Map & Active Shipments Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

@@ -6,7 +6,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import type { UserRole } from '../../types';
 import {
   Truck, PackageCheck, Building2, ShieldAlert,
-  MapPin, FileCheck, Sparkles, Leaf, ChevronRight, Sun, Moon
+  MapPin, FileCheck, Sparkles, Leaf, ChevronRight, Sun, Moon, Database
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -39,16 +39,18 @@ export const Sidebar: React.FC = () => {
       { label: t.returnLoadMatcher, path: '/dashboard/driver#return-load-matcher', icon: <Sparkles className="w-4 h-4" />, roleAllowed: 'driver', color: '#2563EB' },
     ],
     shipper: [
-      { label: t.freightPricingEngine, path: '/dashboard/shipper', icon: <Sparkles className="w-4 h-4" />, roleAllowed: 'shipper', color: '#7C3AED' },
-      { label: t.dynamicBenchmarks, path: '/dashboard/shipper', icon: <MapPin className="w-4 h-4" />, roleAllowed: 'shipper', color: '#2563EB' },
+      { label: t.freightPricingEngine, path: '/dashboard/shipper#nlp-pricing', icon: <Sparkles className="w-4 h-4" />, roleAllowed: 'shipper', color: '#7C3AED' },
+      { label: 'ERP & WMS Data Hub', path: '/dashboard/shipper#erp-wms-sharing', icon: <Database className="w-4 h-4" />, roleAllowed: 'shipper', color: '#0D9488' },
+      { label: t.dynamicBenchmarks, path: '/dashboard/shipper#dynamic-benchmarks', icon: <MapPin className="w-4 h-4" />, roleAllowed: 'shipper', color: '#2563EB' },
     ],
     fleet: [
-      { label: t.fleetPredictor, path: '/dashboard/fleet', icon: <MapPin className="w-4 h-4" />, roleAllowed: 'fleet', color: '#D97706' },
-      { label: t.carbonHub, path: '/dashboard/fleet', icon: <Leaf className="w-4 h-4" />, roleAllowed: 'fleet', color: '#059669' },
+      { label: t.fleetPredictor, path: '/dashboard/fleet#availability-predictor', icon: <MapPin className="w-4 h-4" />, roleAllowed: 'fleet', color: '#D97706' },
+      { label: 'ERP & WMS Data Hub', path: '/dashboard/fleet#erp-wms-sharing', icon: <Database className="w-4 h-4" />, roleAllowed: 'fleet', color: '#0D9488' },
+      { label: t.carbonHub, path: '/dashboard/fleet#carbon-hub', icon: <Leaf className="w-4 h-4" />, roleAllowed: 'fleet', color: '#059669' },
     ],
     admin: [
-      { label: t.tamperingAlerts, path: '/dashboard/admin', icon: <ShieldAlert className="w-4 h-4" />, roleAllowed: 'admin', color: '#DC2626' },
-      { label: t.aiPlatform, path: '/dashboard/admin', icon: <Sparkles className="w-4 h-4" />, roleAllowed: 'admin', color: '#7C3AED' },
+      { label: t.tamperingAlerts, path: '/dashboard/admin#security-alerts', icon: <ShieldAlert className="w-4 h-4" />, roleAllowed: 'admin', color: '#DC2626' },
+      { label: t.aiPlatform, path: '/dashboard/admin#system-telemetry', icon: <Sparkles className="w-4 h-4" />, roleAllowed: 'admin', color: '#7C3AED' },
     ],
   };
 
