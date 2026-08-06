@@ -3,8 +3,6 @@ import { Outlet } from 'react-router-dom';
 import { Navbar } from './Navbar';
 import { Sidebar } from './Sidebar';
 import { AICopilotDrawer } from '../ai/AICopilotDrawer';
-import { LiveTruckBackground } from './LiveTruckBackground';
-
 export const Layout: React.FC = () => {
   const [isCopilotOpen, setIsCopilotOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -12,8 +10,6 @@ export const Layout: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col font-sans relative">
 
-      {/* Live animated truck background */}
-      <LiveTruckBackground />
 
       {/* Soft ambient glow orbs */}
       <div className="bg-orb-1" />
