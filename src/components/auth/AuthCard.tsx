@@ -530,7 +530,10 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
               exit={{ opacity: 0, height: 0 }}
               className="space-y-1 overflow-hidden"
             >
-              <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">{t.fullName}</label>
+              <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                <span>{t.fullName}</span>
+                <span className="text-rose-500 font-bold">*</span>
+              </label>
               <div className="relative">
                 <UserIcon className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
                 <input
@@ -538,6 +541,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
                   value={fullName}
                   onChange={e => { setFullName(e.target.value); setError(''); }}
                   placeholder="Enter your full name"
+                  required
                   autoComplete="name"
                   className="w-full pl-9 pr-4 py-2.5 text-xs font-medium rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
                 />
