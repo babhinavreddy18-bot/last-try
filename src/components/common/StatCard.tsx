@@ -40,16 +40,16 @@ export const StatCard: React.FC<StatCardProps> = ({
       transition={{ duration: 0.2 }}
       onClick={onClick}
       className={clsx(
-        'relative glass-card rounded-2xl p-5 border border-slate-200 dark:border-slate-800/80 flex flex-col justify-between overflow-hidden cursor-pointer group',
+        'relative rounded-2xl p-5 bg-white dark:bg-[#12131C] border border-slate-200 dark:border-[#1F2133] shadow-card flex flex-col justify-between overflow-hidden cursor-pointer group transition-all',
         className
       )}
     >
       {/* Top subtle highlight line */}
-      <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-blue-500/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-purple-500/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
       <div className="flex items-start justify-between">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{title}</span>
+          <span className="text-xs font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400">{title}</span>
           <div className="mt-1 flex items-baseline gap-2">
             <h3 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">{value}</h3>
           </div>

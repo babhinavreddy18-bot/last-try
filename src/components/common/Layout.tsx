@@ -10,7 +10,7 @@ export const Layout: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col font-sans relative text-white">
+    <div className="min-h-screen flex flex-col font-sans relative text-slate-900 dark:text-white">
       {/* Live Moving 3D Trucks Background */}
       <LiveTruckBackground />
 
