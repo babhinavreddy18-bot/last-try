@@ -3,12 +3,17 @@ import { Outlet } from 'react-router-dom';
 import { Navbar } from './Navbar';
 import { Sidebar } from './Sidebar';
 import { AICopilotDrawer } from '../ai/AICopilotDrawer';
+import { LiveTruckBackground } from './LiveTruckBackground';
+
 export const Layout: React.FC = () => {
   const [isCopilotOpen, setIsCopilotOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col font-sans relative bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
+    <div className="min-h-screen flex flex-col font-sans relative bg-[#0C0D14] text-white">
+      {/* Live Moving 3D Trucks Background */}
+      <LiveTruckBackground />
+
       {/* App content layer */}
       <div className="relative z-10 flex flex-col min-h-screen">
         <Navbar
