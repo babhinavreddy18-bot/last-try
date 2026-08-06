@@ -355,48 +355,90 @@ export const DriverDashboardPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Navigation Modal */}
+      {/* ══ LIVE ROUTE NAVIGATION MAP POP-UP MODAL ══ */}
       {navigatingShipment && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 border border-slate-200 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div className="flex items-center gap-2">
-                <Compass className="w-5 h-5 text-blue-600 animate-spin" />
-                <h3 className="font-bold text-slate-900 text-base">Live Route Navigation Active</h3>
+        <div className="fixed inset-0 bg-slate-900/75 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-5xl w-full max-h-[92vh] overflow-y-auto p-4 sm:p-6 space-y-4 border border-slate-200 shadow-2xl flex flex-col justify-between">
+
+            {/* Modal Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-600 shrink-0">
+                  <Compass className="w-6 h-6 animate-spin" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-extrabold text-slate-900 text-base sm:text-lg">{navigatingShipment.title}</h3>
+                    <Badge variant="teal">Live Navigation Active</Badge>
+                  </div>
+                  <p className="text-xs text-slate-500 font-medium flex items-center gap-1 mt-0.5">
+                    <MapPin className="w-3.5 h-3.5 text-blue-600" />
+                    <strong>{navigatingShipment.origin.city}</strong> → <strong>{navigatingShipment.destination.city}</strong>
+                    <span className="mx-1">•</span>
+                    <span>Distance: <strong>{formatDistance(navigatingShipment.distanceKm)}</strong></span>
+                    <span className="mx-1">•</span>
+                    <span>Payout: <strong className="text-slate-900">{formatCurrency(navigatingShipment.estimatedPriceInr)}</strong></span>
+                  </p>
+                </div>
               </div>
+
+              <div className="flex items-center gap-2 self-end sm:self-auto">
+                <button
+                  onClick={() => setNavigatingShipment(null)}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors flex items-center gap-1.5"
+                >
+                  <X className="w-4 h-4" />
+                  <span>Exit Navigation</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Turn-by-Turn Instruction Banner */}
+            <div className="p-3.5 bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-2xl shadow-md space-y-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                <div className="flex items-center gap-2 font-extrabold text-sm">
+                  <Route className="w-5 h-5 text-amber-300 shrink-0" />
+                  <span>GPS Telemetry: En Route to Destination ({navigatingShipment.destination.city})</span>
+                </div>
+                <div className="flex items-center gap-3 text-[11px] font-bold text-emerald-100">
+                  <span className="bg-white/20 px-2.5 py-1 rounded-lg">Speed: 54 km/h</span>
+                  <span className="bg-amber-400 text-slate-900 px-2.5 py-1 rounded-lg font-extrabold">ETA: ~{Math.round(navigatingShipment.distanceKm / 50 * 60)} mins</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between text-xs text-emerald-50 border-t border-white/20 pt-2 font-medium">
+                <span>📍 Next Step: In 12 km, exit right onto NH-48 Express Corridor (Talegaon Toll Plaza)</span>
+                <span className="text-[11px] opacity-90 hidden md:inline">Signal: 99.8% GPS Accuracy</span>
+              </div>
+            </div>
+
+            {/* Embedded Live Map Pop-Up */}
+            <div className="relative rounded-2xl overflow-hidden border border-slate-200 shadow-inner">
+              <InteractiveMap
+                trucks={MOCK_TRUCKS}
+                selectedTruckId={activeTruck.id}
+                activeRoute={{
+                  origin: navigatingShipment.origin,
+                  destination: navigatingShipment.destination,
+                  title: navigatingShipment.title,
+                }}
+                className="h-[460px] sm:h-[520px]"
+              />
+            </div>
+
+            {/* Modal Footer Controls */}
+            <div className="flex items-center justify-between pt-1 text-xs text-slate-500">
+              <span className="flex items-center gap-1 font-semibold text-slate-600">
+                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                Live Gemini Telemetry Connected
+              </span>
               <button
                 onClick={() => setNavigatingShipment(null)}
-                className="p-1 text-slate-400 hover:text-slate-700 rounded"
+                className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm transition-colors"
               >
-                <X className="w-5 h-5" />
+                Close Navigation Map
               </button>
             </div>
 
-            <div className="space-y-3 text-xs text-slate-700">
-              <div className="bg-blue-50 p-3 rounded-xl border border-blue-100 space-y-1">
-                <span className="text-blue-800 font-bold text-sm">{navigatingShipment.title}</span>
-                <p className="text-slate-600">{navigatingShipment.origin.city} → {navigatingShipment.destination.city} ({formatDistance(navigatingShipment.distanceKm)})</p>
-              </div>
-
-              <div className="space-y-2">
-                <span className="font-bold text-slate-800 uppercase tracking-wider text-[10px]">Turn-by-Turn Telemetry Steps</span>
-                <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-200 flex items-center gap-2">
-                  <Route className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Head East on NH-48 Express Corridor (Speed: 52 km/h)</span>
-                </div>
-                <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-200 flex items-center gap-2 text-slate-500">
-                  <Route className="w-4 h-4 text-slate-400 shrink-0" />
-                  <span>In 45 km: Exit towards Talegaon Toll Plaza</span>
-                </div>
-              </div>
-            </div>
-
-            <button
-              onClick={() => setNavigatingShipment(null)}
-              className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-xs transition-colors"
-            >
-              Close Navigation Preview
-            </button>
           </div>
         </div>
       )}
