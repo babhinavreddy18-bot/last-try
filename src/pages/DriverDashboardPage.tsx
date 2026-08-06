@@ -23,7 +23,7 @@ const earningsData = [
 import { useLanguage } from '../context/LanguageContext';
 
 export const DriverDashboardPage: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, translateCity, translateMaterial, translateStatus } = useLanguage();
   const driver = MOCK_DRIVERS[0];
   const [gpsStatus, setGpsStatus] = useState<TruckStatus>('in-transit');
   const [destination, setDestination] = useState('Pune NH-48 Hub');
@@ -225,14 +225,14 @@ export const DriverDashboardPage: React.FC = () => {
           <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <h3 className="font-bold text-slate-900 text-base">Assigned Cargo Deliveries</h3>
+                <h3 className="font-bold text-slate-900 text-base">{t.assignedCargo}</h3>
                 <p className="text-xs text-slate-500">
                   Showing {visibleDeliveries.length} of {filteredDeliveries.length} trips ({MOCK_SHIPMENTS.length} total in dispatch grid)
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xs text-teal-600 font-bold bg-teal-50 px-2.5 py-1 rounded-lg border border-teal-100">
-                  {MOCK_SHIPMENTS.filter(s => s.temperatureControlled).length} Cold Chain
+                  {MOCK_SHIPMENTS.filter(s => s.temperatureControlled).length} {t.coldChain}
                 </span>
                 <span className="text-xs text-blue-600 font-bold bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100">
                   {filteredDeliveries.length} Trips
@@ -244,10 +244,10 @@ export const DriverDashboardPage: React.FC = () => {
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
               {([
                 { key: 'all', label: 'All Deliveries' },
-                { key: 'in-transit', label: '🚛 In-Transit' },
-                { key: 'cold-chain', label: '❄️ Cold Chain' },
+                { key: 'in-transit', label: `🚛 ${translateStatus('in-transit')}` },
+                { key: 'cold-chain', label: `❄️ ${t.coldChain}` },
                 { key: 'high-payout', label: '💰 High Payout (₹45k+)' },
-                { key: 'assigned', label: '📋 Available' },
+                { key: 'assigned', label: `📋 ${translateStatus('available')}` },
               ] as const).map(({ key, label }) => (
                 <button
                   key={key}
@@ -279,21 +279,21 @@ export const DriverDashboardPage: React.FC = () => {
                         : 'amber'
                       }
                     >
-                      {shipment.status}
+                      {translateStatus(shipment.status)}
                     </Badge>
                     {shipment.temperatureControlled && (
-                      <Badge variant="teal">❄️ Cold Chain</Badge>
+                      <Badge variant="teal">❄️ {t.coldChain}</Badge>
                     )}
-                    <Badge variant="slate">{shipment.material}</Badge>
+                    <Badge variant="slate">{translateMaterial(shipment.material)}</Badge>
                   </div>
 
                   {/* Row 2: Route */}
                   <div className="flex items-center gap-1.5 text-xs text-slate-600 mb-2">
                     <MapPin className="w-3 h-3 text-blue-500 shrink-0" />
-                    <span className="font-semibold text-slate-800">{shipment.origin.city}</span>
+                    <span className="font-semibold text-slate-800">{translateCity(shipment.origin.city)}</span>
                     <ArrowRight className="w-3 h-3 text-slate-400 shrink-0" />
                     <MapPin className="w-3 h-3 text-teal-500 shrink-0" />
-                    <span className="font-semibold text-slate-800">{shipment.destination.city}</span>
+                    <span className="font-semibold text-slate-800">{translateCity(shipment.destination.city)}</span>
                   </div>
 
                   {/* Row 3: Meta + Action */}
@@ -303,19 +303,19 @@ export const DriverDashboardPage: React.FC = () => {
                       <span>📏 <strong className="text-slate-800">{formatDistance(shipment.distanceKm)}</strong></span>
                       <span>⚖️ <strong className="text-slate-800">{shipment.weightTons}T</strong></span>
                       {shipment.temperatureControlled && (
-                        <span>🌡️ <strong className="text-slate-800">Temp Controlled</strong></span>
+                        <span>🌡️ <strong className="text-slate-800">{t.tempControlled}</strong></span>
                       )}
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="text-right">
-                        <p className="text-xs text-slate-400">Trip Payout</p>
+                        <p className="text-xs text-slate-400">{t.tripPayout}</p>
                         <p className="font-extrabold text-slate-900 text-sm">{formatCurrency(shipment.estimatedPriceInr)}</p>
                       </div>
                       <button
                         onClick={() => setNavigatingShipment(shipment)}
                         className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-lg shadow-sm flex items-center gap-1 transition-colors shrink-0"
                       >
-                        <span>Navigate</span>
+                        <span>{t.navigate}</span>
                         <ArrowRight className="w-3.5 h-3.5" />
                       </button>
                     </div>

@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useRef } from 'react';
+import { useLanguage } from '../../context/LanguageContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sparkles, TrendingUp, MapPin, ArrowRight, Truck, Zap,
@@ -167,6 +168,7 @@ export const ReturnLoadMatcher: React.FC<ReturnLoadMatcherProps> = ({
   const [matches, setMatches] = useState<ReturnLoadMatch[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const { t, translateCity, translateMaterial } = useLanguage();
   const [acceptedId, setAcceptedId] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [usedAI, setUsedAI] = useState(false);
@@ -609,14 +611,14 @@ export const ReturnLoadMatcher: React.FC<ReturnLoadMatcherProps> = ({
                         <div className="flex-1 min-w-0">
                           <div className="flex flex-wrap items-center gap-1.5 mb-1">
                             <span className="font-bold text-slate-900 text-sm">{match.shipment.title}</span>
-                            <Badge variant={match.shipment.temperatureControlled ? 'teal' : 'slate'}>{match.shipment.material}</Badge>
+                            <Badge variant={match.shipment.temperatureControlled ? 'teal' : 'slate'}>{translateMaterial(match.shipment.material)}</Badge>
                           </div>
                           <div className="flex items-center gap-1.5 text-xs text-slate-600">
                             <MapPin className="w-3 h-3 text-blue-500 shrink-0" />
-                            <span className="font-semibold">{match.shipment.origin.city}</span>
+                            <span className="font-semibold">{translateCity(match.shipment.origin.city)}</span>
                             <ArrowRight className="w-3 h-3 text-slate-400 shrink-0" />
                             <MapPin className="w-3 h-3 text-teal-500 shrink-0" />
-                            <span className="font-semibold">{match.shipment.destination.city}</span>
+                            <span className="font-semibold">{translateCity(match.shipment.destination.city)}</span>
                           </div>
                           {/* GPS distance badge */}
                           {useGps && (
@@ -627,7 +629,7 @@ export const ReturnLoadMatcher: React.FC<ReturnLoadMatcherProps> = ({
                           )}
                         </div>
                         <div className="text-right shrink-0">
-                          <p className="text-[10px] text-slate-400">Return Payout</p>
+                          <p className="text-[10px] text-slate-400">{t.tripPayout}</p>
                           <p className="font-extrabold text-slate-900 text-base">{formatCurrency(match.extraEarnings)}</p>
                         </div>
                       </div>
@@ -635,7 +637,7 @@ export const ReturnLoadMatcher: React.FC<ReturnLoadMatcherProps> = ({
                       {/* Score bar */}
                       <div>
                         <div className="flex justify-between text-[10px] font-semibold text-slate-500 mb-1">
-                          <span>Match Score</span>
+                          <span>{t.highMatchScore}</span>
                           <span className={colors.text}>{match.matchScore}% compatible</span>
                         </div>
                         <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
@@ -720,7 +722,7 @@ export const ReturnLoadMatcher: React.FC<ReturnLoadMatcherProps> = ({
                                   isBest ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-slate-800 hover:bg-slate-900 text-white'
                                 }`}
                               >
-                                <Zap className="w-3 h-3" /> Accept Return Load
+                                <Zap className="w-3 h-3" /> {t.acceptReturnLoad}
                               </button>
                             </>
                           )}
