@@ -101,35 +101,39 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
     const color = statusColors[truck.status];
 
     const html = `
-      <div style="position: relative; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; cursor: pointer;">
-        <div style="position: absolute; width: 36px; height: 36px; border-radius: 50%; background-color: ${color}; opacity: 0.35; animation: pulse-ring 2s infinite ease-in-out;"></div>
+      <div style="position: relative; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; cursor: pointer;">
+        <div style="position: absolute; width: 44px; height: 44px; border-radius: 50%; background-color: ${color}; opacity: 0.3; animation: pulse-ring 2s infinite ease-in-out;"></div>
         <div style="
-          position: absolute;
-          width: ${isSelected ? '28px' : '22px'};
-          height: ${isSelected ? '28px' : '22px'};
-          border-radius: 50%;
-          background-color: ${color};
-          opacity: 0.25;
-          transition: all 0.2s ease;
-        "></div>
-        <div style="
-          width: 14px;
-          height: 14px;
-          border-radius: 50%;
-          background-color: ${color};
-          border: 2.5px solid #FFFFFF;
-          box-shadow: 0 2px 6px rgba(15, 23, 42, 0.4);
+          position: relative;
+          width: ${isSelected ? '36px' : '30px'};
+          height: ${isSelected ? '36px' : '30px'};
+          border-radius: 12px;
+          background: linear-gradient(135deg, ${color} 0%, #0F172A 100%);
+          border: 2px solid #FFFFFF;
+          box-shadow: 0 4px 12px rgba(15, 23, 42, 0.45);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
           z-index: 10;
-        "></div>
+        ">
+          <!-- Small Vector Semi-Trailer Truck Icon -->
+          <svg width="${isSelected ? '20' : '16'}" height="${isSelected ? '20' : '16'}" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="3" width="15" height="13" rx="2" fill="white" fill-opacity="0.25"/>
+            <path d="M16 8h4l3 3v5h-7V8z" fill="white" fill-opacity="0.35"/>
+            <circle cx="5.5" cy="18.5" r="2" fill="#0F172A" stroke="white" stroke-width="1.2"/>
+            <circle cx="18.5" cy="18.5" r="2" fill="#0F172A" stroke="white" stroke-width="1.2"/>
+          </svg>
+        </div>
       </div>
     `;
 
     return L.divIcon({
       html,
       className: 'custom-truck-marker',
-      iconSize: [36, 36],
-      iconAnchor: [18, 18],
-      popupAnchor: [0, -14],
+      iconSize: [44, 44],
+      iconAnchor: [22, 22],
+      popupAnchor: [0, -18],
     });
   };
 
