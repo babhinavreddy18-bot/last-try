@@ -9,7 +9,6 @@ import { formatCurrency, formatDistance } from '../utils/formatters';
 import { PackageCheck, Truck as TruckIcon, Clock, DollarSign, ArrowRight, ShieldCheck, MapPin, X } from 'lucide-react';
 
 export const ShipperDashboardPage: React.FC = () => {
-  const activeShipments = MOCK_SHIPMENTS.slice(0, 5);
   const [trackedShipment, setTrackedShipment] = useState<Shipment | null>(null);
 
   const selectedTrackedTruck = trackedShipment?.assignedTruckId

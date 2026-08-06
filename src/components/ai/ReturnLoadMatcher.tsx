@@ -180,7 +180,6 @@ export const ReturnLoadMatcher: React.FC<ReturnLoadMatcherProps> = ({
 
   // Radius filter
   const [radiusKm, setRadiusKm] = useState(200);
-  const [showRadiusPicker, setShowRadiusPicker] = useState(false);
 
   const watchRef = useRef<number | null>(null);
 
