@@ -7,6 +7,8 @@ import { formatCO2 } from '../utils/formatters';
 import { Building2, Truck as TruckIcon, TrendingUp, Leaf, Clock, MapPin, Zap } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
+import { ErpWmsIntegration } from '../components/ai/ErpWmsIntegration';
+
 export const FleetDashboardPage: React.FC = () => {
   const [timeframe, setTimeframe] = useState<'1h' | '6h' | '24h' | '3d'>('1h');
   const [distanceKmInput, setDistanceKmInput] = useState(15000);
@@ -24,12 +26,15 @@ export const FleetDashboardPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Fleet Owner Command Center</h1>
-          <p className="text-xs text-slate-500 font-medium">Telemetry, future availability predictor & carbon sustainability hub</p>
+          <p className="text-xs text-slate-500 font-medium">Telemetry, ERP/WMS data sharing, availability predictor & carbon hub</p>
         </div>
         <Badge variant="amber" icon={<Building2 className="w-3.5 h-3.5" />}>
           250 Active Fleet Vehicles
         </Badge>
       </div>
+
+      {/* ══ ERP & WMS AUTOMATED DATA SHARING HUB ══ */}
+      <ErpWmsIntegration />
 
       {/* Fleet Overview Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

@@ -8,6 +8,8 @@ import { InteractiveMap } from '../components/maps/InteractiveMap';
 import { formatCurrency, formatDistance } from '../utils/formatters';
 import { PackageCheck, Truck as TruckIcon, Clock, DollarSign, ArrowRight, ShieldCheck, MapPin, X } from 'lucide-react';
 
+import { ErpWmsIntegration } from '../components/ai/ErpWmsIntegration';
+
 export const ShipperDashboardPage: React.FC = () => {
   const [trackedShipment, setTrackedShipment] = useState<Shipment | null>(null);
 
@@ -21,7 +23,7 @@ export const ShipperDashboardPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Shipper AI Logistics Hub</h1>
-          <p className="text-xs text-slate-500 font-medium">Book cargo via NLP, dynamic pricing benchmarks & live carrier matching</p>
+          <p className="text-xs text-slate-500 font-medium">Book cargo via NLP, ERP/WMS automated data sharing & live carrier matching</p>
         </div>
         <div className="flex items-center gap-2">
           <Badge variant="blue" icon={<ShieldCheck className="w-3.5 h-3.5" />}>
@@ -29,6 +31,9 @@ export const ShipperDashboardPage: React.FC = () => {
           </Badge>
         </div>
       </div>
+
+      {/* ══ ERP & WMS AUTOMATED DATA SHARING HUB ══ */}
+      <ErpWmsIntegration />
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
