@@ -632,50 +632,18 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
         </button>
       </form>
 
-      {/* Social Login Buttons Grid (Matching Screenshot) */}
-      <div className="pt-2 space-y-3">
-        <div className="grid grid-cols-3 gap-2">
-          <button
-            type="button"
-            onClick={() => fillDemoTile(ROLE_OPTIONS[0])}
-            className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-full bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-bold transition-all cursor-pointer"
-          >
-            <span className="font-serif font-black text-blue-400">f</span>
-            <span>Facebook</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => fillDemoTile(ROLE_OPTIONS[1])}
-            className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-full bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-bold transition-all cursor-pointer"
-          >
-            <span className="font-bold text-red-400">G</span>
-            <span>Google</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => fillDemoTile(ROLE_OPTIONS[2])}
-            className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-full bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-bold transition-all cursor-pointer"
-          >
-            <span className="text-sm"></span>
-            <span>Apple</span>
-          </button>
-        </div>
-
-        {/* Toggle Sign In / Sign Up Footer Link */}
-        <div className="text-center text-xs text-slate-400">
-          <span>
-            {tab === 'signin' ? "Didn't have an account? " : 'Already have an account? '}
-          </span>
-          <button
-            type="button"
-            onClick={() => { setTab(tab === 'signin' ? 'signup' : 'signin'); setError(''); }}
-            className="text-blue-400 font-bold hover:underline cursor-pointer"
-          >
-            {tab === 'signin' ? 'Sign up' : 'Log in'}
-          </button>
-        </div>
+      {/* Toggle Sign In / Sign Up Footer Link */}
+      <div className="pt-2 text-center text-xs text-slate-400">
+        <span>
+          {tab === 'signin' ? "Didn't have an account? " : 'Already have an account? '}
+        </span>
+        <button
+          type="button"
+          onClick={() => { setTab(tab === 'signin' ? 'signup' : 'signin'); setError(''); }}
+          className="text-blue-400 font-bold hover:underline cursor-pointer"
+        >
+          {tab === 'signin' ? 'Sign up' : 'Log in'}
+        </button>
       </div>
     </div>
   );
