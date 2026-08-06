@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import type { UserRole } from '../../types';
 import { isSupabaseConfigured, supabase } from '../../services/supabaseClient';
 import {
-  Sparkles, ArrowRight, ShieldCheck, Mail, Lock, User as UserIcon,
+  Sparkles, ArrowRight, Mail, Lock, User as UserIcon,
   Eye, EyeOff, Truck, Package, Building2, Shield,
   CheckCircle2, AlertCircle, Loader2, Globe, ChevronDown
 } from 'lucide-react';
@@ -372,61 +372,60 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
   };
 
   const strength = tab === 'signup' && password.length > 0 ? getPasswordStrength(password) : null;
-  const activeRoleOption = ROLE_OPTIONS.find(r => r.role === selectedRole);
 
   return (
-    <div className="w-full max-w-md glass-card rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800/80 shadow-float space-y-5 relative backdrop-blur-2xl">
-      {/* Glow accent bar at top */}
-      <div className="absolute top-0 inset-x-6 h-1 bg-gradient-to-r from-blue-500 via-teal-500 to-indigo-500 rounded-t-full opacity-80" />
+    <div className="w-full max-w-md bg-slate-950/80 backdrop-blur-3xl rounded-3xl p-6 sm:p-8 border border-slate-800/80 shadow-[0_0_50px_rgba(37,99,235,0.2)] space-y-6 relative text-white">
+      {/* Subtle blue edge aura highlight */}
+      <div className="absolute inset-0 rounded-3xl pointer-events-none border border-blue-500/20 shadow-[inset_0_0_35px_rgba(59,130,246,0.15)]" />
 
-      {/* ── Top Bar: Brand & Language Picker ── */}
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex items-center gap-3">
-          <TruckLogo size="lg" />
-          <div>
-            <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-              CargoLoop
-            </h2>
-            <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
-              {t.subtitle}
-            </p>
-          </div>
+      {/* Header Section */}
+      <div className="text-center space-y-2 pt-1">
+        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+          {tab === 'signin' ? 'Log in' : 'Create Account'}
+        </h1>
+        <p className="text-xs sm:text-sm text-slate-400 font-normal leading-relaxed max-w-xs mx-auto">
+          {tab === 'signin'
+            ? 'Log in to your account and seamlessly continue managing your logistics & progress just where you left off.'
+            : 'Sign up for CargoLoop to access real-time AI freight dispatch & fleet intelligence.'}
+        </p>
+      </div>
+
+      {/* ── Language Selector Dropdown ── */}
+      <div className="flex items-center justify-between text-xs border-b border-slate-800/80 pb-3">
+        <div className="flex items-center gap-2">
+          <TruckLogo size="sm" />
+          <span className="font-extrabold text-white text-xs">CargoLoop</span>
         </div>
 
-        {/* 🌐 5 Major Indian Languages Selector Dropdown */}
-        <div className="relative shrink-0">
+        <div className="relative">
           <button
             type="button"
             onClick={() => setShowLangDropdown(!showLangDropdown)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition-all shadow-2xs"
-            title="Select Spoken Language (5 Major Indian Languages)"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-800 bg-slate-900/90 hover:bg-slate-800 text-slate-200 text-xs font-bold transition-all"
           >
-            <Globe className="w-3.5 h-3.5 text-blue-600 dark:text-indigo-400" />
+            <Globe className="w-3.5 h-3.5 text-blue-400" />
             <span>{activeLangObj.nativeName}</span>
             <ChevronDown className="w-3 h-3 text-slate-400" />
           </button>
 
           {showLangDropdown && (
-            <div className="absolute right-0 mt-1.5 w-44 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-1.5 z-50 space-y-0.5 animate-in fade-in zoom-in-95 duration-150">
-              <div className="px-2.5 py-1 text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 tracking-wider">
-                Select Indian Language
-              </div>
+            <div className="absolute right-0 mt-2 w-44 rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl p-1.5 z-50 space-y-0.5 animate-in fade-in zoom-in-95">
               {LANGUAGES.map((l) => (
                 <button
                   key={l.code}
                   type="button"
                   onClick={() => { setLang(l.code); setShowLangDropdown(false); }}
-                  className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-bold transition-colors ${
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-colors ${
                     lang === l.code
-                      ? 'bg-blue-50 dark:bg-indigo-950/60 text-blue-700 dark:text-indigo-300'
-                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+                      ? 'bg-blue-600 text-white'
+                      : 'text-slate-300 hover:bg-slate-800'
                   }`}
                 >
                   <span className="flex items-center gap-2">
                     <span>{l.flag}</span>
                     <span>{l.nativeName}</span>
                   </span>
-                  <span className="text-[10px] text-slate-400 font-normal">{l.name}</span>
+                  <span className="text-[10px] text-slate-400">{l.name}</span>
                 </button>
               ))}
             </div>
@@ -435,13 +434,13 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
       </div>
 
       {/* 1-Click Quick Demo Shortcuts */}
-      <div className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-2">
-        <div className="flex items-center justify-between px-0.5">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-            <Sparkles className="w-3 h-3 text-blue-600 dark:text-indigo-400" />
+      <div className="p-3 bg-slate-900/60 rounded-2xl border border-slate-800/80 space-y-2">
+        <div className="flex items-center justify-between px-1">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <Sparkles className="w-3 h-3 text-blue-400" />
             {t.quickDemo}
           </span>
-          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-950/60 text-emerald-400 border border-emerald-800/60">
             {t.instantAuth}
           </span>
         </div>
@@ -455,32 +454,34 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
                 type="button"
                 onClick={() => fillDemoTile(opt)}
                 className={`flex items-center gap-2 p-2 rounded-xl text-left transition-all border ${
-                  active ? 'bg-blue-50 dark:bg-indigo-950/60 border-blue-300 dark:border-indigo-700 shadow-2xs' : 'bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700'
+                  active
+                    ? 'bg-blue-950/80 border-blue-600 text-white shadow-2xs'
+                    : 'bg-slate-900/80 hover:bg-slate-800 border-slate-800 text-slate-300'
                 }`}
               >
                 <span style={{ color: opt.color }}>{opt.icon}</span>
                 <div className="min-w-0 flex-1">
-                  <p className={`text-xs font-bold truncate ${active ? 'text-blue-700 dark:text-indigo-300' : 'text-slate-800 dark:text-slate-200'}`}>
+                  <p className="text-xs font-bold truncate text-white">
                     {t[opt.labelKey]}
                   </p>
                   <p className="text-[9px] text-slate-400 truncate">{opt.email}</p>
                 </div>
-                {active && <CheckCircle2 className="w-3.5 h-3.5 shrink-0 text-blue-600 dark:text-indigo-400" />}
+                {active && <CheckCircle2 className="w-3.5 h-3.5 shrink-0 text-blue-400" />}
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
-        {(['signin', 'signup'] as const).map(tabKey => (
+      {/* Form Tabs */}
+      <div className="flex p-1 bg-slate-900/90 rounded-full border border-slate-800">
+        {(['signin', 'signup'] as const).map((tabKey) => (
           <button
             key={tabKey}
             type="button"
             onClick={() => { setTab(tabKey); setError(''); setSuccess(''); }}
-            className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
-              tab === tabKey ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+            className={`flex-1 py-2 text-xs font-bold rounded-full transition-all ${
+              tab === tabKey ? 'bg-slate-800 text-white shadow-md' : 'text-slate-400 hover:text-white'
             }`}
           >
             {tabKey === 'signin' ? t.signIn : t.signUp}
@@ -489,29 +490,25 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
       </div>
 
       {/* Auth Form */}
-      <form onSubmit={handleSubmit} className="space-y-3.5" autoComplete="on">
+      <form onSubmit={handleSubmit} className="space-y-4" autoComplete="on">
 
-        {/* Role Selector Bar */}
-        <div className="space-y-1">
-          <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-300 flex items-center justify-between">
-            <span>{t.selectRole}</span>
-            {activeRoleOption && (
-              <span className="text-[10px] font-bold flex items-center gap-1" style={{ color: activeRoleOption.color }}>
-                {activeRoleOption.icon}
-                {t[activeRoleOption.labelKey]}
-              </span>
-            )}
+        {/* Target Portal Role */}
+        <div className="space-y-1.5">
+          <label className="text-xs font-semibold text-slate-300 px-1">
+            {t.selectRole}
           </label>
           <div className="grid grid-cols-4 gap-1.5">
-            {ROLE_OPTIONS.map(opt => {
+            {ROLE_OPTIONS.map((opt) => {
               const isSelected = selectedRole === opt.role;
               return (
                 <button
                   key={opt.role}
                   type="button"
                   onClick={() => setSelectedRole(opt.role)}
-                  className={`py-1.5 px-1 rounded-xl text-[10px] font-bold flex flex-col items-center gap-0.5 transition-all border ${
-                    isSelected ? 'bg-blue-50 dark:bg-indigo-950/60 border-blue-300 dark:border-indigo-700 text-blue-700 dark:text-indigo-300 shadow-2xs' : 'bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-100'
+                  className={`py-2 px-1 rounded-xl text-[10px] font-bold flex flex-col items-center gap-1 transition-all border ${
+                    isSelected
+                      ? 'bg-blue-950/80 border-blue-500 text-white shadow-md'
+                      : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:bg-slate-800'
                   }`}
                 >
                   <span style={{ color: opt.color }}>{opt.icon}</span>
@@ -522,7 +519,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
           </div>
         </div>
 
-        {/* Full name (sign-up only) */}
+        {/* Full Name (Sign-up only) */}
         <AnimatePresence>
           {tab === 'signup' && (
             <motion.div
@@ -532,143 +529,155 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
               exit={{ opacity: 0, height: 0 }}
               className="space-y-1 overflow-hidden"
             >
-              <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1">
-                <span>{t.fullName}</span>
-                <span className="text-rose-500 font-bold">*</span>
-              </label>
               <div className="relative">
-                <UserIcon className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
+                <UserIcon className="w-4 h-4 absolute left-4 top-3.5 text-slate-400" />
                 <input
                   type="text"
                   value={fullName}
-                  onChange={e => { setFullName(e.target.value); setError(''); }}
+                  onChange={(e) => { setFullName(e.target.value); setError(''); }}
                   placeholder="Enter your full name"
                   required
                   autoComplete="name"
-                  className="w-full pl-9 pr-4 py-2.5 text-xs font-medium rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+                  className="w-full pl-11 pr-4 py-3 text-xs font-medium rounded-full border border-slate-800 bg-slate-900/90 text-white placeholder:text-slate-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 focus:outline-none transition-all"
                 />
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Email Address */}
-        <div className="space-y-1">
-          <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">{t.emailAddress}</label>
-          <div className="relative">
-            <Mail className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
-            <input
-              type="email"
-              value={email}
-              onChange={e => handleEmailChange(e.target.value)}
-              placeholder="e.g. user@gmail.com"
-              required
-              autoComplete="email"
-              className="w-full pl-9 pr-4 py-2.5 text-xs font-medium rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
-            />
-          </div>
+        {/* Email Address Pill Input */}
+        <div className="relative">
+          <Mail className="w-4 h-4 absolute left-4 top-3.5 text-slate-400" />
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => handleEmailChange(e.target.value)}
+            placeholder="Enter your email address"
+            required
+            autoComplete="email"
+            className="w-full pl-11 pr-4 py-3 text-xs font-medium rounded-full border border-slate-800 bg-slate-900/90 text-white placeholder:text-slate-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 focus:outline-none transition-all"
+          />
         </div>
 
-        {/* Password */}
+        {/* Password Pill Input */}
         <div className="space-y-1">
-          <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">{t.password}</label>
           <div className="relative">
-            <Lock className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
+            <Lock className="w-4 h-4 absolute left-4 top-3.5 text-slate-400" />
             <input
               type={showPass ? 'text' : 'password'}
               value={password}
-              onChange={e => { setPassword(e.target.value); setError(''); }}
+              onChange={(e) => { setPassword(e.target.value); setError(''); }}
               placeholder={t.enterPass}
               required
               autoComplete={tab === 'signin' ? 'current-password' : 'new-password'}
-              className="w-full pl-9 pr-10 py-2.5 text-xs font-medium rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+              className="w-full pl-11 pr-11 py-3 text-xs font-medium rounded-full border border-slate-800 bg-slate-900/90 text-white placeholder:text-slate-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 focus:outline-none transition-all"
             />
             <button
               type="button"
-              onClick={() => setShowPass(v => !v)}
-              className="absolute right-3 top-3 text-slate-400 hover:text-slate-600 transition-colors"
+              onClick={() => setShowPass((v) => !v)}
+              className="absolute right-4 top-3.5 text-slate-400 hover:text-white transition-colors"
               tabIndex={-1}
             >
-              {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              {showPass ? <EyeOff className="w-4 h-4 text-blue-400" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
 
-          {/* Password strength meter */}
-          <AnimatePresence>
-            {strength && (
-              <motion.div
-                key="strength"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="pt-1 space-y-1"
-              >
-                <div className="flex gap-1">
-                  {[1, 2, 3, 4].map(i => (
-                    <div
-                      key={i}
-                      className="h-1 flex-1 rounded-full transition-all duration-300"
-                      style={{ background: i <= strength.bars ? strength.color : '#E2E8F0' }}
-                    />
-                  ))}
-                </div>
-                <p className="text-[10px]" style={{ color: strength.color }}>Strength: {strength.label}</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {strength && (
+            <div className="px-3 pt-1 space-y-1">
+              <div className="flex gap-1">
+                {[1, 2, 3, 4].map((i) => (
+                  <div
+                    key={i}
+                    className="h-1 flex-1 rounded-full transition-all duration-300"
+                    style={{ background: i <= strength.bars ? strength.color : '#1E293B' }}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Errors */}
-        <AnimatePresence>
-          {error && (
-            <motion.div
-              key="error"
-              initial={{ opacity: 0, y: -4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              className="flex items-start gap-2 p-2.5 rounded-xl text-xs bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 font-medium"
-            >
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-500" />
-              <span>{error}</span>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Errors & Success Feedback */}
+        {error && (
+          <div className="flex items-center gap-2 p-3 rounded-2xl text-xs bg-rose-950/80 border border-rose-800 text-rose-300 font-medium">
+            <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
 
-        {/* Success */}
-        <AnimatePresence>
-          {success && (
-            <motion.div
-              key="success"
-              initial={{ opacity: 0, y: -4 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-2 p-2.5 rounded-xl text-xs bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 font-medium"
-            >
-              <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
-              <span>{success}</span>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {success && (
+          <div className="flex items-center gap-2 p-3 rounded-2xl text-xs bg-emerald-950/80 border border-emerald-800 text-emerald-300 font-medium">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span>{success}</span>
+          </div>
+        )}
 
-        {/* Submit button */}
+        {/* Log In Pill Submit Button */}
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold text-sm rounded-xl shadow-md hover:shadow flex items-center justify-center gap-2 transition-all mt-1 cursor-pointer"
+          className="w-full py-3.5 bg-slate-800 hover:bg-slate-700 active:bg-blue-600 disabled:opacity-50 text-white font-extrabold text-sm rounded-full shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer border border-slate-700 hover:border-slate-600"
         >
-          {loading
-            ? <><Loader2 className="w-4 h-4 animate-spin" /><span>{t.authenticating}</span></>
-            : <><span>{tab === 'signin' ? `${t.signInAs} ${t[ROLE_OPTIONS.find(r => r.role === selectedRole)?.labelKey || 'shipperRole']}` : t.createAccount}</span><ArrowRight className="w-4 h-4" /></>
-          }
+          {loading ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin text-blue-400" />
+              <span>{t.authenticating}</span>
+            </>
+          ) : (
+            <>
+              <span>{tab === 'signin' ? 'Log in' : t.createAccount}</span>
+              <ArrowRight className="w-4 h-4" />
+            </>
+          )}
         </button>
       </form>
 
-      {/* Footer */}
-      <div className="text-center pt-2 space-y-1 border-t border-slate-100 dark:border-slate-800">
-        <p className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-center gap-1.5 font-medium">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-          {isSupabaseConfigured() ? t.supabaseLive : 'Demo & Custom Auth Active'}
-        </p>
+      {/* Social Login Buttons Grid (Matching Screenshot) */}
+      <div className="pt-2 space-y-3">
+        <div className="grid grid-cols-3 gap-2">
+          <button
+            type="button"
+            onClick={() => fillDemoTile(ROLE_OPTIONS[0])}
+            className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-full bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-bold transition-all cursor-pointer"
+          >
+            <span className="font-serif font-black text-blue-400">f</span>
+            <span>Facebook</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => fillDemoTile(ROLE_OPTIONS[1])}
+            className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-full bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-bold transition-all cursor-pointer"
+          >
+            <span className="font-bold text-red-400">G</span>
+            <span>Google</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => fillDemoTile(ROLE_OPTIONS[2])}
+            className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-full bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-bold transition-all cursor-pointer"
+          >
+            <span className="text-sm"></span>
+            <span>Apple</span>
+          </button>
+        </div>
+
+        {/* Toggle Sign In / Sign Up Footer Link */}
+        <div className="text-center text-xs text-slate-400">
+          <span>
+            {tab === 'signin' ? "Didn't have an account? " : 'Already have an account? '}
+          </span>
+          <button
+            type="button"
+            onClick={() => { setTab(tab === 'signin' ? 'signup' : 'signin'); setError(''); }}
+            className="text-blue-400 font-bold hover:underline cursor-pointer"
+          >
+            {tab === 'signin' ? 'Sign up' : 'Log in'}
+          </button>
+        </div>
       </div>
     </div>
   );
 };
+
