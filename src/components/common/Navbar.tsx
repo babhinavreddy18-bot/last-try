@@ -3,7 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { useLanguage, LANGUAGES } from '../../context/LanguageContext';
 import type { UserRole } from '../../types';
-import { Sparkles, Bell, Truck, UserCheck, Shield, LogOut, CheckCircle2, AlertTriangle, Info, Sun, Moon, Globe, ChevronDown } from 'lucide-react';
+import { Sparkles, Bell, Truck, UserCheck, Shield, LogOut, CheckCircle2, AlertTriangle, Info, Sun, Moon, Globe, ChevronDown, Menu } from 'lucide-react';
 import { Badge } from './Badge';
 
 import { Link } from 'react-router-dom';
@@ -11,9 +11,10 @@ import { TruckLogo } from './TruckLogo';
 
 interface NavbarProps {
   onOpenCopilot: () => void;
+  onToggleMobileMenu?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot, onToggleMobileMenu }) => {
   const { user, role, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { lang, setLang, t } = useLanguage();
@@ -37,17 +38,27 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot }) => {
   };
 
   return (
-    <header className="sticky top-0 z-30 h-16 px-4 md:px-6 flex items-center justify-between glass-panel border-b border-slate-200 dark:border-slate-800 shadow-xs">
-      {/* Logo */}
-      <div className="flex items-center gap-3">
-        <Link to="/" className="flex items-center gap-2.5 group cursor-pointer transition-opacity hover:opacity-90" title="Return to Home Dashboard">
+    <header className="sticky top-0 z-30 h-16 px-3 sm:px-4 md:px-6 flex items-center justify-between glass-panel border-b border-slate-200 dark:border-slate-800 shadow-xs">
+      {/* Logo & Mobile Menu Toggle */}
+      <div className="flex items-center gap-2 sm:gap-3">
+        {onToggleMobileMenu && (
+          <button
+            onClick={onToggleMobileMenu}
+            className="p-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 md:hidden shadow-xs cursor-pointer"
+            title="Open Menu"
+          >
+            <Menu className="w-5 h-5 text-slate-800 dark:text-slate-200" />
+          </button>
+        )}
+
+        <Link to="/" className="flex items-center gap-2 sm:gap-2.5 group cursor-pointer transition-opacity hover:opacity-90" title="Return to Home Dashboard">
           <TruckLogo size="sm" />
-          <div className="hidden sm:block">
-            <span className="font-black text-lg tracking-tight text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">
+          <div className="hidden xs:block sm:block">
+            <span className="font-black text-base sm:text-lg tracking-tight text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">
               {t.platformName}
             </span>
             <span
-              className="text-[10px] font-extrabold ml-2 px-1.5 py-0.5 rounded border shadow-2xs"
+              className="text-[10px] font-extrabold ml-1.5 px-1.5 py-0.5 rounded border shadow-2xs hidden sm:inline-block"
               style={{
                 background: theme === 'dark' ? 'rgba(99,102,241,0.2)' : '#EFF6FF',
                 color: theme === 'dark' ? '#A5B4FC' : '#1D4ED8',
@@ -58,17 +69,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot }) => {
             </span>
           </div>
         </Link>
-        <div className="h-5 w-px mx-1 bg-slate-300 dark:bg-slate-700 hidden sm:block" />
-        <Badge variant={roleLabels[activeRole].badge} icon={roleLabels[activeRole].icon}>
-          {roleLabels[activeRole].label}
-        </Badge>
+
+        <div className="h-5 w-px mx-0.5 bg-slate-300 dark:bg-slate-700 hidden sm:block" />
+
+        <div className="hidden sm:block">
+          <Badge variant={roleLabels[activeRole].badge} icon={roleLabels[activeRole].icon}>
+            {roleLabels[activeRole].label}
+          </Badge>
+        </div>
       </div>
 
       {/* Right controls */}
-      <div className="flex items-center gap-2.5">
+      <div className="flex items-center gap-1.5 sm:gap-2.5">
         {/* User Info */}
         {user && (
-          <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 shadow-2xs">
+          <div className="hidden lg:flex items-center gap-2 px-3 py-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 shadow-2xs">
             <span className="text-xs font-extrabold text-slate-900 dark:text-white">{user.name}</span>
             <span className="text-[10px] uppercase font-black px-1.5 py-0.5 rounded bg-blue-100 dark:bg-indigo-900/60 text-blue-800 dark:text-indigo-300 border border-blue-200 dark:border-indigo-800">
               {user.role}
@@ -81,12 +96,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot }) => {
           <button
             type="button"
             onClick={() => setShowLangDropdown(!showLangDropdown)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 text-xs font-extrabold transition-all shadow-xs cursor-pointer"
+            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 text-xs font-extrabold transition-all shadow-xs cursor-pointer"
             title="Translate CargoLoop into 5 Major Indian Languages"
           >
             <Globe className="w-4 h-4 text-blue-600 dark:text-indigo-400" />
-            <span className="hidden sm:inline">{activeLangObj.nativeName}</span>
-            <ChevronDown className="w-3 h-3 text-slate-500 dark:text-slate-400" />
+            <span className="text-[11px] sm:text-xs font-black">{activeLangObj.code.toUpperCase()}</span>
+            <ChevronDown className="w-3 h-3 text-slate-500 dark:text-slate-400 hidden sm:block" />
           </button>
 
           {showLangDropdown && (
@@ -119,7 +134,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot }) => {
         {/* Sun / Moon Theme Toggle */}
         <button
           onClick={toggleTheme}
-          className="p-2 px-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
+          className="p-1.5 sm:p-2 sm:px-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
           title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
         >
           {theme === 'light' ? (
@@ -138,13 +153,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot }) => {
         {/* AI Copilot */}
         <button
           onClick={onOpenCopilot}
-          className="flex items-center gap-2 px-3.5 py-1.5 text-xs font-black text-white rounded-xl shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all group cursor-pointer"
+          className="flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 text-xs font-black text-white rounded-xl shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all group cursor-pointer"
           style={{
             background: 'linear-gradient(135deg, #2563EB 0%, #0D9488 100%)',
           }}
         >
           <Sparkles className="w-3.5 h-3.5 text-amber-300 group-hover:rotate-12 transition-transform" />
-          <span>{t.aiCopilot}</span>
+          <span className="hidden sm:inline">{t.aiCopilot}</span>
+          <span className="sm:hidden text-[10px]">AI</span>
         </button>
 
         {/* Notifications */}

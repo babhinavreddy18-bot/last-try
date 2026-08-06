@@ -7,6 +7,7 @@ import { LiveTruckBackground } from './LiveTruckBackground';
 
 export const Layout: React.FC = () => {
   const [isCopilotOpen, setIsCopilotOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen flex flex-col font-sans" style={{ background: 'linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 50%, #EFF6FF 100%)' }}>
@@ -25,11 +26,17 @@ export const Layout: React.FC = () => {
 
       {/* App content layer */}
       <div className="relative z-10 flex flex-col min-h-screen">
-        <Navbar onOpenCopilot={() => setIsCopilotOpen(true)} />
+        <Navbar
+          onOpenCopilot={() => setIsCopilotOpen(true)}
+          onToggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        />
 
         <div className="flex flex-1">
-          <Sidebar />
-          <main className="flex-1 p-4 sm:p-6 md:p-8 max-w-7xl mx-auto w-full">
+          <Sidebar
+            isMobileMenuOpen={isMobileMenuOpen}
+            onCloseMobile={() => setIsMobileMenuOpen(false)}
+          />
+          <main className="flex-1 p-3 sm:p-6 md:p-8 max-w-7xl mx-auto w-full">
             <Outlet />
           </main>
         </div>

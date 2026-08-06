@@ -18,7 +18,12 @@ interface NavItem {
   roleAllowed: UserRole;
 }
 
-export const Sidebar: React.FC = () => {
+interface SidebarProps {
+  isMobileMenuOpen?: boolean;
+  onCloseMobile?: () => void;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({ isMobileMenuOpen = false, onCloseMobile }) => {
   const { role } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { t } = useLanguage();
@@ -57,8 +62,8 @@ export const Sidebar: React.FC = () => {
   const currentDashboardItem = dashboardItems[userRole];
   const currentAiItems = aiIntelligenceItems[userRole] || [];
 
-  return (
-    <aside className="w-64 hidden md:flex flex-col justify-between p-4 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto shrink-0 z-20 glass-panel">
+  const sidebarContent = (
+    <>
       <div className="space-y-6">
         {/* Role Portal Section */}
         <div>
@@ -146,6 +151,31 @@ export const Sidebar: React.FC = () => {
           </p>
         </div>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Desktop Sticky Sidebar */}
+      <aside className="w-64 hidden md:flex flex-col justify-between p-4 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto shrink-0 z-20 glass-panel">
+        {sidebarContent}
+      </aside>
+
+      {/* Mobile Slide-over Drawer */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-50 md:hidden flex">
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity"
+            onClick={onCloseMobile}
+          />
+
+          {/* Drawer content */}
+          <div className="relative w-72 max-w-[80vw] bg-white dark:bg-slate-900 h-full p-4 overflow-y-auto shadow-2xl flex flex-col justify-between z-10 border-r border-slate-200 dark:border-slate-800 animate-in slide-in-from-left duration-200">
+            {sidebarContent}
+          </div>
+        </div>
+      )}
+    </>
   );
 };
