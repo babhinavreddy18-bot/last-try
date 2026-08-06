@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export type IndianLanguage = 'en' | 'hi' | 'bn' | 'mr' | 'te' | 'ta';
