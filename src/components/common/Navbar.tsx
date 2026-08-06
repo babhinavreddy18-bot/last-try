@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
 import { useLanguage, LANGUAGES } from '../../context/LanguageContext';
 import type { UserRole } from '../../types';
-import { Sparkles, Bell, Truck, UserCheck, Shield, LogOut, CheckCircle2, AlertTriangle, Info, Sun, Moon, Globe, ChevronDown, Menu, Search } from 'lucide-react';
+import { Sparkles, Bell, Truck, UserCheck, Shield, LogOut, CheckCircle2, AlertTriangle, Info, Globe, ChevronDown, Menu, Search } from 'lucide-react';
 import { Badge } from './Badge';
 
 import { Link } from 'react-router-dom';
@@ -16,7 +15,6 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot, onToggleMobileMenu }) => {
   const { user, role, logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const { lang, setLang, t } = useLanguage();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showLangDropdown, setShowLangDropdown] = useState(false);
@@ -138,25 +136,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot, onToggleMobileMen
             </div>
           )}
         </div>
-
-        {/* Sun / Moon Theme Toggle */}
-        <button
-          onClick={toggleTheme}
-          className="p-1.5 sm:p-2 sm:px-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
-          title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
-        >
-          {theme === 'light' ? (
-            <>
-              <Moon className="w-4 h-4 text-indigo-600" />
-              <span className="text-xs font-extrabold hidden sm:inline text-slate-900">Dark</span>
-            </>
-          ) : (
-            <>
-              <Sun className="w-4 h-4 text-amber-400" />
-              <span className="text-xs font-extrabold hidden sm:inline text-slate-100">Light</span>
-            </>
-          )}
-        </button>
 
         {/* AI Copilot */}
         <button

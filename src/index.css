@@ -2,29 +2,7 @@
 @import "leaflet/dist/leaflet.css";
 
 @layer base {
-  :root, html[data-theme='light'] {
-    --bg-main: #F4F6FC;
-    --card-bg: #FFFFFF;
-    --border-color: #E2E8F0;
-    --glass-border: #8B5CF6;
-    --text-primary: #0F172A;
-    --text-secondary: #475569;
-    --accent-blue: #8B5CF6;
-    --accent-teal: #06B6D4;
-    --accent-violet: #A855F7;
-    --accent-pink: #EC4899;
-    --accent-amber: #F59E0B;
-    --accent-emerald: #10B981;
-
-    --panel-bg: #FFFFFF;
-    --panel-border: #E2E8F0;
-    --shadow-card: 0 4px 20px -2px rgba(139, 92, 246, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
-    --shadow-float: 0 16px 36px -4px rgba(139, 92, 246, 0.16), 0 4px 12px -2px rgba(15, 23, 42, 0.06);
-
-    --bg-gradient: #F4F6FC;
-  }
-
-  html.dark, html[data-theme='dark'] {
+  :root, html {
     --bg-main: #0C0D14;
     --card-bg: #12131C;
     --border-color: #1F2133;
@@ -46,67 +24,32 @@
     --bg-gradient: #0C0D14;
   }
 
-  /* ── Dark Mode Scoped Rules ── */
-  html.dark body,
-  html[data-theme='dark'] body {
+  /* ── Cyber Dark Obsidian Global Overrides ── */
+  body, html {
     background-color: #0C0D14 !important;
     color: #FFFFFF !important;
   }
 
-  html.dark .bg-slate-950,
-  html.dark .bg-slate-900,
-  html.dark .bg-slate-900\/95,
-  html.dark .bg-slate-900\/90,
-  html.dark .bg-slate-900\/80,
-  html.dark .bg-slate-800 {
+  .bg-slate-950,
+  .bg-slate-900,
+  .bg-slate-900\/95,
+  .bg-slate-900\/90,
+  .bg-slate-900\/80,
+  .bg-slate-800,
+  .bg-white,
+  .bg-slate-50,
+  .bg-slate-100 {
     background-color: #12131C !important;
     color: #FFFFFF !important;
     border-color: #1F2133 !important;
   }
 
-  html.dark .border-slate-800,
-  html.dark .border-slate-700,
-  html.dark .border-slate-600 {
+  .border-slate-800,
+  .border-slate-700,
+  .border-slate-600,
+  .border-slate-300,
+  .border-slate-200 {
     border-color: #1F2133 !important;
-  }
-
-  /* ── Light Mode Scoped Rules ── */
-  html:not(.dark) body,
-  html[data-theme='light'] body {
-    background-color: #F4F6FC !important;
-    color: #0F172A !important;
-  }
-
-  html:not(.dark) .bg-slate-950,
-  html:not(.dark) .bg-slate-900,
-  html:not(.dark) .bg-slate-900\/95,
-  html:not(.dark) .bg-slate-900\/90,
-  html:not(.dark) .bg-slate-900\/80,
-  html:not(.dark) .bg-slate-800,
-  html[data-theme='light'] .bg-slate-950,
-  html[data-theme='light'] .bg-slate-900,
-  html[data-theme='light'] .bg-slate-800 {
-    background-color: #FFFFFF !important;
-    color: #0F172A !important;
-    border-color: #E2E8F0 !important;
-    box-shadow: 0 4px 20px -2px rgba(139, 92, 246, 0.06) !important;
-  }
-
-  html:not(.dark) .text-slate-400,
-  html[data-theme='light'] .text-slate-400 {
-    color: #475569 !important;
-  }
-
-  html:not(.dark) .text-slate-500,
-  html[data-theme='light'] .text-slate-500 {
-    color: #334155 !important;
-  }
-
-  html:not(.dark) .border-slate-800,
-  html:not(.dark) .border-slate-700,
-  html[data-theme='light'] .border-slate-800,
-  html[data-theme='light'] .border-slate-700 {
-    border-color: #E2E8F0 !important;
   }
 
   /* Accent Buttons */

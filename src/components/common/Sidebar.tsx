@@ -1,12 +1,11 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
 import { useLanguage } from '../../context/LanguageContext';
 import type { UserRole } from '../../types';
 import {
   Truck, PackageCheck, Building2, ShieldAlert,
-  MapPin, FileCheck, Sparkles, Leaf, ChevronRight, Sun, Moon, Database
+  MapPin, FileCheck, Sparkles, Leaf, ChevronRight, Database
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -25,7 +24,6 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ isMobileMenuOpen = false, onCloseMobile }) => {
   const { role } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const { t } = useLanguage();
   const location = useLocation();
 
@@ -125,19 +123,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileMenuOpen = false, onCl
       </div>
 
       <div className="space-y-3">
-        {/* Quick Theme Switcher Pill in Sidebar */}
-        <button
-          onClick={toggleTheme}
-          className="w-full flex items-center justify-between p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs font-extrabold transition-all hover:bg-slate-100 dark:hover:bg-slate-700 shadow-xs cursor-pointer"
-        >
-          <span className="flex items-center gap-2">
-            {theme === 'light' ? <Sun className="w-4 h-4 text-amber-500" /> : <Moon className="w-4 h-4 text-indigo-400" />}
-            <span>Theme Mode</span>
-          </span>
-          <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-600">
-            {theme}
-          </span>
-        </button>
 
         {/* Role active status badge */}
         <div className="p-3.5 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 shadow-xs space-y-2">
