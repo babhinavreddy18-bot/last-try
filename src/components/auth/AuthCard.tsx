@@ -537,7 +537,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
                   type="text"
                   value={fullName}
                   onChange={e => { setFullName(e.target.value); setError(''); }}
-                  placeholder="e.g. Abhinav Reddy"
+                  placeholder="e.g. Rajesh Kumar"
                   autoComplete="name"
                   className="w-full pl-9 pr-4 py-2.5 text-xs font-medium rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
                 />
