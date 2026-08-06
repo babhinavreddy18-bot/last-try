@@ -1,13 +1,21 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Layout } from './components/common/Layout';
 import { AuthPage } from './pages/AuthPage';
-import { DriverDashboardPage } from './pages/DriverDashboardPage';
-import { ShipperDashboardPage } from './pages/ShipperDashboardPage';
-import { FleetDashboardPage } from './pages/FleetDashboardPage';
-import { AdminDashboardPage } from './pages/AdminDashboardPage';
 import type { UserRole } from './types';
+import { Loader2 } from 'lucide-react';
+
+const DriverDashboardPage = lazy(() => import('./pages/DriverDashboardPage').then(m => ({ default: m.DriverDashboardPage })));
+const ShipperDashboardPage = lazy(() => import('./pages/ShipperDashboardPage').then(m => ({ default: m.ShipperDashboardPage })));
+const FleetDashboardPage = lazy(() => import('./pages/FleetDashboardPage').then(m => ({ default: m.FleetDashboardPage })));
+const AdminDashboardPage = lazy(() => import('./pages/AdminDashboardPage').then(m => ({ default: m.AdminDashboardPage })));
+
+const PageFallback = () => (
+  <div className="flex items-center justify-center min-h-[60vh]">
+    <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+  </div>
+);
 
 // ── Strict Role-Based Protected Route ─────────────────────────────────────────
 
@@ -21,12 +29,11 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; allowedRole: UserRol
     return <Navigate to="/auth" replace />;
   }
 
-  // Strict RBAC Verification: If user attempts to access a dashboard outside their role, redirect them to their assigned role dashboard
   if (allowedRole && user.role !== allowedRole) {
     return <Navigate to={`/dashboard/${user.role}`} replace />;
   }
 
-  return <>{children}</>;
+  return <Suspense fallback={<PageFallback />}>{children}</Suspense>;
 };
 
 // ── Public Auth Route (Redirects authenticated users to their dashboard) ──────

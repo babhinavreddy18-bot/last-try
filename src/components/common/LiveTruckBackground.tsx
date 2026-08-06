@@ -75,6 +75,11 @@ export const LiveTruckBackground: React.FC = () => {
     let lastTime = performance.now();
 
     const render = (time: number) => {
+      if (document.hidden) {
+        animFrameId = requestAnimationFrame(render);
+        return;
+      }
+
       const dt = Math.min((time - lastTime) / 1000, 0.1);
       lastTime = time;
 
