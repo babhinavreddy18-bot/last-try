@@ -40,6 +40,13 @@ export const DriverDashboardPage: React.FC = () => {
 
   const visibleDeliveries = filteredDeliveries.slice(0, visibleCount);
 
+  const handleAcceptAndNavigate = (shipment: Shipment) => {
+    setNavigatingShipment(shipment);
+    setTimeout(() => {
+      document.getElementById('live-navigation-map')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+  };
+
   return (
     <div className="space-y-6">
       {/* Top Banner & Live GPS Status Toggle */}
@@ -140,7 +147,7 @@ export const DriverDashboardPage: React.FC = () => {
         currentDropLat={activeTruck.destination?.lat ?? activeTruck.currentLocation.lat}
         currentDropLng={activeTruck.destination?.lng ?? activeTruck.currentLocation.lng}
         truckCapacityTons={activeTruck.capacityTons}
-        onAccept={(shipment) => setNavigatingShipment(shipment)}
+        onAccept={handleAcceptAndNavigate}
       />
 
       {/* Main Content Grid: Document Verification & Deliveries */}
@@ -153,15 +160,62 @@ export const DriverDashboardPage: React.FC = () => {
         {/* Right Column: Assigned Deliveries & Earnings History */}
         <div className="lg:col-span-2 space-y-6">
           {/* Active Route Telemetry Map */}
-          <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-card space-y-3">
+          <div id="live-navigation-map" className="bg-white rounded-2xl p-4 border border-slate-200 shadow-card space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-blue-600" />
-                Live Route Telemetry ({destination})
-              </h3>
-              <Badge variant="blue">Real-Time GPS Active</Badge>
+              <div>
+                <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-blue-600" />
+                  {navigatingShipment
+                    ? `Navigating: ${navigatingShipment.origin.city} → ${navigatingShipment.destination.city}`
+                    : `Live Route Telemetry (${destination})`
+                  }
+                </h3>
+                {navigatingShipment && (
+                  <p className="text-[11px] text-emerald-600 font-bold flex items-center gap-1 mt-0.5">
+                    <Compass className="w-3.5 h-3.5 animate-spin" /> Turn-by-Turn GPS Live Route Navigation Active
+                  </p>
+                )}
+              </div>
+              <div className="flex items-center gap-2">
+                {navigatingShipment ? (
+                  <button
+                    onClick={() => setNavigatingShipment(null)}
+                    className="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-lg border border-rose-200 transition-colors flex items-center gap-1"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                    <span>Stop Navigation</span>
+                  </button>
+                ) : (
+                  <Badge variant="blue">Real-Time GPS Active</Badge>
+                )}
+              </div>
             </div>
-            <InteractiveMap trucks={MOCK_TRUCKS} selectedTruckId={activeTruck.id} className="h-[520px]" />
+
+            {/* Active Turn-by-Turn Navigation Bar Overlay */}
+            {navigatingShipment && (
+              <div className="p-3 bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-xl shadow-md space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2 font-extrabold">
+                    <Route className="w-4 h-4 text-amber-300" />
+                    <span>{navigatingShipment.title}</span>
+                  </div>
+                  <span className="bg-white/20 px-2 py-0.5 rounded font-bold text-[11px]">
+                    {formatDistance(navigatingShipment.distanceKm)} • Payout: {formatCurrency(navigatingShipment.estimatedPriceInr)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-[11px] text-emerald-100 border-t border-white/20 pt-1.5">
+                  <span>📍 Next Turn: In 14 km, Merge onto NH-48 Express Highway (Speed: 55 km/h)</span>
+                  <span className="font-bold text-amber-200">ETA: ~{Math.round(navigatingShipment.distanceKm / 50 * 60)} mins</span>
+                </div>
+              </div>
+            )}
+
+            <InteractiveMap
+              trucks={MOCK_TRUCKS}
+              selectedTruckId={activeTruck.id}
+              activeRoute={navigatingShipment ? { origin: navigatingShipment.origin, destination: navigatingShipment.destination, title: navigatingShipment.title } : null}
+              className="h-[520px]"
+            />
           </div>
 
           {/* Assigned Deliveries List */}

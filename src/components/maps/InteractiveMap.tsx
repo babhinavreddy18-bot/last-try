@@ -6,9 +6,16 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-
 import L from 'leaflet';
 import clsx from 'clsx';
 
+export interface ActiveRouteInfo {
+  origin: { lat: number; lng: number; city: string };
+  destination: { lat: number; lng: number; city: string };
+  title?: string;
+}
+
 interface InteractiveMapProps {
   trucks: Truck[];
   selectedTruckId?: string;
+  activeRoute?: ActiveRouteInfo | null;
   onSelectTruck?: (truck: Truck) => void;
   className?: string;
 }
@@ -17,19 +24,26 @@ interface InteractiveMapProps {
 const MapViewController: React.FC<{
   trucks: Truck[];
   selectedTruck?: Truck;
+  activeRoute?: ActiveRouteInfo | null;
   resetTrigger: number;
-}> = ({ trucks, selectedTruck, resetTrigger }) => {
+}> = ({ trucks, selectedTruck, activeRoute, resetTrigger }) => {
   const map = useMap();
 
-  // Re-center on selected truck smoothly when selectedTruck changes
+  // Fly to active route when driver accepts a return load
   useEffect(() => {
-    if (selectedTruck) {
+    if (activeRoute) {
+      const bounds = L.latLngBounds([
+        [activeRoute.origin.lat, activeRoute.origin.lng],
+        [activeRoute.destination.lat, activeRoute.destination.lng],
+      ]);
+      map.flyToBounds(bounds, { padding: [60, 60], animate: true, duration: 1.5 });
+    } else if (selectedTruck) {
       map.flyTo([selectedTruck.currentLocation.lat, selectedTruck.currentLocation.lng], 10, {
         animate: true,
         duration: 1.2,
       });
     }
-  }, [selectedTruck, map]);
+  }, [activeRoute, selectedTruck, map]);
 
   // Fit bounds when resetTrigger fires
   useEffect(() => {
@@ -45,6 +59,7 @@ const MapViewController: React.FC<{
 export const InteractiveMap: React.FC<InteractiveMapProps> = ({
   trucks,
   selectedTruckId,
+  activeRoute,
   onSelectTruck,
   className,
 }) => {
@@ -54,7 +69,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
   const filteredTrucks = trucks.filter((t) => (activeFilter === 'all' ? true : t.status === activeFilter));
   const selectedTruck = trucks.find((t) => t.id === selectedTruckId);
 
-  // Major Indian Logistics Corridors (coordinates [lat, lng])
+  // Major Indian Logistics Corridors
   const corridorDelhiMumbaiPuneBengaluruChennai: [number, number][] = [
     [28.7041, 77.1025], // Delhi
     [23.0225, 72.5714], // Ahmedabad
@@ -70,12 +85,11 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
     [17.385, 78.4867],   // Hyderabad
   ];
 
-  // Helper to create custom animated Leaflet DivIcon for trucks
   const createCustomTruckIcon = (truck: Truck, isSelected: boolean) => {
     const statusColors: Record<TruckStatus, string> = {
-      available: '#0D9488', // Teal
-      'in-transit': '#2563EB', // Royal Blue
-      maintenance: '#E11D48', // Red
+      available: '#0D9488',
+      'in-transit': '#2563EB',
+      maintenance: '#E11D48',
       offline: '#64748B',
     };
 
@@ -118,6 +132,23 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
     });
   };
 
+  const createPinIcon = (color: string, label: string) => {
+    const html = `
+      <div style="display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+        <div style="background-color: ${color}; color: #ffffff; font-weight: 800; font-size: 10px; padding: 2px 8px; border-radius: 9999px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); border: 1.5px solid #ffffff; white-space: nowrap;">
+          ${label}
+        </div>
+        <div style="width: 2px; height: 10px; background-color: ${color};"></div>
+      </div>
+    `;
+    return L.divIcon({
+      html,
+      className: 'custom-route-pin',
+      iconSize: [80, 30],
+      iconAnchor: [40, 30],
+    });
+  };
+
   return (
     <div className={clsx('relative rounded-2xl overflow-hidden shadow-card border border-slate-200 bg-slate-900', className)}>
       {/* Map Header & Filter Controls */}
@@ -140,7 +171,6 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
         <div className="h-4 w-px bg-slate-200 mx-1 hidden sm:block" />
 
-        {/* Smooth Fit All / Re-center Button */}
         <button
           onClick={() => setResetTrigger((prev) => prev + 1)}
           className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg transition-colors flex items-center gap-1 text-xs"
@@ -151,9 +181,9 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
         </button>
       </div>
 
-      {/* Leaflet Map Canvas with Smooth Zooming and Inertia */}
+      {/* Leaflet Map Canvas */}
       <MapContainer
-        center={[20.5937, 78.9629]} // Center of India
+        center={[20.5937, 78.9629]}
         zoom={5}
         zoomSnap={0.5}
         zoomDelta={0.5}
@@ -163,9 +193,8 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
         scrollWheelZoom={true}
         className="w-full h-full min-h-[250px] z-10"
       >
-        <MapViewController trucks={filteredTrucks} selectedTruck={selectedTruck} resetTrigger={resetTrigger} />
+        <MapViewController trucks={filteredTrucks} selectedTruck={selectedTruck} activeRoute={activeRoute} resetTrigger={resetTrigger} />
 
-        {/* CartoDB Voyager Tile Layer */}
         <TileLayer
           attribution='&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
@@ -174,6 +203,27 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
         {/* Corridor Route Lines */}
         <Polyline positions={corridorDelhiMumbaiPuneBengaluruChennai} pathOptions={{ color: '#2563EB', weight: 2.5, dashArray: '6, 6', opacity: 0.7 }} />
         <Polyline positions={corridorKolkata} pathOptions={{ color: '#0D9488', weight: 2.5, dashArray: '6, 6', opacity: 0.7 }} />
+
+        {/* Active Accepted Return Load Navigation Route Line */}
+        {activeRoute && (
+          <>
+            <Polyline
+              positions={[
+                [activeRoute.origin.lat, activeRoute.origin.lng],
+                [activeRoute.destination.lat, activeRoute.destination.lng],
+              ]}
+              pathOptions={{ color: '#059669', weight: 5, opacity: 0.9 }}
+            />
+            <Marker
+              position={[activeRoute.origin.lat, activeRoute.origin.lng]}
+              icon={createPinIcon('#2563EB', `Pickup: ${activeRoute.origin.city}`)}
+            />
+            <Marker
+              position={[activeRoute.destination.lat, activeRoute.destination.lng]}
+              icon={createPinIcon('#059669', `Drop: ${activeRoute.destination.city}`)}
+            />
+          </>
+        )}
 
         {/* Truck Markers */}
         {filteredTrucks.map((truck) => {
@@ -236,7 +286,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
                     </span>
                     {truck.temperatureControlled && (
                       <span className="flex items-center gap-1 text-teal-700 font-bold">
-                        <Thermometer className="w-3 h-3" /> Cold
+                        <Thermometer className="w-3.5 h-3.5" /> Cold
                       </span>
                     )}
                   </div>
