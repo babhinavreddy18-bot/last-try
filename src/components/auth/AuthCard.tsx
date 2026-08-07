@@ -682,9 +682,9 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
   const newPassStrength = tab === 'forgot' && forgotStep === 2 && newPassword.length > 0 ? getPasswordStrength(newPassword) : null;
 
   return (
-    <div className="w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 border border-[#E5E7EB] space-y-6 relative text-[#111827]" style={{ boxShadow: '0 8px 32px rgba(109,74,255,0.10), 0 1px 3px rgba(0,0,0,0.04)' }}>
+    <div className="w-full bg-white rounded-[32px] p-6 sm:p-8 border border-slate-100/90 shadow-[0_24px_60px_rgba(15,23,42,0.12)] space-y-5 relative text-slate-900 overflow-hidden">
       {/* Purple top accent line */}
-      <div className="absolute top-0 inset-x-0 h-1 rounded-t-3xl" style={{ background: 'linear-gradient(90deg, #6D4AFF 0%, #8B5CF6 100%)' }} />
+      <div className="absolute top-0 inset-x-0 h-1.5 rounded-t-[32px]" style={{ background: 'linear-gradient(90deg, #6D4AFF 0%, #8B5CF6 100%)' }} />
 
       {/* Header Section */}
       <div className="text-center space-y-2 pt-2">

@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { AuthCard } from '../components/auth/AuthCard';
 import type { UserRole } from '../types';
-import { ArrowLeft, Sparkles, Zap, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Sparkles, Zap, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { TruckLogo } from '../components/common/TruckLogo';
 
 const perks = [
@@ -25,110 +25,113 @@ export const AuthPage: React.FC = () => {
   };
 
   return (
-    <div
-      className="min-h-screen flex flex-col relative"
-      style={{ background: 'linear-gradient(135deg, #F8FAFC 0%, #EEF4FF 50%, #F8FAFC 100%)' }}
-    >
-      {/* Background orbs */}
-      <div
-        className="fixed top-0 right-0 w-[600px] h-[600px] rounded-full opacity-20 pointer-events-none"
-        style={{ background: 'radial-gradient(circle, #6D4AFF 0%, transparent 70%)', filter: 'blur(90px)' }}
-      />
-      <div
-        className="fixed bottom-0 left-0 w-[400px] h-[400px] rounded-full opacity-10 pointer-events-none"
-        style={{ background: 'radial-gradient(circle, #8B5CF6 0%, transparent 70%)', filter: 'blur(100px)' }}
-      />
+    <div className="min-h-screen w-full bg-[#0F172A] relative flex flex-col lg:flex-row overflow-x-hidden font-sans">
+      
+      {/* ── LEFT HERO SECTION (Cinematic Truck Sunset Background) ─────────────── */}
+      <div className="relative flex-1 lg:w-[54%] min-h-[480px] lg:min-h-screen flex flex-col justify-between p-6 sm:p-10 lg:p-14 overflow-hidden">
+        
+        {/* Background Cargo Truck Image */}
+        <img
+          src="/images/cargoloop_truck_sunset.png"
+          alt="CargoLoop Sunset Semi-Truck"
+          className="absolute inset-0 w-full h-full object-cover object-center z-0 scale-105"
+        />
 
-      {/* ── Minimal Sticky Header ─────────────────────────────── */}
-      <header className="sticky top-0 z-30 border-b border-[#E5E7EB]"
-        style={{ background: 'rgba(255,255,255,0.88)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
-      >
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <TruckLogo size="sm" />
-            <span className="font-extrabold text-base tracking-tight text-[#111827]">CargoLoop</span>
-            <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EDE9FE] text-[#6D4AFF] border border-[#DDD6FE]">
-              <Zap className="w-2.5 h-2.5" />
+        {/* Ambient Gradient Overlays for High Legibility */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0F172A]/90 via-[#1E1B4B]/75 to-[#6D4AFF]/30 mix-blend-multiply z-1" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/95 via-transparent to-[#0F172A]/50 z-1" />
+
+        {/* Header Bar */}
+        <div className="relative z-10 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-lg">
+              <TruckLogo size="sm" />
+            </div>
+            <span className="font-black text-xl tracking-tight text-white drop-shadow-md">
+              CargoLoop
+            </span>
+            <span className="inline-flex items-center gap-1 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-[#EDE9FE]/90 text-[#6D4AFF] border border-[#DDD6FE] shadow-sm backdrop-blur-md">
+              <Zap className="w-2.5 h-2.5 fill-[#6D4AFF]" />
               AI
             </span>
           </div>
+
           <Link
             to="/"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-[#6D4AFF] hover:underline"
+            className="inline-flex items-center gap-2 text-xs font-bold text-white/90 hover:text-white bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full transition-all cursor-pointer shadow-sm"
           >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="hidden sm:inline">View Features</span>
+            <ArrowLeft className="w-3.5 h-3.5 text-[#C084FC]" />
+            <span>View Features</span>
           </Link>
         </div>
-      </header>
 
-      {/* ── Main Content ─────────────────────────────────────── */}
-      <div className="relative z-10 flex-1 flex items-center justify-center w-full max-w-5xl mx-auto px-4 py-10">
+        {/* Hero Body Content */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          className="relative z-10 my-auto py-8 space-y-6 max-w-xl"
+        >
+          {/* Page 2 Portal Authentication Pill */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#EDE9FE]/95 backdrop-blur-md border border-[#DDD6FE] text-[#6D4AFF] text-xs font-extrabold shadow-md">
+            <Zap className="w-3.5 h-3.5 text-[#F97316] fill-[#F97316]" />
+            <span>Page 2 · Portal Authentication</span>
+          </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center w-full">
+          {/* Main Headline */}
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1] drop-shadow-lg">
+            Sign in to{' '}
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-[#C084FC] to-[#8B5CF6]">
+              CargoLoop
+            </span>
+          </h1>
 
-          {/* Left: Value Proposition */}
-          <motion.div
-            initial={{ opacity: 0, x: -24 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-            className="space-y-8"
-          >
-            <div className="space-y-4">
-              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#EDE9FE] border border-[#DDD6FE] text-[#6D4AFF] text-sm font-semibold">
-                <Zap className="w-4 h-4 text-[#F97316]" />
-                Page 2 · Portal Authentication
-              </span>
+          {/* Subtitle */}
+          <p className="text-slate-200 text-sm sm:text-base leading-relaxed font-medium drop-shadow-sm max-w-lg">
+            Select your role portal and access the full suite of AI-powered logistics tools in one click.
+          </p>
 
-              <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-[#111827] leading-tight">
-                Sign in to{' '}
-                <span
-                  className="bg-clip-text text-transparent"
-                  style={{ backgroundImage: 'linear-gradient(135deg, #6D4AFF 0%, #8B5CF6 100%)' }}
-                >
-                  CargoLoop
-                </span>
-              </h1>
-              <p className="text-[#6B7280] text-base leading-relaxed">
-                Select your role portal and access the full suite of AI-powered logistics tools in one click.
-              </p>
-            </div>
-
-            {/* Perks */}
-            <div className="space-y-3">
-              {perks.map((perk, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <div className="w-5 h-5 rounded-full bg-[#EDE9FE] border border-[#DDD6FE] flex items-center justify-center shrink-0">
-                    <CheckCircle2 className="w-3 h-3 text-[#6D4AFF]" />
-                  </div>
-                  <span className="text-sm text-[#374151] font-medium">{perk}</span>
+          {/* Checklist Perks */}
+          <div className="space-y-2.5 pt-2">
+            {perks.map((perk, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <div className="w-5 h-5 rounded-full bg-[#6D4AFF]/30 border border-[#C084FC]/50 backdrop-blur-md flex items-center justify-center shrink-0 shadow-sm">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#C084FC]" />
                 </div>
-              ))}
-            </div>
-
-            {/* Quick stats */}
-            <div className="flex items-center gap-3 flex-wrap">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-[#E5E7EB] text-xs font-semibold text-[#6B7280]">
-                <Sparkles className="w-3.5 h-3.5 text-[#F97316]" />
-                Gemini 2.5 Flash Powered
+                <span className="text-xs sm:text-sm text-slate-100 font-semibold drop-shadow-xs">{perk}</span>
               </div>
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-[#E5E7EB] text-xs font-semibold text-[#6B7280]">
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#22C55E]" />
-                Supabase Auth & Database
-              </div>
-            </div>
-          </motion.div>
+            ))}
+          </div>
+        </motion.div>
 
-          {/* Right: Auth Card */}
-          <motion.div
-            initial={{ opacity: 0, x: 24 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1], delay: 0.05 }}
-          >
-            <AuthCard onSuccess={handleSuccess} />
-          </motion.div>
+        {/* Bottom Glassmorphism Badges */}
+        <div className="relative z-10 flex flex-wrap items-center gap-3 pt-4">
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-white text-xs font-bold shadow-lg">
+            <Sparkles className="w-3.5 h-3.5 text-[#F59E0B]" />
+            <span>Gemini 2.5 Flash Powered</span>
+          </div>
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-white text-xs font-bold shadow-lg">
+            <ShieldCheck className="w-3.5 h-3.5 text-[#10B981]" />
+            <span>Supabase Auth & Database</span>
+          </div>
         </div>
       </div>
+
+      {/* ── RIGHT AUTHENTICATION CARD SECTION ───────────────────────────────── */}
+      <div
+        className="flex-1 lg:w-[46%] min-h-screen flex items-center justify-center p-4 sm:p-8 lg:p-12 relative z-20"
+        style={{ background: 'linear-gradient(135deg, #F8FAFC 0%, #EEF2FF 50%, #F1F5F9 100%)' }}
+      >
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+          className="w-full max-w-md"
+        >
+          <AuthCard onSuccess={handleSuccess} />
+        </motion.div>
+      </div>
+
     </div>
   );
 };
