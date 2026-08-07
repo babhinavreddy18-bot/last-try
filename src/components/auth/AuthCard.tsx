@@ -255,10 +255,46 @@ function inferRoleFromEmail(email: string): UserRole | null {
   return null;
 }
 
+interface RegisteredAccount {
+  email: string;
+  name: string;
+  pass: string;
+  role: UserRole;
+}
+
+const DEFAULT_ACCOUNTS: RegisteredAccount[] = [
+  { email: 'driver@cargoloop.ai', name: 'Rajesh Kumar (Driver)', pass: 'demo1234', role: 'driver' },
+  { email: 'shipper@cargoloop.ai', name: 'Vikram Malhotra (Shipper)', pass: 'demo1234', role: 'shipper' },
+  { email: 'fleet@cargoloop.ai', name: 'Ananya Deshmukh (Fleet Owner)', pass: 'demo1234', role: 'fleet' },
+  { email: 'admin@cargoloop.ai', name: 'Siddharth V. (System Admin)', pass: 'demo1234', role: 'admin' },
+];
+
+function getRegisteredAccounts(): RegisteredAccount[] {
+  const saved = localStorage.getItem('cargoloop_registered_users');
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    } catch (e) {
+      console.error('Error reading registered users:', e);
+    }
+  }
+  localStorage.setItem('cargoloop_registered_users', JSON.stringify(DEFAULT_ACCOUNTS));
+  return DEFAULT_ACCOUNTS;
+}
+
+function saveRegisteredAccount(acc: RegisteredAccount) {
+  const existing = getRegisteredAccounts();
+  const updated = [acc, ...existing.filter(a => a.email.toLowerCase() !== acc.email.toLowerCase())];
+  localStorage.setItem('cargoloop_registered_users', JSON.stringify(updated));
+}
+
 function getPasswordStrength(pass: string) {
-  if (pass.length < 3) return { label: 'Too short', color: '#EF4444', bars: 1 };
-  if (pass.length < 6) return { label: 'Fair', color: '#F59E0B', bars: 2 };
-  if (pass.length < 9) return { label: 'Good', color: '#2563EB', bars: 3 };
+  if (pass.length < 7) return { label: 'At least 7 characters required', color: '#EF4444', bars: 1 };
+  if (pass.length < 9) return { label: 'Fair', color: '#F59E0B', bars: 2 };
+  if (pass.length < 12) return { label: 'Good', color: '#2563EB', bars: 3 };
   return { label: 'Strong', color: '#059669', bars: 4 };
 }
 
@@ -303,7 +339,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
     setError('');
     setSuccess('');
 
-    const cleanEmail = email.trim();
+    const cleanEmail = email.trim().toLowerCase();
 
     // Standard Validation
     if (!cleanEmail) {
@@ -318,9 +354,43 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
       setError('Please enter your password.');
       return;
     }
-    if (tab === 'signup' && !fullName.trim()) {
-      setError('Please enter your full name for sign up.');
+    if (password.length < 7) {
+      setError('Password must be at least 7 characters long.');
       return;
+    }
+
+    const accounts = getRegisteredAccounts();
+
+    if (tab === 'signup') {
+      if (!fullName.trim()) {
+        setError('Please enter your full name for sign up.');
+        return;
+      }
+      const existing = accounts.find(a => a.email.toLowerCase() === cleanEmail);
+      if (existing) {
+        setError('An account with this email is already registered. Please Sign In.');
+        return;
+      }
+
+      // Save new registered account
+      const newAcc: RegisteredAccount = {
+        email: cleanEmail,
+        name: fullName.trim(),
+        pass: password,
+        role: selectedRole,
+      };
+      saveRegisteredAccount(newAcc);
+    } else {
+      // Sign In validation: verify user already signed up
+      const userAcc = accounts.find(a => a.email.toLowerCase() === cleanEmail);
+      if (!userAcc) {
+        setError('No registered account found with this email. Please Sign Up first to create your account.');
+        return;
+      }
+      if (userAcc.pass !== password) {
+        setError('Incorrect password. Please verify your password and try again.');
+        return;
+      }
     }
 
     setLoading(true);
@@ -354,10 +424,15 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
     }
 
     // Processing delay
-    await new Promise(r => setTimeout(r, 650));
+    await new Promise(r => setTimeout(r, 600));
     setLoading(false);
 
-    const roleName = t[ROLE_OPTIONS.find(r => r.role === selectedRole)?.labelKey || 'shipperRole'];
+    const accountsLatest = getRegisteredAccounts();
+    const activeAcc = accountsLatest.find(a => a.email.toLowerCase() === cleanEmail);
+    const roleToLogin = activeAcc?.role || selectedRole;
+    const nameToLogin = activeAcc?.name || fullName || undefined;
+
+    const roleName = t[ROLE_OPTIONS.find(r => r.role === roleToLogin)?.labelKey || 'shipperRole'];
     setSuccess(
       tab === 'signup'
         ? `${t.accountCreated} ${roleName}…`
@@ -365,7 +440,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
     );
 
     setTimeout(() => {
-      loginWithCredentials(cleanEmail, selectedRole, fullName || undefined);
+      loginWithCredentials(cleanEmail, roleToLogin, nameToLogin);
       onSuccess?.();
     }, 550);
   };
@@ -455,6 +530,27 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
 
       {/* Auth Form */}
       <form onSubmit={handleSubmit} className="space-y-4" autoComplete="on">
+
+        {/* Single Target Role Module Selection Dropdown */}
+        <div className="space-y-1">
+          <div className="flex items-center justify-between text-xs px-1">
+            <span className="font-bold text-[#374151]">Target Role Module</span>
+            <span className="text-[10px] font-semibold text-[#6D4AFF] bg-[#EDE9FE] px-2 py-0.5 rounded-full border border-[#DDD6FE]">1 Role Module</span>
+          </div>
+          <div className="relative">
+            <select
+              value={selectedRole}
+              onChange={(e) => setSelectedRole(e.target.value as UserRole)}
+              className="w-full pl-4 pr-10 py-3 text-sm font-semibold rounded-2xl border border-[#E5E7EB] bg-white text-[#111827] focus:border-[#6D4AFF] focus:ring-2 focus:ring-[#6D4AFF]/15 focus:outline-none transition-all cursor-pointer appearance-none"
+            >
+              <option value="shipper">📦 Shipper Logistics Hub</option>
+              <option value="driver">🚚 Driver Companion App</option>
+              <option value="fleet">🏢 Fleet Command Center</option>
+              <option value="admin">🛡️ Admin Risk & Telemetry</option>
+            </select>
+            <ChevronDown className="w-4 h-4 absolute right-4 top-3.5 text-[#6B7280] pointer-events-none" />
+          </div>
+        </div>
 
 
         {/* Full Name (Sign-up only) */}

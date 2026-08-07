@@ -76,11 +76,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const loginWithCredentials = (email: string, forcedRole?: UserRole, customName?: string) => {
     let assignedRole: UserRole = forcedRole || 'shipper';
-    const emailLower = email.toLowerCase();
-    if (emailLower.includes('driver')) assignedRole = 'driver';
-    else if (emailLower.includes('shipper')) assignedRole = 'shipper';
-    else if (emailLower.includes('fleet')) assignedRole = 'fleet';
-    else if (emailLower.includes('admin')) assignedRole = 'admin';
+    if (!forcedRole) {
+      const emailLower = email.toLowerCase();
+      if (emailLower.includes('driver')) assignedRole = 'driver';
+      else if (emailLower.includes('shipper')) assignedRole = 'shipper';
+      else if (emailLower.includes('fleet')) assignedRole = 'fleet';
+      else if (emailLower.includes('admin')) assignedRole = 'admin';
+    }
 
     const roleInfo = DEMO_ROLES.find((r) => r.role === assignedRole);
     const formattedEmailName = email.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
