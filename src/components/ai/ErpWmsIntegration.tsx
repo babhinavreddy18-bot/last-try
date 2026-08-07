@@ -140,18 +140,18 @@ export const ErpWmsIntegration: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded-3xl border border-slate-200 shadow-card overflow-hidden space-y-0">
+    <div className="bg-white rounded-3xl border border-slate-200 shadow-card overflow-hidden space-y-0 text-slate-900">
       {/* Top Banner Header */}
       <div className="p-6 bg-[#0F172A] text-white space-y-4 border-b border-[#E2E8F0]">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-[#2563EB]/20 border border-[#2563EB]/40 flex items-center justify-center text-[#2563EB] shrink-0">
+            <div className="w-12 h-12 rounded-2xl bg-[#2563EB] flex items-center justify-center text-white shrink-0 shadow-md">
               <Database className="w-6 h-6 animate-pulse" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="font-extrabold text-lg sm:text-xl tracking-tight text-white">ERP & WMS Automated Data Sharing Hub</h2>
-                <span className="text-[10px] font-extrabold bg-[#2563EB] text-white border border-blue-400 px-2.5 py-0.5 rounded-full shadow-2xs">
+                <h2 className="font-black text-lg sm:text-xl tracking-tight text-white">ERP & WMS Automated Data Sharing Hub</h2>
+                <span className="text-[10px] font-black bg-[#2563EB] text-white border border-blue-400 px-2.5 py-0.5 rounded-full shadow-2xs">
                   Bi-Directional Sync
                 </span>
               </div>
@@ -164,12 +164,12 @@ export const ErpWmsIntegration: React.FC = () => {
           <button
             onClick={() => handleRunSync(selectedConnector.id)}
             disabled={isSimulatingSync}
-            className="px-4 py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] disabled:opacity-50 text-white font-extrabold text-xs rounded-xl shadow-sm transition-all flex items-center gap-2 shrink-0 cursor-pointer"
+            className="px-4 py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] disabled:opacity-50 text-white font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-2 shrink-0 cursor-pointer"
           >
             {isSimulatingSync ? (
               <><RefreshCw className="w-4 h-4 animate-spin text-white" /><span>Syncing Payload…</span></>
             ) : (
-              <><Play className="w-4 h-4 text-white" /><span>Test Automated Data Exchange</span></>
+              <><Play className="w-4 h-4 text-white fill-white" /><span>Test Automated Data Exchange</span></>
             )}
           </button>
         </div>
@@ -177,22 +177,22 @@ export const ErpWmsIntegration: React.FC = () => {
         {/* Telemetry Quick Bar */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
           <div className="bg-[#1E293B] p-3 rounded-2xl border border-[#334155]">
-            <p className="text-[10px] font-extrabold text-[#94A3B8] uppercase tracking-wider">Connected Systems</p>
-            <p className="font-extrabold text-white text-lg mt-0.5">6 Live Systems</p>
+            <p className="text-[10px] font-black text-[#94A3B8] uppercase tracking-wider">Connected Systems</p>
+            <p className="font-black text-white text-lg mt-0.5">6 Live Systems</p>
           </div>
           <div className="bg-[#1E293B] p-3 rounded-2xl border border-[#334155]">
-            <p className="text-[10px] font-extrabold text-[#94A3B8] uppercase tracking-wider">Today's Data Syncs</p>
-            <p className="font-extrabold text-white text-lg mt-0.5">
+            <p className="text-[10px] font-black text-[#94A3B8] uppercase tracking-wider">Today's Data Syncs</p>
+            <p className="font-black text-white text-lg mt-0.5">
               {connectors.reduce((acc, c) => acc + c.recordsSyncedToday, 0).toLocaleString()} Records
             </p>
           </div>
           <div className="bg-[#1E293B] p-3 rounded-2xl border border-[#334155]">
-            <p className="text-[10px] font-extrabold text-[#94A3B8] uppercase tracking-wider">Schema AI Mapping</p>
-            <p className="font-extrabold text-white text-lg mt-0.5">100% Zero Code</p>
+            <p className="text-[10px] font-black text-[#94A3B8] uppercase tracking-wider">Schema AI Mapping</p>
+            <p className="font-black text-white text-lg mt-0.5">100% Zero Code</p>
           </div>
           <div className="bg-[#1E293B] p-3 rounded-2xl border border-[#334155]">
-            <p className="text-[10px] font-extrabold text-[#94A3B8] uppercase tracking-wider">Sync Frequency</p>
-            <p className="font-extrabold text-white text-lg mt-0.5">Real-Time Webhook</p>
+            <p className="text-[10px] font-black text-[#94A3B8] uppercase tracking-wider">Sync Frequency</p>
+            <p className="font-black text-white text-lg mt-0.5">Real-Time Webhook</p>
           </div>
         </div>
       </div>
@@ -202,9 +202,9 @@ export const ErpWmsIntegration: React.FC = () => {
 
         {/* Left Column: Active ERP/WMS Connectors List */}
         <div className="lg:col-span-1 space-y-3">
-          <h3 className="font-extrabold text-[#0F172A] text-xs uppercase tracking-wider flex items-center justify-between">
+          <h3 className="font-black text-[#0F172A] text-xs uppercase tracking-wider flex items-center justify-between">
             <span>Enterprise Systems ({connectors.length})</span>
-            <span className="text-[10px] font-extrabold text-[#2563EB] flex items-center gap-1 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
+            <span className="text-[10px] font-black text-[#2563EB] flex items-center gap-1 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
               <Radio className="w-3 h-3 animate-pulse text-[#2563EB]" /> Active Listeners
             </span>
           </h3>
@@ -219,23 +219,23 @@ export const ErpWmsIntegration: React.FC = () => {
                   onClick={() => setSelectedConnector(connector)}
                   className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
                     isSelected
-                      ? 'bg-[#EFF6FF] border-[#2563EB] shadow-2xs ring-2 ring-[#2563EB]/20'
+                      ? 'bg-[#EFF6FF] border-[#2563EB] shadow-sm ring-2 ring-[#2563EB]/20'
                       : 'bg-white hover:bg-[#F8FAFC] border-[#E2E8F0]'
                   }`}
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-white text-xs shrink-0 shadow-2xs"
+                      className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-white text-xs shrink-0 shadow-sm"
                       style={{ background: connector.color }}
                     >
                       {categoryBadgeText}
                     </div>
                     <div className="min-w-0">
-                      <p className="font-extrabold text-[#0F172A] text-xs truncate">
+                      <p className="font-black text-[#0F172A] text-xs truncate">
                         {connector.name}
                       </p>
-                      <p className="text-[11px] font-semibold text-[#475569] truncate">
-                        {connector.apiProtocol} • <span className="text-[#64748B]">Sync: {connector.lastSync}</span>
+                      <p className="text-[11px] font-bold text-[#334155] truncate mt-0.5">
+                        {connector.apiProtocol} • <span className="text-[#64748B] font-medium">Sync: {connector.lastSync}</span>
                       </p>
                     </div>
                   </div>
@@ -244,7 +244,7 @@ export const ErpWmsIntegration: React.FC = () => {
                     <Badge variant="blue" size="sm">
                       {connector.status === 'syncing' ? 'Syncing...' : 'Connected'}
                     </Badge>
-                    <p className="text-[11px] font-extrabold text-[#0F172A] mt-1">
+                    <p className="text-[11px] font-black text-[#0F172A] mt-1">
                       {connector.recordsSyncedToday} Recs
                     </p>
                   </div>
@@ -257,8 +257,8 @@ export const ErpWmsIntegration: React.FC = () => {
         {/* Right Column: Selected Connector Details & Live Webhook Data Stream */}
         <div className="lg:col-span-2 space-y-4">
           {/* Active Connector Detail Panel */}
-          <div className="p-5 rounded-2xl bg-[#F8FAFC] border border-slate-200/90 shadow-2xs space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
+          <div className="p-5 rounded-2xl bg-[#F8FAFC] border border-slate-200 shadow-sm space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3.5">
               <div className="flex items-center gap-3">
                 <div
                   className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-black text-xs sm:text-sm shadow-md shrink-0"
@@ -267,22 +267,24 @@ export const ErpWmsIntegration: React.FC = () => {
                   {selectedConnector.category === 'GST/e-Waybill' ? 'GST' : selectedConnector.category}
                 </div>
                 <div>
-                  <h4 className="font-black text-[#0F172A] text-base sm:text-lg">
+                  <h4 className="font-black text-[#0F172A] text-base sm:text-xl">
                     {selectedConnector.name}
                   </h4>
-                  <p className="text-xs font-semibold text-[#475569] mt-0.5">
-                    Vendor: <strong className="text-[#0F172A] font-extrabold">{selectedConnector.provider}</strong> • Protocol:{' '}
+                  <div className="flex items-center gap-2 text-xs font-bold text-[#334155] mt-1">
+                    <span>Vendor: <strong className="text-[#0F172A] font-black">{selectedConnector.provider}</strong></span>
+                    <span>•</span>
+                    <span>Protocol:</span>
                     <span className="font-black text-[#2563EB] bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200">
                       {selectedConnector.apiProtocol}
                     </span>
-                  </p>
+                  </div>
                 </div>
               </div>
 
               <button
                 onClick={() => handleRunSync(selectedConnector.id)}
                 disabled={isSimulatingSync}
-                className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] disabled:bg-blue-300 text-white font-extrabold text-xs rounded-xl shadow-sm transition-colors flex items-center gap-1.5 self-start sm:self-auto cursor-pointer"
+                className="px-4 py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] disabled:bg-blue-300 text-white font-black text-xs rounded-xl shadow-md transition-colors flex items-center gap-2 self-start sm:self-auto cursor-pointer"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${isSimulatingSync ? 'animate-spin' : ''}`} />
                 <span>Sync Now</span>
@@ -292,40 +294,40 @@ export const ErpWmsIntegration: React.FC = () => {
             {/* Configured Automated Triggers */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-1.5">
-                <div className="flex items-center justify-between text-xs font-extrabold text-[#0F172A]">
+                <div className="flex items-center justify-between text-xs font-black text-[#0F172A]">
                   <span className="flex items-center gap-1.5">
                     <FileCode className="w-4 h-4 text-[#2563EB]" />
                     Orders Sync
                   </span>
                   <Badge variant="green" size="sm">Auto</Badge>
                 </div>
-                <p className="text-[11px] text-[#475569] font-medium leading-relaxed">
+                <p className="text-[11px] text-[#334155] font-bold leading-relaxed">
                   Auto-converts SAP/NetSuite Sales Orders into Driver Cargo Jobs.
                 </p>
               </div>
 
               <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-1.5">
-                <div className="flex items-center justify-between text-xs font-extrabold text-[#0F172A]">
+                <div className="flex items-center justify-between text-xs font-black text-[#0F172A]">
                   <span className="flex items-center gap-1.5">
                     <Layers className="w-4 h-4 text-[#7C3AED]" />
                     WMS Inventory
                   </span>
                   <Badge variant="green" size="sm">Auto</Badge>
                 </div>
-                <p className="text-[11px] text-[#475569] font-medium leading-relaxed">
+                <p className="text-[11px] text-[#334155] font-bold leading-relaxed">
                   Real-time warehouse dock allocation & ASN cargo barcode verification.
                 </p>
               </div>
 
               <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-1.5">
-                <div className="flex items-center justify-between text-xs font-extrabold text-[#0F172A]">
+                <div className="flex items-center justify-between text-xs font-black text-[#0F172A]">
                   <span className="flex items-center gap-1.5">
                     <ShieldCheck className="w-4 h-4 text-[#059669]" />
                     e-Waybill GST
                   </span>
                   <Badge variant="green" size="sm">Auto</Badge>
                 </div>
-                <p className="text-[11px] text-[#475569] font-medium leading-relaxed">
+                <p className="text-[11px] text-[#334155] font-bold leading-relaxed">
                   Auto-attaches Govt GST e-Waybill PDF to driver telemetry app.
                 </p>
               </div>
@@ -333,13 +335,13 @@ export const ErpWmsIntegration: React.FC = () => {
           </div>
 
           {/* Live Webhook & Data Sharing Terminal Log Stream */}
-          <div className="p-4.5 rounded-2xl bg-[#090D16] text-[#F8FAFC] border border-[#1E293B] font-mono text-xs space-y-3 shadow-md">
-            <div className="flex items-center justify-between border-b border-[#1E293B] pb-2.5">
-              <span className="text-xs font-extrabold text-[#34D399] flex items-center gap-2">
+          <div className="p-4.5 rounded-2xl bg-[#0F172A] text-white border border-slate-800 font-mono text-xs space-y-3 shadow-lg">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
+              <span className="text-xs font-black text-[#34D399] flex items-center gap-2">
                 <Cpu className="w-4 h-4 text-[#34D399] animate-pulse" />
                 Live Webhook Data Exchange Stream
               </span>
-              <span className="text-[11px] font-bold text-[#34D399] bg-[#064E3B]/80 px-2 py-0.5 rounded border border-[#059669]">
+              <span className="text-[11px] font-black text-[#34D399] bg-[#064E3B] px-2.5 py-0.5 rounded border border-[#059669]">
                 200 OK • 12ms Latency
               </span>
             </div>
@@ -348,10 +350,10 @@ export const ErpWmsIntegration: React.FC = () => {
               {syncLogs.map((log, idx) => (
                 <div
                   key={idx}
-                  className={`p-2 rounded-lg font-mono font-medium ${
-                    log.includes('SUCCESS') ? 'bg-[#064E3B]/50 text-[#6EE7B7] border border-[#047857]' :
-                    log.includes('INITIATING') ? 'bg-[#1E3A8A]/50 text-[#93C5FD] border border-[#1D4ED8]' :
-                    'bg-[#0F172A] text-[#E2E8F0] border border-[#1E293B]'
+                  className={`p-2.5 rounded-lg font-mono font-bold ${
+                    log.includes('SUCCESS') ? 'bg-[#064E3B] text-[#6EE7B7] border border-[#047857]' :
+                    log.includes('INITIATING') ? 'bg-[#1E3A8A] text-[#93C5FD] border border-[#1D4ED8]' :
+                    'bg-[#1E293B] text-white border border-[#334155]'
                   }`}
                 >
                   {log}
