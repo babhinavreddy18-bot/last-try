@@ -200,7 +200,7 @@ export const ReturnLoadMatcher: React.FC<ReturnLoadMatcherProps> = ({
 
     if (watchRef.current !== null) navigator.geolocation.clearWatch(watchRef.current);
 
-    // Fast mobile GPS with 5s timeout and low-power fallback
+    // High-accuracy GPS — gets real device GPS on mobile
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude, accuracy } = pos.coords;
@@ -210,19 +210,51 @@ export const ReturnLoadMatcher: React.FC<ReturnLoadMatcherProps> = ({
         setUseGps(true);
         setHasSearched(false);
         setMatches([]);
+
+        // Continue watching for live position updates
+        watchRef.current = navigator.geolocation.watchPosition(
+          (wp) => {
+            const wCity = nearestCity(wp.coords.latitude, wp.coords.longitude);
+            setGpsCoords({
+              lat: wp.coords.latitude,
+              lng: wp.coords.longitude,
+              accuracy: wp.coords.accuracy,
+              city: wCity,
+            });
+          },
+          () => {},
+          { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+        );
       },
       (err) => {
         if (err.code === 1) {
           setGpsStatus('error');
-          setGpsError('Location access denied. Please enable GPS in your device settings.');
+          setGpsError('Location access denied. Please enable GPS in your browser or device settings.');
+        } else if (err.code === 3) {
+          // Timeout — try again with low accuracy as fallback
+          navigator.geolocation.getCurrentPosition(
+            (pos) => {
+              const { latitude, longitude, accuracy } = pos.coords;
+              const city = nearestCity(latitude, longitude);
+              setGpsCoords({ lat: latitude, lng: longitude, accuracy, city });
+              setGpsStatus('acquired');
+              setUseGps(true);
+            },
+            () => {
+              setGpsStatus('acquired');
+              setGpsCoords({ lat: currentDropLat, lng: currentDropLng, accuracy: 2000, city: currentDropCity });
+              setUseGps(true);
+            },
+            { enableHighAccuracy: false, timeout: 10000, maximumAge: 30000 }
+          );
         } else {
-          // Soft fallback to city center
+          // Other errors — fallback to drop city
           setGpsStatus('acquired');
-          setGpsCoords({ lat: currentDropLat, lng: currentDropLng, accuracy: 1500, city: currentDropCity });
+          setGpsCoords({ lat: currentDropLat, lng: currentDropLng, accuracy: 2000, city: currentDropCity });
           setUseGps(true);
         }
       },
-      { enableHighAccuracy: false, timeout: 5000, maximumAge: 60000 }
+      { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
     );
   }, [currentDropCity, currentDropLat, currentDropLng]);
 
