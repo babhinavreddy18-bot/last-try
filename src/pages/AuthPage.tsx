@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { AuthCard } from '../components/auth/AuthCard';
+import type { UserRole } from '../types';
 import { ArrowLeft, Sparkles, Zap, CheckCircle2 } from 'lucide-react';
 import { TruckLogo } from '../components/common/TruckLogo';
 
@@ -18,9 +19,9 @@ const perks = [
 export const AuthPage: React.FC = () => {
   const navigate = useNavigate();
   const { role } = useAuth();
-
-  const handleSuccess = () => {
-    navigate(`/dashboard/${role || 'shipper'}`);
+  const handleSuccess = (targetRole?: UserRole) => {
+    const destinationRole = targetRole || role || 'shipper';
+    navigate(`/dashboard/${destinationRole}`);
   };
 
   return (

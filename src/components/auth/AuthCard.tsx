@@ -12,7 +12,7 @@ import { TruckLogo } from '../common/TruckLogo';
 import { useLanguage } from '../../context/LanguageContext';
 
 interface AuthCardProps {
-  onSuccess?: () => void;
+  onSuccess?: (loggedRole: UserRole) => void;
 }
 
 export type IndianLanguage = 'en' | 'hi' | 'bn' | 'mr' | 'te' | 'ta';
@@ -442,8 +442,19 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
   const [showLangDropdown, setShowLangDropdown] = useState(false);
   const [tab, setTab] = useState<'signin' | 'signup' | 'forgot'>('signin');
   const [forgotStep, setForgotStep] = useState<1 | 2>(1);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const initialRole = (() => {
+    const params = new URLSearchParams(window.location.search);
+    const r = params.get('role') as UserRole;
+    if (r && ['shipper', 'driver', 'fleet', 'admin'].includes(r)) {
+      return r;
+    }
+    return 'shipper';
+  })();
+  const initialRoleOpt = ROLE_OPTIONS.find((o) => o.role === initialRole) || ROLE_OPTIONS[1];
+
+  const [selectedRole, setSelectedRole] = useState<UserRole>(initialRole);
+  const [email, setEmail] = useState(initialRoleOpt.email);
+  const [password, setPassword] = useState(initialRoleOpt.pass);
   const [fullName, setFullName] = useState('');
   const [otpInput, setOtpInput] = useState('123456');
   const [newPassword, setNewPassword] = useState('');
@@ -451,14 +462,6 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
   const [showPass, setShowPass] = useState(false);
   const [showNewPass, setShowNewPass] = useState(false);
   const [showConfirmPass, setShowConfirmPass] = useState(false);
-  const [selectedRole, setSelectedRole] = useState<UserRole>(() => {
-    const params = new URLSearchParams(window.location.search);
-    const r = params.get('role') as UserRole;
-    if (r && ['shipper', 'driver', 'fleet', 'admin'].includes(r)) {
-      return r;
-    }
-    return 'shipper';
-  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -582,7 +585,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
 
     setTimeout(() => {
       loginWithCredentials(cleanEmail, roleToLogin, nameToLogin);
-      onSuccess?.();
+      onSuccess?.(roleToLogin);
     }, 550);
   };
 
