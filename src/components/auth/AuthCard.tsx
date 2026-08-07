@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import type { UserRole } from '../../types';
@@ -440,7 +440,15 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
   const { lang, setLang } = useLanguage();
 
   const [showLangDropdown, setShowLangDropdown] = useState(false);
-  const [tab, setTab] = useState<'signin' | 'signup' | 'forgot'>('signin');
+  const initialTab = (() => {
+    const params = new URLSearchParams(window.location.search);
+    const m = params.get('mode') || params.get('tab');
+    if (m === 'signup') return 'signup';
+    if (m === 'forgot') return 'forgot';
+    return 'signin';
+  })();
+
+  const [tab, setTab] = useState<'signin' | 'signup' | 'forgot'>(initialTab);
   const [forgotStep, setForgotStep] = useState<1 | 2>(1);
   const initialRole = (() => {
     const params = new URLSearchParams(window.location.search);
@@ -453,8 +461,8 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
   const initialRoleOpt = ROLE_OPTIONS.find((o) => o.role === initialRole) || ROLE_OPTIONS[1];
 
   const [selectedRole, setSelectedRole] = useState<UserRole>(initialRole);
-  const [email, setEmail] = useState(initialRoleOpt.email);
-  const [password, setPassword] = useState(initialRoleOpt.pass);
+  const [email, setEmail] = useState(initialTab === 'signup' ? '' : initialRoleOpt.email);
+  const [password, setPassword] = useState(initialTab === 'signup' ? '' : initialRoleOpt.pass);
   const [fullName, setFullName] = useState('');
   const [otpInput, setOtpInput] = useState('123456');
   const [newPassword, setNewPassword] = useState('');
@@ -468,6 +476,14 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
 
   const t = TRANSLATIONS[lang];
   const activeLangObj = LANGUAGES.find(l => l.code === lang) || LANGUAGES[0];
+
+  useEffect(() => {
+    if (tab === 'signup') {
+      setEmail('');
+      setPassword('');
+      setFullName('');
+    }
+  }, [tab]);
 
   const switchTab = (targetTab: 'signin' | 'signup' | 'forgot') => {
     setTab(targetTab);
@@ -827,6 +843,9 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
                       if (tab === 'signin') {
                         setEmail(opt.email);
                         setPassword(opt.pass);
+                      } else {
+                        setEmail('');
+                        setPassword('');
                       }
                       setError('');
                     }}
