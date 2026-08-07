@@ -49,6 +49,18 @@ const PublicAuthRoute: React.FC = () => {
   return <AuthPage />;
 };
 
+// ── Strict Dashboard Dispatcher (Guards /dashboard root) ─────────────────────
+
+const DashboardDispatcher: React.FC = () => {
+  const { isAuthenticated, user } = useAuth();
+
+  if (!isAuthenticated || !user) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  return <Navigate to={`/dashboard/${user.role}`} replace />;
+};
+
 // ── Root Dispatcher ─────────────────────────────────────────────────────────
 
 const RootDispatcher: React.FC = () => {
@@ -65,6 +77,7 @@ export function AppRoutes() {
       {/* ── Pre-login pages: NO navbar, NO layout wrapper ── */}
       <Route path="/" element={<RootDispatcher />} />
       <Route path="/auth" element={<PublicAuthRoute />} />
+      <Route path="/dashboard" element={<DashboardDispatcher />} />
       <Route
         path="/features"
         element={
