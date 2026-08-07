@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Layout } from './components/common/Layout';
 import { AuthPage } from './pages/AuthPage';
@@ -37,12 +37,15 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; allowedRole: UserRol
   return <Suspense fallback={<PageFallback />}>{children}</Suspense>;
 };
 
-// ── Public Auth Route (Redirects authenticated users to their dashboard) ──────
+// ── Public Auth Route (Redirects authenticated users unless selecting target role) ──────
 
 const PublicAuthRoute: React.FC = () => {
   const { isAuthenticated, user } = useAuth();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const targetRoleParam = searchParams.get('role');
 
-  if (isAuthenticated && user) {
+  if (isAuthenticated && user && !targetRoleParam) {
     return <Navigate to={`/dashboard/${user.role}`} replace />;
   }
 
