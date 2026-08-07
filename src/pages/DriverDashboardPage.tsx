@@ -115,15 +115,18 @@ export const DriverDashboardPage: React.FC = () => {
             ))}
           </div>
 
-          <select
-            value={destination}
-            onChange={(e) => setDestination(e.target.value)}
-            className="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold rounded-xl focus:outline-none cursor-pointer"
-          >
-            <option value="Pune NH-48 Hub">Dest: Pune NH-48</option>
-            <option value="Bengaluru Logistics Park">Dest: Bengaluru LP</option>
-            <option value="Mumbai Container Terminal">Dest: Mumbai Port</option>
-          </select>
+          <div className="flex items-center gap-1.5 bg-white px-3 py-1 rounded-xl border border-[#CBD5E1] shadow-2xs hover:border-[#2563EB] transition-all">
+            <MapPin className="w-3.5 h-3.5 text-[#2563EB] shrink-0" />
+            <select
+              value={destination}
+              onChange={(e) => setDestination(e.target.value)}
+              className="bg-white text-[#0F172A] text-xs font-extrabold focus:outline-none cursor-pointer py-1 pr-1 border-0"
+            >
+              <option value="Pune NH-48 Hub" className="bg-white text-[#0F172A] font-bold">Dest: Pune NH-48</option>
+              <option value="Bengaluru Logistics Park" className="bg-white text-[#0F172A] font-bold">Dest: Bengaluru LP</option>
+              <option value="Mumbai Container Terminal" className="bg-white text-[#0F172A] font-bold">Dest: Mumbai Port</option>
+            </select>
+          </div>
         </div>
       </div>
 
