@@ -483,7 +483,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
       setPassword('');
       setFullName('');
     }
-  }, [tab]);
+  }, [tab, selectedRole]);
 
   const switchTab = (targetTab: 'signin' | 'signup' | 'forgot') => {
     setTab(targetTab);
@@ -909,7 +909,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
               onChange={(e) => handleEmailChange(e.target.value)}
               placeholder="Enter your email address"
               required
-              autoComplete="email"
+              autoComplete={tab === 'signup' ? 'off' : 'email'}
               className="w-full pl-11 pr-4 py-3 text-sm font-normal rounded-2xl border border-[#E5E7EB] bg-white text-[#111827] placeholder:text-[#9CA3AF] focus:border-[#6D4AFF] focus:ring-2 focus:ring-[#6D4AFF]/15 focus:outline-none transition-all"
             />
           </div>
@@ -922,9 +922,9 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
                 type={showPass ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => { setPassword(e.target.value); setError(''); }}
-                placeholder={t.enterPass}
+                placeholder={tab === 'signup' ? 'Create a secure password' : t.enterPass}
                 required
-                autoComplete="current-password"
+                autoComplete={tab === 'signup' ? 'new-password' : 'current-password'}
                 className="w-full pl-11 pr-11 py-3 text-sm font-normal rounded-2xl border border-[#E5E7EB] bg-white text-[#111827] placeholder:text-[#9CA3AF] focus:border-[#6D4AFF] focus:ring-2 focus:ring-[#6D4AFF]/15 focus:outline-none transition-all"
               />
               <button
