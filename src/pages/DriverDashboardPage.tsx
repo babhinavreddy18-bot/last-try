@@ -219,37 +219,6 @@ export const DriverDashboardPage: React.FC = () => {
               </div>
             )}
 
-            <InteractiveMap
-              trucks={MOCK_TRUCKS}
-              selectedTruckId={activeTruck.id}
-              activeRoute={
-                navigatingShipment
-                  ? {
-                      origin: navigatingShipment.origin,
-                      destination: navigatingShipment.destination,
-                      title: navigatingShipment.title,
-                      driverName: driver.name,
-                      truckId: activeTruck.plateNumber,
-                      speedKmH: 94,
-                      nextStopEta: '1h 36m',
-                      temperatureC: 4,
-                      fuelPercent: 67,
-                    }
-                  : {
-                      origin: activeTruck.currentLocation,
-                      destination: activeTruck.destination || { lat: 18.5204, lng: 73.8567, city: 'Pune' },
-                      title: `${activeTruck.plateNumber} • ${driver.name}`,
-                      driverName: driver.name,
-                      truckId: activeTruck.plateNumber,
-                      speedKmH: 94,
-                      nextStopEta: '1h 36m',
-                      temperatureC: 4,
-                      fuelPercent: 67,
-                    }
-              }
-              onCloseRoute={() => setNavigatingShipment(null)}
-              className="h-[520px]"
-            />
           </div>
 
           {/* Assigned Deliveries List */}
