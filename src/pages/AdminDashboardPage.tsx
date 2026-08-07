@@ -124,7 +124,7 @@ export const AdminDashboardPage: React.FC = () => {
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
               {anomalies.map((anom) => (
-                <tr key={anom.id} className={anom.resolved ? 'bg-slate-50/30 dark:bg-slate-800/20 opacity-60' : 'hover:bg-slate-50/80 dark:hover:bg-slate-800/50'}>
+                <tr key={anom.id} className={anom.resolved ? 'bg-slate-50/60 dark:bg-slate-800/20' : 'hover:bg-slate-50/80 dark:hover:bg-slate-800/50'}>
                   <td className="p-3">
                     <Badge
                       variant={
@@ -138,15 +138,15 @@ export const AdminDashboardPage: React.FC = () => {
                       {anom.severity}
                     </Badge>
                   </td>
-                  <td className="p-3 font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider text-[10px]">
-                    {anom.type.replace('_', ' ')}
+                  <td className="p-3 font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wider text-[10px]">
+                    {anom.type.replace(/_/g, ' ')}
                   </td>
                   <td className="p-3 max-w-xs">
-                    <p className="font-bold text-slate-900 dark:text-white">{anom.title}</p>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">{anom.description}</p>
+                    <p className="font-bold text-slate-900 dark:text-white text-sm">{anom.title}</p>
+                    <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-tight mt-0.5">{anom.description}</p>
                   </td>
-                  <td className="p-3 font-semibold text-slate-800 dark:text-slate-200 font-mono">{anom.entityId}</td>
-                  <td className="p-3 text-slate-500 dark:text-slate-400">{anom.timestamp}</td>
+                  <td className="p-3 font-semibold text-slate-800 dark:text-slate-200 font-mono text-xs">{anom.entityId}</td>
+                  <td className="p-3 text-slate-600 dark:text-slate-400 text-xs font-medium">{anom.timestamp}</td>
                   <td className="p-3 text-right">
                     <button
                       onClick={() => toggleResolve(anom.id)}
