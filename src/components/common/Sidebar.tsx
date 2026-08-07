@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
@@ -31,14 +31,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileMenuOpen = false, onCl
   const location = useLocation();
   const navigate = useNavigate();
   const userRole = role || 'shipper';
-  const [selectedRoleView, setSelectedRoleView] = useState<UserRole>(userRole);
-
-  const roleOptions: { role: UserRole; label: string; icon: React.ReactNode; color: string }[] = [
-    { role: 'driver', label: 'Driver', icon: <Truck className="w-3.5 h-3.5" />, color: '#22C55E' },
-    { role: 'shipper', label: 'Shipper', icon: <PackageCheck className="w-3.5 h-3.5" />, color: '#6D4AFF' },
-    { role: 'fleet', label: 'Fleet', icon: <Building2 className="w-3.5 h-3.5" />, color: '#F97316' },
-    { role: 'admin', label: 'Admin', icon: <ShieldAlert className="w-3.5 h-3.5" />, color: '#EF4444' },
-  ];
 
   const dashboardItems: Record<UserRole, NavItem> = {
     driver: { label: t.driverPortal, path: '/dashboard/driver', targetId: 'top', icon: <Truck className="w-4 h-4" />, roleAllowed: 'driver', color: '#22C55E' },
@@ -95,56 +87,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileMenuOpen = false, onCl
     if (onCloseMobile) onCloseMobile();
   };
 
-  const activeDisplayRole: UserRole = selectedRoleView || userRole;
-  const currentDashboardItem = dashboardItems[activeDisplayRole];
-  const currentAiItems = aiIntelligenceItems[activeDisplayRole] || [];
-
+  const currentDashboardItem = dashboardItems[userRole];
+  const currentAiItems = aiIntelligenceItems[userRole] || [];
 
   const sidebarContent = (
     <div className="flex flex-col h-full justify-between gap-6">
       <div className="space-y-6">
-        {/* Role Switcher & Selector */}
-        <div>
-          <div className="flex items-center justify-between px-2 mb-2">
-            <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#6B7280]">
-              Role Modules
-            </h4>
-            <span className="text-[10px] font-semibold text-[#6D4AFF] bg-[#EDE9FE] px-2 py-0.5 rounded-full border border-[#DDD6FE]">
-              Active: {userRole}
-            </span>
-          </div>
-
-          <div className="grid grid-cols-4 gap-1 p-1 rounded-xl bg-[#F3F4F6] border border-[#E5E7EB]">
-            {roleOptions.map((ro) => {
-              const isActiveRole = userRole === ro.role;
-              return (
-                <button
-                  key={ro.role}
-                  type="button"
-                  onClick={() => {
-                    if (userRole !== ro.role) {
-                      loginAsRole(ro.role);
-                      navigate(`/dashboard/${ro.role}`);
-                    }
-                    setSelectedRoleView(ro.role);
-                    if (onCloseMobile) onCloseMobile();
-                  }}
-                  className={clsx(
-                    'flex flex-col items-center justify-center p-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer',
-                    isActiveRole
-                      ? 'bg-white text-[#111827] shadow-sm border border-[#E5E7EB]'
-                      : 'text-[#6B7280] hover:text-[#111827] hover:bg-white/50'
-                  )}
-                  title={`Switch to ${ro.label} role`}
-                >
-                  <span style={{ color: isActiveRole ? ro.color : undefined }}>{ro.icon}</span>
-                  <span className="text-[9px] mt-0.5 capitalize truncate">{ro.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
         {/* Current Workspace Link */}
         <div>
           <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#6B7280] px-2 mb-2">
@@ -153,9 +101,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileMenuOpen = false, onCl
           <NavLink
             to={currentDashboardItem.path}
             onClick={() => {
-              if (userRole !== activeDisplayRole) {
-                loginAsRole(activeDisplayRole);
-              }
               if (onCloseMobile) onCloseMobile();
             }}
             className={clsx(
@@ -196,7 +141,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileMenuOpen = false, onCl
                 <button
                   key={idx}
                   type="button"
-                  onClick={() => handleNavigateToAiModule(activeDisplayRole, item.targetId)}
+                  onClick={() => handleNavigateToAiModule(userRole, item.targetId)}
                   className={clsx(
                     'w-full text-left flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-semibold transition-all group cursor-pointer border',
                     isActive

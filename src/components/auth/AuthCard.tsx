@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import type { UserRole } from '../../types';
 import { isSupabaseConfigured, supabase } from '../../services/supabaseClient';
 import {
-  Sparkles, ArrowRight, Mail, Lock, User as UserIcon,
+  ArrowRight, Mail, Lock, User as UserIcon,
   Eye, EyeOff, Truck, Package, Building2, Shield,
   CheckCircle2, AlertCircle, Loader2, Globe, ChevronDown
 } from 'lucide-react';
@@ -289,14 +289,6 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
   const t = TRANSLATIONS[lang];
   const activeLangObj = LANGUAGES.find(l => l.code === lang) || LANGUAGES[0];
 
-  const fillDemoTile = (option: RoleOption) => {
-    setEmail(option.email);
-    setPassword(option.pass);
-    setSelectedRole(option.role);
-    setError('');
-    setSuccess('');
-  };
-
   const handleEmailChange = (val: string) => {
     setEmail(val);
     setError('');
@@ -440,45 +432,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
         </div>
       </div>
 
-      {/* 1-Click Quick Demo Shortcuts */}
-      <div className="p-4 bg-[#F9FAFB] rounded-2xl border border-[#E5E7EB] space-y-3">
-        <div className="flex items-center justify-between">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-[#6B7280] flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-[#F97316]" />
-            {t.quickDemo}
-          </span>
-          <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#EDE9FE] text-[#6D4AFF] border border-[#DDD6FE]">
-            {t.instantAuth}
-          </span>
-        </div>
 
-        <div className="grid grid-cols-2 gap-2">
-          {ROLE_OPTIONS.map((opt) => {
-            const active = email === opt.email && selectedRole === opt.role;
-            return (
-              <button
-                key={opt.role}
-                type="button"
-                onClick={() => fillDemoTile(opt)}
-                className={`flex items-center gap-2.5 p-2.5 rounded-xl text-left transition-all border cursor-pointer ${
-                  active
-                    ? 'bg-[#EDE9FE] border-[#6D4AFF] shadow-sm'
-                    : 'bg-white border-[#E5E7EB] hover:bg-[#F5F3FF] hover:border-[#DDD6FE]'
-                }`}
-              >
-                <span className={active ? 'text-[#6D4AFF]' : ''} style={!active ? { color: opt.color } : {}}>{opt.icon}</span>
-                <div className="min-w-0 flex-1">
-                  <p className={`text-xs font-semibold truncate ${active ? 'text-[#6D4AFF]' : 'text-[#111827]'}`}>
-                    {t[opt.labelKey]}
-                  </p>
-                  <p className="text-[9px] text-[#6B7280] truncate">{opt.email}</p>
-                </div>
-                {active && <CheckCircle2 className="w-3.5 h-3.5 shrink-0 text-[#6D4AFF]" />}
-              </button>
-            );
-          })}
-        </div>
-      </div>
 
       {/* Form Tabs */}
       <div className="flex p-1 bg-[#F3F4F6] rounded-full border border-[#E5E7EB]">
