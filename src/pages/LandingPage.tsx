@@ -4,7 +4,8 @@ import { motion } from 'framer-motion';
 import {
   Sparkles, Database, RotateCcw, FileCheck, MapPin,
   TrendingUp, ShieldAlert, Bot, ArrowRight, ShieldCheck,
-  Truck, CheckCircle2, Award, Building2, UserCheck, ChevronRight, Zap
+  Truck, CheckCircle2, Award, Building2, UserCheck, ChevronRight, Zap,
+  Mail, Headphones, Briefcase, Handshake
 } from 'lucide-react';
 import { Badge } from '../components/common/Badge';
 import { TruckLogo } from '../components/common/TruckLogo';
@@ -406,6 +407,208 @@ export const LandingPage: React.FC = () => {
         </motion.div>
 
       </div>
+
+      {/* ═══ FOOTER SECTION ════════════════════════════════════════ */}
+      <motion.footer
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.3 }}
+        className="bg-white border-t border-[#E5E7EB] relative z-10 text-[#111827] mt-16"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12 space-y-16">
+
+          {/* 3-Column Top Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
+
+            {/* LEFT SECTION */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2.5">
+                <TruckLogo size="sm" />
+                <span className="font-black text-xl tracking-tight text-[#111827]">CargoLoop</span>
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EDE9FE] text-[#6D4AFF] border border-[#DDD6FE]">
+                  <Zap className="w-2.5 h-2.5" />
+                  AI
+                </span>
+              </div>
+              <p className="text-sm text-[#6B7280] leading-relaxed font-normal">
+                AI-powered logistics intelligence platform connecting shippers, carriers, and fleet operators through smart automation, predictive analytics, and real-time freight optimization.
+              </p>
+            </div>
+
+            {/* CENTER SECTION */}
+            <div className="space-y-4">
+              <h4 className="text-base font-bold text-[#111827] tracking-tight">
+                Quick Links
+              </h4>
+              <ul className="grid grid-cols-2 gap-2.5 text-sm text-[#6B7280]">
+                {[
+                  { label: 'About Us', href: '#' },
+                  { label: 'Features', href: '#features-grid' },
+                  { label: 'Pricing', href: '#' },
+                  { label: 'Solutions', href: '#' },
+                  { label: 'Privacy Policy', href: '#' },
+                  { label: 'Terms & Conditions', href: '#' },
+                  { label: 'Contact Us', href: '#contact-section' },
+                ].map((link) => (
+                  <li key={link.label}>
+                    <a
+                      href={link.href}
+                      className="hover:text-[#6D4AFF] hover:translate-x-1 transition-all duration-200 inline-block font-medium cursor-pointer"
+                    >
+                      • {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* RIGHT SECTION */}
+            <div id="contact-section" className="space-y-4">
+              <h4 className="text-base font-bold text-[#111827] tracking-tight">
+                Contact Us
+              </h4>
+              <div className="space-y-2 text-sm">
+                <a
+                  href="mailto:support@cargoloop.ai"
+                  className="flex items-center gap-3 p-2 rounded-xl text-[#6B7280] hover:text-[#6D4AFF] hover:bg-[#F5F3FF] transition-all group"
+                >
+                  <div className="w-8 h-8 rounded-lg bg-[#F5F3FF] border border-[#EDE9FE] flex items-center justify-center text-[#6D4AFF] group-hover:scale-105 transition-transform">
+                    <Headphones className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF]">Support</p>
+                    <p className="font-semibold text-[#111827] group-hover:text-[#6D4AFF] transition-colors">support@cargoloop.ai</p>
+                  </div>
+                </a>
+
+                <a
+                  href="mailto:business@cargoloop.ai"
+                  className="flex items-center gap-3 p-2 rounded-xl text-[#6B7280] hover:text-[#6D4AFF] hover:bg-[#F5F3FF] transition-all group"
+                >
+                  <div className="w-8 h-8 rounded-lg bg-[#F5F3FF] border border-[#EDE9FE] flex items-center justify-center text-[#6D4AFF] group-hover:scale-105 transition-transform">
+                    <Briefcase className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF]">Business</p>
+                    <p className="font-semibold text-[#111827] group-hover:text-[#6D4AFF] transition-colors">business@cargoloop.ai</p>
+                  </div>
+                </a>
+
+                <a
+                  href="mailto:sales@cargoloop.ai"
+                  className="flex items-center gap-3 p-2 rounded-xl text-[#6B7280] hover:text-[#6D4AFF] hover:bg-[#F5F3FF] transition-all group"
+                >
+                  <div className="w-8 h-8 rounded-lg bg-[#F5F3FF] border border-[#EDE9FE] flex items-center justify-center text-[#6D4AFF] group-hover:scale-105 transition-transform">
+                    <Mail className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF]">Sales</p>
+                    <p className="font-semibold text-[#111827] group-hover:text-[#6D4AFF] transition-colors">sales@cargoloop.ai</p>
+                  </div>
+                </a>
+
+                <a
+                  href="mailto:partners@cargoloop.ai"
+                  className="flex items-center gap-3 p-2 rounded-xl text-[#6B7280] hover:text-[#6D4AFF] hover:bg-[#F5F3FF] transition-all group"
+                >
+                  <div className="w-8 h-8 rounded-lg bg-[#F5F3FF] border border-[#EDE9FE] flex items-center justify-center text-[#6D4AFF] group-hover:scale-105 transition-transform">
+                    <Handshake className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF]">Partnerships</p>
+                    <p className="font-semibold text-[#111827] group-hover:text-[#6D4AFF] transition-colors">partners@cargoloop.ai</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* SOCIAL MEDIA SECTION */}
+          <div className="pt-8 border-t border-[#F3F4F6] text-center space-y-4">
+            <h4 className="text-xs font-bold uppercase tracking-widest text-[#6B7280]">
+              Follow Us
+            </h4>
+            <div className="flex items-center justify-center gap-3">
+              {[
+                {
+                  name: 'LinkedIn',
+                  icon: (
+                    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.25V10.9H6.46M7.86 6.78a1.63 1.63 0 1 0 0 3.26 1.63 1.63 0 0 0 0-3.26Z" />
+                    </svg>
+                  ),
+                  href: 'https://linkedin.com',
+                },
+                {
+                  name: 'X (Twitter)',
+                  icon: (
+                    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                    </svg>
+                  ),
+                  href: 'https://x.com',
+                },
+                {
+                  name: 'Instagram',
+                  icon: (
+                    <svg className="w-4 h-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+                      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+                    </svg>
+                  ),
+                  href: 'https://instagram.com',
+                },
+                {
+                  name: 'YouTube',
+                  icon: (
+                    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                    </svg>
+                  ),
+                  href: 'https://youtube.com',
+                },
+                {
+                  name: 'Facebook',
+                  icon: (
+                    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                    </svg>
+                  ),
+                  href: 'https://facebook.com',
+                },
+              ].map((social) => (
+                <a
+                  key={social.name}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={social.name}
+                  className="w-10 h-10 rounded-2xl bg-[#F9FAFB] border border-[#E5E7EB] flex items-center justify-center text-[#6B7280] hover:text-[#6D4AFF] hover:bg-[#F5F3FF] hover:border-[#DDD6FE] hover:scale-110 transition-all duration-200 cursor-pointer"
+                >
+                  {social.icon}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* BOTTOM BAR */}
+          <div className="pt-8 border-t border-[#E5E7EB] text-center text-xs text-[#6B7280] space-y-1.5 font-medium">
+            <p>© 2026 CargoLoop. All rights reserved.</p>
+            <p>
+              Developed by{' '}
+              <span
+                className="bg-clip-text text-transparent font-bold"
+                style={{ backgroundImage: 'linear-gradient(135deg, #6D4AFF 0%, #8B5CF6 100%)' }}
+              >
+                Code Conquerers
+              </span>
+            </p>
+          </div>
+
+        </div>
+      </motion.footer>
     </div>
   );
 };
