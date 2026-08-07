@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { Truck, TruckStatus } from '../../types';
-import { Navigation, Thermometer, Maximize2, Clock, Gauge, Fuel, X } from 'lucide-react';
+import { Navigation, Maximize2 } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import clsx from 'clsx';
@@ -100,7 +100,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
   activeRoute,
   singleRouteOnly = false,
   onSelectTruck,
-  onCloseRoute,
+  onCloseRoute: _onCloseRoute,
   className,
 }) => {
   const [activeFilter, setActiveFilter] = useState<TruckStatus | 'all'>('all');
@@ -281,19 +281,17 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
     });
   };
 
-  const isNavActive = Boolean(activeRoute || selectedTruck);
   const activeTruckTitle = activeRoute?.truckId || selectedTruck?.plateNumber || 'TRK-02';
   const activeDriverName = activeRoute?.driverName || selectedTruck?.driverName || 'Carlos Rivera';
-  const activeSpeed = activeRoute?.speedKmH || 94;
-  const activeEta = activeRoute?.nextStopEta || (selectedTruck?.etaMinutes ? `${selectedTruck.etaMinutes}m` : '1h 36m');
-  const activeTemp = activeRoute?.temperatureC !== undefined ? `${activeRoute.temperatureC}°C` : (selectedTruck?.temperatureControlled ? '4°C' : 'Ambient');
-  const activeFuel = activeRoute?.fuelPercent || 67;
 
   return (
     <div className={clsx('relative rounded-2xl overflow-hidden shadow-2xl border border-slate-800 bg-slate-950 font-sans', className)}>
       
       {/* ── 1. Top Legend Overlay ── */}
-      <div className="absolute top-4 left-4 z-[400] bg-slate-900/90 backdrop-blur-md px-3.5 py-2 rounded-xl border border-slate-800 shadow-2xl flex items-center gap-4 text-xs text-white font-bold">
+      <div
+        className="absolute top-4 left-4 z-[400] backdrop-blur-md px-3.5 py-2 rounded-xl border shadow-2xl flex items-center gap-4 text-xs font-bold"
+        style={{ backgroundColor: '#0f172a', color: '#ffffff', borderColor: '#334155' }}
+      >
         <span className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-xs bg-cyan-400 shadow-glow-blue inline-block" />
           <span>On Route</span>
@@ -310,7 +308,10 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
       {/* Map Filter Controls */}
       {!singleRouteOnly && !activeRoute && (
-        <div className="absolute top-4 right-4 z-[400] flex items-center gap-1.5 bg-slate-900/90 backdrop-blur-md p-1.5 rounded-xl border border-slate-800 shadow-md text-xs">
+        <div
+          className="absolute top-4 right-4 z-[400] flex items-center gap-1.5 backdrop-blur-md p-1.5 rounded-xl border shadow-md text-xs"
+          style={{ backgroundColor: '#0f172a', color: '#ffffff', borderColor: '#334155' }}
+        >
           {(['all', 'available', 'in-transit'] as const).map((st) => (
             <button
               key={st}
@@ -331,53 +332,6 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
           >
             <Maximize2 className="w-3.5 h-3.5 text-cyan-400" />
           </button>
-        </div>
-      )}
-
-      {/* ── 2. Bottom Floating Telemetry HUD Card ── */}
-      {isNavActive && (
-        <div className="absolute bottom-4 left-4 z-[400] bg-slate-900/95 backdrop-blur-xl p-4.5 rounded-2xl border border-slate-800 shadow-2xl text-white w-72 sm:w-80 space-y-3 font-sans animate-in slide-in-from-bottom duration-300">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 font-black text-sm text-white">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>{activeTruckTitle} • {activeDriverName}</span>
-            </div>
-            {onCloseRoute && (
-              <button onClick={onCloseRoute} className="p-1 text-slate-400 hover:text-white transition-colors cursor-pointer" title="Close Navigation View">
-                <X className="w-4 h-4" />
-              </button>
-            )}
-          </div>
-
-          <div className="grid grid-cols-2 gap-3 pt-2.5 border-t border-slate-800/80 text-xs">
-            <div>
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5 text-slate-400" /> Next Stop
-              </span>
-              <p className="font-black text-sm text-white mt-0.5">{activeEta}</p>
-            </div>
-
-            <div>
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1">
-                <Gauge className="w-3.5 h-3.5 text-slate-400" /> Speed
-              </span>
-              <p className="font-black text-sm text-white mt-0.5">{activeSpeed} km/h</p>
-            </div>
-
-            <div>
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1">
-                <Thermometer className="w-3.5 h-3.5 text-slate-400" /> Temperature
-              </span>
-              <p className="font-black text-sm text-white mt-0.5">{activeTemp}</p>
-            </div>
-
-            <div>
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1">
-                <Fuel className="w-3.5 h-3.5 text-slate-400" /> Fuel
-              </span>
-              <p className="font-black text-sm text-white mt-0.5">{activeFuel}%</p>
-            </div>
-          </div>
         </div>
       )}
 
