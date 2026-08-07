@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import type { UserRole } from '../../types';
@@ -316,8 +316,6 @@ interface RoleOption {
   icon: React.ReactNode;
   color: string;
   bg: string;
-  email: string;
-  pass: string;
 }
 
 const ROLE_OPTIONS: RoleOption[] = [
@@ -327,8 +325,6 @@ const ROLE_OPTIONS: RoleOption[] = [
     icon: <Truck className="w-4 h-4" />,
     color: '#0D9488',
     bg: '#CCFBF1',
-    email: 'driver@cargoloop.ai',
-    pass: 'demo1234',
   },
   {
     role: 'shipper',
@@ -336,8 +332,6 @@ const ROLE_OPTIONS: RoleOption[] = [
     icon: <Package className="w-4 h-4" />,
     color: '#2563EB',
     bg: '#EFF6FF',
-    email: 'shipper@cargoloop.ai',
-    pass: 'demo1234',
   },
   {
     role: 'fleet',
@@ -345,8 +339,6 @@ const ROLE_OPTIONS: RoleOption[] = [
     icon: <Building2 className="w-4 h-4" />,
     color: '#D97706',
     bg: '#FEF3C7',
-    email: 'fleet@cargoloop.ai',
-    pass: 'demo1234',
   },
   {
     role: 'admin',
@@ -354,8 +346,6 @@ const ROLE_OPTIONS: RoleOption[] = [
     icon: <Shield className="w-4 h-4" />,
     color: '#DC2626',
     bg: '#FEE2E2',
-    email: 'admin@cargoloop.ai',
-    pass: 'demo1234',
   },
 ];
 
@@ -375,27 +365,19 @@ interface RegisteredAccount {
   role: UserRole;
 }
 
-const DEFAULT_ACCOUNTS: RegisteredAccount[] = [
-  { email: 'driver@cargoloop.ai', name: 'Rajesh Kumar (Driver)', pass: 'demo1234', role: 'driver' },
-  { email: 'shipper@cargoloop.ai', name: 'Vikram Malhotra (Shipper)', pass: 'demo1234', role: 'shipper' },
-  { email: 'fleet@cargoloop.ai', name: 'Ananya Deshmukh (Fleet Owner)', pass: 'demo1234', role: 'fleet' },
-  { email: 'admin@cargoloop.ai', name: 'Siddharth V. (System Admin)', pass: 'demo1234', role: 'admin' },
-];
-
 function getRegisteredAccounts(): RegisteredAccount[] {
   const saved = localStorage.getItem('cargoloop_registered_users');
   if (saved) {
     try {
       const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed)) {
         return parsed;
       }
     } catch (e) {
       console.error('Error reading registered users:', e);
     }
   }
-  localStorage.setItem('cargoloop_registered_users', JSON.stringify(DEFAULT_ACCOUNTS));
-  return DEFAULT_ACCOUNTS;
+  return [];
 }
 
 function saveRegisteredAccount(acc: RegisteredAccount) {
@@ -458,11 +440,10 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
     }
     return 'shipper';
   })();
-  const initialRoleOpt = ROLE_OPTIONS.find((o) => o.role === initialRole) || ROLE_OPTIONS[1];
 
   const [selectedRole, setSelectedRole] = useState<UserRole>(initialRole);
-  const [email, setEmail] = useState(initialTab === 'signup' ? '' : initialRoleOpt.email);
-  const [password, setPassword] = useState(initialTab === 'signup' ? '' : initialRoleOpt.pass);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [otpInput, setOtpInput] = useState('123456');
   const [newPassword, setNewPassword] = useState('');
@@ -477,27 +458,13 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
   const t = TRANSLATIONS[lang];
   const activeLangObj = LANGUAGES.find(l => l.code === lang) || LANGUAGES[0];
 
-  useEffect(() => {
-    if (tab === 'signup') {
-      setEmail('');
-      setPassword('');
-      setFullName('');
-    }
-  }, [tab, selectedRole]);
-
   const switchTab = (targetTab: 'signin' | 'signup' | 'forgot') => {
     setTab(targetTab);
     setError('');
     setSuccess('');
-    if (targetTab === 'signup') {
-      setEmail('');
-      setPassword('');
-      setFullName('');
-    } else if (targetTab === 'signin') {
-      const activeRoleOpt = ROLE_OPTIONS.find((o) => o.role === selectedRole) || ROLE_OPTIONS[1];
-      setEmail(activeRoleOpt.email);
-      setPassword(activeRoleOpt.pass);
-    }
+    setEmail('');
+    setPassword('');
+    setFullName('');
   };
 
   const handleEmailChange = (val: string) => {
@@ -580,7 +547,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
         return;
       }
 
-      if (userAcc.pass !== password && password !== 'demo1234') {
+      if (userAcc.pass !== password) {
         setError('Incorrect password. Please verify your password and try again.');
         return;
       }
@@ -840,13 +807,6 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
                     type="button"
                     onClick={() => {
                       setSelectedRole(opt.role);
-                      if (tab === 'signin') {
-                        setEmail(opt.email);
-                        setPassword(opt.pass);
-                      } else {
-                        setEmail('');
-                        setPassword('');
-                      }
                       setError('');
                     }}
                     className={`flex flex-col items-center justify-center p-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
