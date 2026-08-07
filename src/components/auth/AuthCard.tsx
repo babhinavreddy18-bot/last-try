@@ -469,6 +469,21 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
   const t = TRANSLATIONS[lang];
   const activeLangObj = LANGUAGES.find(l => l.code === lang) || LANGUAGES[0];
 
+  const switchTab = (targetTab: 'signin' | 'signup' | 'forgot') => {
+    setTab(targetTab);
+    setError('');
+    setSuccess('');
+    if (targetTab === 'signup') {
+      setEmail('');
+      setPassword('');
+      setFullName('');
+    } else if (targetTab === 'signin') {
+      const activeRoleOpt = ROLE_OPTIONS.find((o) => o.role === selectedRole) || ROLE_OPTIONS[1];
+      setEmail(activeRoleOpt.email);
+      setPassword(activeRoleOpt.pass);
+    }
+  };
+
   const handleEmailChange = (val: string) => {
     setEmail(val);
     setError('');
@@ -758,7 +773,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
             <button
               key={tabKey}
               type="button"
-              onClick={() => { setTab(tabKey); setError(''); setSuccess(''); }}
+              onClick={() => switchTab(tabKey)}
               className={`flex-1 py-2 text-xs font-bold rounded-full transition-all cursor-pointer ${
                 tab === tabKey
                   ? 'text-white shadow-sm'
@@ -809,8 +824,10 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
                     type="button"
                     onClick={() => {
                       setSelectedRole(opt.role);
-                      setEmail(opt.email);
-                      setPassword(opt.pass);
+                      if (tab === 'signin') {
+                        setEmail(opt.email);
+                        setPassword(opt.pass);
+                      }
                       setError('');
                     }}
                     className={`flex flex-col items-center justify-center p-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
@@ -1156,7 +1173,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
             </span>
             <button
               type="button"
-              onClick={() => { setTab(tab === 'signin' ? 'signup' : 'signin'); setError(''); }}
+              onClick={() => switchTab(tab === 'signin' ? 'signup' : 'signin')}
               className="text-[#6D4AFF] font-bold hover:underline cursor-pointer"
             >
               {tab === 'signin' ? 'Sign up' : 'Sign in'}
