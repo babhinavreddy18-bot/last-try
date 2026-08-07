@@ -36,15 +36,18 @@ export const Layout: React.FC = () => {
       />
 
       {/* Main Layout Wrapper: Fixed Left Navbar + Content Area */}
-      <div className="flex flex-1 pt-16 relative z-10">
+      <div className="flex flex-1 pt-16 relative z-10 min-h-screen">
         <Sidebar
           isMobileMenuOpen={isMobileMenuOpen}
           onCloseMobile={() => setIsMobileMenuOpen(false)}
         />
 
-        <main className="flex-1 md:pl-64 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full min-w-0">
-          <Outlet />
-        </main>
+        {/* Content Area offset by fixed left sidebar margin */}
+        <div className="flex-1 md:ml-64 w-full min-w-0 flex flex-col">
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+            <Outlet />
+          </main>
+        </div>
       </div>
 
       <AICopilotDrawer isOpen={isCopilotOpen} onClose={() => setIsCopilotOpen(false)} />
