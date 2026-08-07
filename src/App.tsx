@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Layout } from './components/common/Layout';
 import { AuthPage } from './pages/AuthPage';
@@ -24,29 +24,26 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; allowedRole: UserRol
   children,
   allowedRole,
 }) => {
-  const { isAuthenticated, user, switchActiveRole } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   if (!isAuthenticated || !user) {
     return <Navigate to="/auth" replace />;
   }
 
-  // 🔓 Allow ONE signup email to open EVERY module role profile dynamically!
+  // 🛑 STRICT ROLE BOUNDARY: Lock access to user's registered role profile only
   if (allowedRole && user.role !== allowedRole) {
-    switchActiveRole(allowedRole);
+    return <Navigate to={`/dashboard/${user.role}`} replace />;
   }
 
   return <Suspense fallback={<PageFallback />}>{children}</Suspense>;
 };
 
-// ── Public Auth Route (Redirects authenticated users unless selecting target role) ──────
+// ── Public Auth Route (Redirects authenticated users to their specific role dashboard) ──────
 
 const PublicAuthRoute: React.FC = () => {
   const { isAuthenticated, user } = useAuth();
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const targetRoleParam = searchParams.get('role');
 
-  if (isAuthenticated && user && !targetRoleParam) {
+  if (isAuthenticated && user) {
     return <Navigate to={`/dashboard/${user.role}`} replace />;
   }
 

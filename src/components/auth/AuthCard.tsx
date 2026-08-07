@@ -472,6 +472,17 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
   const handleEmailChange = (val: string) => {
     setEmail(val);
     setError('');
+    const clean = val.trim().toLowerCase();
+    const accounts = getRegisteredAccounts();
+    const existing = accounts.find(a => a.email.toLowerCase() === clean);
+    if (existing) {
+      setSelectedRole(existing.role);
+    } else {
+      const inferred = inferRoleFromEmail(val);
+      if (inferred) {
+        setSelectedRole(inferred);
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -506,7 +517,15 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
         setError('Please enter your full name for sign up.');
         return;
       }
-      // Save new registered account with target role
+      const existing = accounts.find(a => a.email.toLowerCase() === cleanEmail);
+      if (existing) {
+        const registeredRoleObj = ROLE_OPTIONS.find(r => r.role === existing.role);
+        const registeredRoleLabel = registeredRoleObj ? t[registeredRoleObj.labelKey] : existing.role;
+        setError(`This email is already registered as ${registeredRoleLabel}. Please Sign In with the ${registeredRoleLabel} role or try a different email.`);
+        return;
+      }
+
+      // Save new registered account locked to selectedRole
       const newAcc: RegisteredAccount = {
         email: cleanEmail,
         name: fullName.trim(),
@@ -515,26 +534,24 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
       };
       saveRegisteredAccount(newAcc);
     } else {
-      // Sign In validation: Flexible role access allowing ANY email to open the selected role profile
+      // Sign In validation: verify user exists & target module role strictly matches registered role!
       const userAcc = accounts.find(a => a.email.toLowerCase() === cleanEmail);
-      if (userAcc) {
-        if (userAcc.pass !== password && password !== 'demo1234') {
-          setError('Incorrect password. Please verify your password and try again.');
-          return;
-        }
-        // Save/update account to selected target role module
-        userAcc.role = selectedRole;
-        saveRegisteredAccount(userAcc);
-      } else {
-        // Auto-register new email for selected target role module
-        const formattedName = cleanEmail.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        const newAcc: RegisteredAccount = {
-          email: cleanEmail,
-          name: formattedName || 'Logistics User',
-          pass: password,
-          role: selectedRole,
-        };
-        saveRegisteredAccount(newAcc);
+      if (!userAcc) {
+        setError('No registered account found with this email. Please Sign Up first to create your account.');
+        return;
+      }
+
+      // STRICT ROLE LOCK: If email belongs to driver (or another role), DO NOT authenticate other module roles!
+      if (userAcc.role !== selectedRole) {
+        const registeredRoleObj = ROLE_OPTIONS.find(r => r.role === userAcc.role);
+        const registeredRoleLabel = registeredRoleObj ? t[registeredRoleObj.labelKey] : userAcc.role;
+        setError(`This email is already registered as ${registeredRoleLabel}. Please select the ${registeredRoleLabel} role or try a different email.`);
+        return;
+      }
+
+      if (userAcc.pass !== password && password !== 'demo1234') {
+        setError('Incorrect password. Please verify your password and try again.');
+        return;
       }
     }
 
@@ -574,7 +591,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
 
     const accountsLatest = getRegisteredAccounts();
     const activeAcc = accountsLatest.find(a => a.email.toLowerCase() === cleanEmail);
-    const roleToLogin = selectedRole;
+    const roleToLogin = activeAcc ? activeAcc.role : selectedRole;
     const nameToLogin = activeAcc?.name || fullName || undefined;
 
     const roleName = t[ROLE_OPTIONS.find(r => r.role === roleToLogin)?.labelKey || 'shipperRole'];
