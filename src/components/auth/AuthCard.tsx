@@ -531,24 +531,48 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
       {/* Auth Form */}
       <form onSubmit={handleSubmit} className="space-y-4" autoComplete="on">
 
-        {/* Single Target Role Module Selection Dropdown */}
-        <div className="space-y-1">
+        {/* Target Role Module — Horizontal Individual Buttons */}
+        <div className="space-y-1.5">
           <div className="flex items-center justify-between text-xs px-1">
             <span className="font-bold text-[#374151]">Target Role Module</span>
-            <span className="text-[10px] font-semibold text-[#6D4AFF] bg-[#EDE9FE] px-2 py-0.5 rounded-full border border-[#DDD6FE]">1 Role Module</span>
+            <span className="text-[10px] font-semibold text-[#6D4AFF] bg-[#EDE9FE] px-2 py-0.5 rounded-full border border-[#DDD6FE] capitalize">
+              {selectedRole}
+            </span>
           </div>
-          <div className="relative">
-            <select
-              value={selectedRole}
-              onChange={(e) => setSelectedRole(e.target.value as UserRole)}
-              className="w-full pl-4 pr-10 py-3 text-sm font-semibold rounded-2xl border border-[#E5E7EB] bg-white text-[#111827] focus:border-[#6D4AFF] focus:ring-2 focus:ring-[#6D4AFF]/15 focus:outline-none transition-all cursor-pointer appearance-none"
-            >
-              <option value="shipper">📦 Shipper Logistics Hub</option>
-              <option value="driver">🚚 Driver Companion App</option>
-              <option value="fleet">🏢 Fleet Command Center</option>
-              <option value="admin">🛡️ Admin Risk & Telemetry</option>
-            </select>
-            <ChevronDown className="w-4 h-4 absolute right-4 top-3.5 text-[#6B7280] pointer-events-none" />
+
+          <div className="grid grid-cols-4 gap-1.5 p-1.5 bg-[#F9FAFB] rounded-2xl border border-[#E5E7EB]">
+            {ROLE_OPTIONS.map((opt) => {
+              const isSelected = selectedRole === opt.role;
+              return (
+                <button
+                  key={opt.role}
+                  type="button"
+                  onClick={() => {
+                    setSelectedRole(opt.role);
+                    setError('');
+                  }}
+                  className={`flex flex-col items-center justify-center p-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
+                    isSelected
+                      ? 'bg-white text-[#111827] border-[#6D4AFF] shadow-sm ring-2 ring-[#6D4AFF]/20 scale-[1.02]'
+                      : 'bg-white/60 text-[#6B7280] border-transparent hover:bg-white hover:text-[#111827] hover:border-[#E5E7EB]'
+                  }`}
+                  title={`Select ${t[opt.labelKey]} role module`}
+                >
+                  <span
+                    className="p-1.5 rounded-lg mb-1 transition-colors"
+                    style={{
+                      background: isSelected ? `${opt.color}18` : '#F3F4F6',
+                      color: opt.color,
+                    }}
+                  >
+                    {opt.icon}
+                  </span>
+                  <span className="text-[10px] font-bold tracking-tight text-center leading-none">
+                    {t[opt.labelKey]}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
