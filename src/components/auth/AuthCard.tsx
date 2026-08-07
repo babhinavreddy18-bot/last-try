@@ -570,7 +570,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
 
     const accountsLatest = getRegisteredAccounts();
     const activeAcc = accountsLatest.find(a => a.email.toLowerCase() === cleanEmail);
-    const roleToLogin = activeAcc?.role || selectedRole;
+    const roleToLogin = selectedRole;
     const nameToLogin = activeAcc?.name || fullName || undefined;
 
     const roleName = t[ROLE_OPTIONS.find(r => r.role === roleToLogin)?.labelKey || 'shipperRole'];
@@ -788,6 +788,8 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
                     type="button"
                     onClick={() => {
                       setSelectedRole(opt.role);
+                      setEmail(opt.email);
+                      setPassword(opt.pass);
                       setError('');
                     }}
                     className={`flex flex-col items-center justify-center p-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${

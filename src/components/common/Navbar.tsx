@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage, LANGUAGES } from '../../context/LanguageContext';
 import type { UserRole } from '../../types';
@@ -17,11 +17,13 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot, onToggleMobileMenu }) => {
-  const { user, role, logout } = useAuth();
+  const { user, role, logout, loginAsRole } = useAuth();
   const { lang, setLang, t } = useLanguage();
   const location = useLocation();
+  const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showLangDropdown, setShowLangDropdown] = useState(false);
+  const [showRoleDropdown, setShowRoleDropdown] = useState(false);
 
   const activeRole = role || 'shipper';
   const activeLangObj = LANGUAGES.find(l => l.code === lang) || LANGUAGES[0];
@@ -72,18 +74,52 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot, onToggleMobileMen
           </div>
         </Link>
 
-        {/* Role badge — authenticated only */}
+        {/* Role badge with target profile switcher dropdown — authenticated only */}
         {!isUnauthenticatedPage && (
-          <div
-            className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold border"
-            style={{
-              background: `${roleColors[activeRole]}14`,
-              color: roleColors[activeRole],
-              borderColor: `${roleColors[activeRole]}30`,
-            }}
-          >
-            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: roleColors[activeRole] }} />
-            <span className="capitalize">{activeRole}</span>
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setShowRoleDropdown(!showRoleDropdown)}
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold border transition-all cursor-pointer hover:shadow-xs"
+              style={{
+                background: `${roleColors[activeRole]}14`,
+                color: roleColors[activeRole],
+                borderColor: `${roleColors[activeRole]}30`,
+              }}
+              title="Switch Target Module Profile"
+            >
+              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: roleColors[activeRole] }} />
+              <span className="capitalize">{activeRole} Profile</span>
+              <ChevronDown className="w-3 h-3 opacity-70" />
+            </button>
+
+            {showRoleDropdown && (
+              <div className="absolute left-0 mt-2 w-48 rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_8px_28px_rgba(109,74,255,0.12)] p-2 z-50 space-y-1">
+                <div className="px-2 py-1 text-[10px] uppercase font-bold text-[#6B7280] tracking-wider">
+                  Target Module Profiles
+                </div>
+                {(['driver', 'shipper', 'fleet', 'admin'] as const).map((r) => (
+                  <button
+                    key={r}
+                    type="button"
+                    onClick={() => {
+                      setShowRoleDropdown(false);
+                      loginAsRole(r);
+                      navigate(`/dashboard/${r}`);
+                    }}
+                    className={clsx(
+                      'w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer capitalize',
+                      activeRole === r
+                        ? 'bg-[#6D4AFF] text-white'
+                        : 'text-[#111827] hover:bg-[#F5F3FF] hover:text-[#6D4AFF]'
+                    )}
+                  >
+                    <span>{r} Module</span>
+                    {activeRole === r && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>
