@@ -1,17 +1,13 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { verifyDriverDocumentAI } from '../../services/geminiService';
 import type { DocumentVerificationResult } from '../../types';
 import { Badge } from '../common/Badge';
-import { Upload, FileCheck, CheckCircle2, ShieldCheck, Sparkles, RefreshCw, Camera, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Upload, FileCheck, CheckCircle2, ShieldCheck, Sparkles, RefreshCw } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export const DocumentScanner: React.FC = () => {
   const [docType, setDocType] = useState<'license' | 'rc' | 'insurance' | 'puc'>('license');
   const [scanning, setScanning] = useState(false);
-  const [isCameraActive, setIsCameraActive] = useState(false);
-  const cameraInputRef = useRef<HTMLInputElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const streamRef = useRef<MediaStream | null>(null);
 
   const [result, setResult] = useState<DocumentVerificationResult | null>({
     trustScorePercent: 98,
@@ -30,8 +26,8 @@ export const DocumentScanner: React.FC = () => {
 
   const handleSimulatedUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    const fileName = file ? file.name : `${docType}_captured_photo.jpg`;
-    
+    const fileName = file ? file.name : `${docType}_uploaded_document.pdf`;
+
     setScanning(true);
     setResult(null);
 
@@ -43,59 +39,8 @@ export const DocumentScanner: React.FC = () => {
     }, 1800);
   };
 
-  const startLiveCamera = async () => {
-    try {
-      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-        streamRef.current = stream;
-        setIsCameraActive(true);
-        setTimeout(() => {
-          if (videoRef.current) {
-            videoRef.current.srcObject = stream;
-          }
-        }, 100);
-      } else {
-        // Fallback to mobile camera input dialog
-        cameraInputRef.current?.click();
-      }
-    } catch (err) {
-      console.warn('Camera stream fallback to native camera input:', err);
-      cameraInputRef.current?.click();
-    }
-  };
-
-  const stopLiveCamera = () => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => track.stop());
-      streamRef.current = null;
-    }
-    setIsCameraActive(false);
-  };
-
-  const captureLivePhoto = () => {
-    stopLiveCamera();
-    setScanning(true);
-    setResult(null);
-
-    setTimeout(async () => {
-      const res = await verifyDriverDocumentAI(docType, `${docType}_camera_snap.jpg`);
-      setResult(res);
-      setScanning(false);
-    }, 1800);
-  };
-
   return (
     <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card space-y-6">
-      {/* Hidden camera input for direct native mobile camera launch */}
-      <input
-        ref={cameraInputRef}
-        type="file"
-        accept="image/*"
-        capture="environment"
-        onChange={handleSimulatedUpload}
-        className="hidden"
-      />
-
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
           <div className="p-2 rounded-xl bg-blue-50 text-blue-600 border border-blue-100">
@@ -122,7 +67,7 @@ export const DocumentScanner: React.FC = () => {
         </div>
       </div>
 
-      {/* File Uploader Dropzone & Camera Option */}
+      {/* File Uploader Dropzone */}
       <div className="space-y-3">
         <div className="relative border-2 border-dashed border-slate-200 hover:border-blue-400 rounded-2xl p-6 text-center bg-slate-50/50 transition-colors overflow-hidden group">
           {scanning && (
@@ -148,96 +93,7 @@ export const DocumentScanner: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Mobile Camera Option Bar */}
-        <div className="flex flex-col sm:flex-row items-center gap-2 pt-1">
-          <button
-            type="button"
-            onClick={startLiveCamera}
-            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-xl text-xs font-extrabold shadow-2xs active:scale-98 transition-all cursor-pointer"
-          >
-            <Camera className="w-4 h-4 text-white" />
-            <span>Take Photo via Mobile Camera</span>
-          </button>
-          
-          <button
-            type="button"
-            onClick={() => cameraInputRef.current?.click()}
-            className="w-full sm:w-auto flex items-center justify-center gap-1.5 py-2.5 px-4 bg-[#F8FAFC] hover:bg-[#EFF6FF] text-[#0F172A] border border-[#E2E8F0] rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer"
-          >
-            <Camera className="w-3.5 h-3.5 text-[#2563EB]" />
-            <span>Launch Native Camera</span>
-          </button>
-        </div>
       </div>
-
-      {/* Live Camera Viewfinder Overlay Modal */}
-      <AnimatePresence>
-        {isCameraActive && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-slate-900 rounded-3xl p-5 w-full max-w-md border border-slate-800 shadow-2xl space-y-4 text-white relative overflow-hidden"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Camera className="w-5 h-5 text-emerald-400 animate-pulse" />
-                  <span className="font-extrabold text-sm uppercase tracking-wider">AI Document Camera</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={stopLiveCamera}
-                  className="p-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              {/* Viewfinder Frame */}
-              <div className="relative rounded-2xl overflow-hidden bg-black aspect-4/3 border-2 border-emerald-500/50 shadow-inner">
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  playsInline
-                  muted
-                  className="w-full h-full object-cover"
-                />
-
-                {/* Card Bounding Box Overlay */}
-                <div className="absolute inset-4 border-2 border-dashed border-emerald-400/80 rounded-xl pointer-events-none flex flex-col items-center justify-between p-3">
-                  <span className="text-[10px] font-black uppercase tracking-widest bg-emerald-950/80 text-emerald-300 px-2 py-0.5 rounded border border-emerald-800">
-                    Align {docType.toUpperCase()} Inside Frame
-                  </span>
-                  <span className="text-[10px] text-slate-300 bg-slate-950/80 px-2 py-0.5 rounded">
-                    Hold Steady for Gemini Hologram Scan
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={stopLiveCamera}
-                  className="flex-1 py-2.5 px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold transition-all"
-                >
-                  Cancel
-                </button>
-
-                <button
-                  type="button"
-                  onClick={captureLivePhoto}
-                  className="flex-2 py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-black shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-all"
-                >
-                  <Sparkles className="w-4 h-4 text-amber-300" />
-                  <span>Snap & Verify Document</span>
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
 
       {/* Scan Results Card */}
       {scanning && (
