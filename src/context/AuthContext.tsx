@@ -9,6 +9,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   loginAsRole: (targetRole: UserRole) => void;
   loginWithCredentials: (email: string, role?: UserRole, customName?: string) => void;
+  switchActiveRole: (targetRole: UserRole) => void;
   logout: () => void;
 }
 
@@ -36,6 +37,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.removeItem('cargoloop_auth_user');
     }
   }, [user]);
+
+  const switchActiveRole = (targetRole: UserRole) => {
+    if (!user) {
+      loginAsRole(targetRole);
+      return;
+    }
+    const newUser: User = {
+      ...user,
+      role: targetRole,
+    };
+    setUser(newUser);
+  };
 
   const loginAsRole = (targetRole: UserRole) => {
     const roleInfo = DEMO_ROLES.find((r) => r.role === targetRole);
@@ -111,6 +124,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isAuthenticated: !!user,
         loginAsRole,
         loginWithCredentials,
+        switchActiveRole,
         logout,
       }}
     >

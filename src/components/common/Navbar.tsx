@@ -17,7 +17,7 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot, onToggleMobileMenu }) => {
-  const { user, role, logout, loginAsRole } = useAuth();
+  const { user, role, logout, switchActiveRole } = useAuth();
   const { lang, setLang, t } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
@@ -104,7 +104,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot, onToggleMobileMen
                     type="button"
                     onClick={() => {
                       setShowRoleDropdown(false);
-                      loginAsRole(r);
+                      switchActiveRole(r);
                       navigate(`/dashboard/${r}`);
                     }}
                     className={clsx(

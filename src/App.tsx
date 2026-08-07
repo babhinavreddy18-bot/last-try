@@ -24,14 +24,15 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; allowedRole: UserRol
   children,
   allowedRole,
 }) => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, switchActiveRole } = useAuth();
 
   if (!isAuthenticated || !user) {
     return <Navigate to="/auth" replace />;
   }
 
+  // 🔓 Allow ONE signup email to open EVERY module role profile dynamically!
   if (allowedRole && user.role !== allowedRole) {
-    return <Navigate to={`/dashboard/${user.role}`} replace />;
+    switchActiveRole(allowedRole);
   }
 
   return <Suspense fallback={<PageFallback />}>{children}</Suspense>;
