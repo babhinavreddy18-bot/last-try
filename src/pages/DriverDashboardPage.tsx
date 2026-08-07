@@ -6,7 +6,6 @@ import { StatCard } from '../components/common/StatCard';
 import { Badge } from '../components/common/Badge';
 import { DocumentScanner } from '../components/ai/DocumentScanner';
 import { ReturnLoadMatcher } from '../components/ai/ReturnLoadMatcher';
-import { InteractiveMap } from '../components/maps/InteractiveMap';
 import { formatCurrency, formatDistance } from '../utils/formatters';
 import { Navigation, DollarSign, Award, MapPin, CheckCircle2, ShieldCheck, ArrowRight, Truck as TruckIcon, X, Compass, Route } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from 'recharts';
@@ -168,40 +167,29 @@ export const DriverDashboardPage: React.FC = () => {
 
         {/* Right Column: Assigned Deliveries & Earnings History */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Active Route Telemetry Map */}
-          <div id="live-navigation-map" className="bg-white rounded-2xl p-4 border border-slate-200 shadow-card space-y-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-blue-600" />
-                  {navigatingShipment
-                    ? `Navigating: ${navigatingShipment.origin.city} → ${navigatingShipment.destination.city}`
-                    : 'Live Route Telemetry'
-                  }
-                </h3>
-                {navigatingShipment && (
+          {/* Active Route Telemetry */}
+          {navigatingShipment && (
+            <div id="live-navigation-map" className="bg-white rounded-2xl p-4 border border-slate-200 shadow-card space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-blue-600" />
+                    <span>Navigating: {navigatingShipment.origin.city} → {navigatingShipment.destination.city}</span>
+                  </h3>
                   <p className="text-[11px] text-emerald-600 font-bold flex items-center gap-1 mt-0.5">
-                    <Compass className="w-3.5 h-3.5 animate-spin" /> Turn-by-Turn GPS Live Route Navigation Active
+                    <Compass className="w-3.5 h-3.5 animate-spin" /> Turn-by-Turn GPS Live Route Telemetry Active
                   </p>
-                )}
+                </div>
+                <button
+                  onClick={() => setNavigatingShipment(null)}
+                  className="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-lg border border-rose-200 transition-colors flex items-center gap-1 cursor-pointer"
+                >
+                  <X className="w-3.5 h-3.5" />
+                  <span>Stop Telemetry</span>
+                </button>
               </div>
-              <div className="flex items-center gap-2">
-                {navigatingShipment ? (
-                  <button
-                    onClick={() => setNavigatingShipment(null)}
-                    className="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-lg border border-rose-200 transition-colors flex items-center gap-1"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                    <span>Stop Navigation</span>
-                  </button>
-                ) : (
-                  <Badge variant="blue">Real-Time GPS Active</Badge>
-                )}
-              </div>
-            </div>
 
-            {/* Active Turn-by-Turn Navigation Bar Overlay */}
-            {navigatingShipment && (
+              {/* Active Turn-by-Turn Navigation Bar Overlay */}
               <div className="p-3 bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-xl shadow-md space-y-2">
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2 font-extrabold">
@@ -217,9 +205,8 @@ export const DriverDashboardPage: React.FC = () => {
                   <span className="font-bold text-amber-200">ETA: ~{Math.round(navigatingShipment.distanceKm / 50 * 60)} mins</span>
                 </div>
               </div>
-            )}
-
-          </div>
+            </div>
+          )}
 
           {/* Assigned Deliveries List */}
           <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card space-y-4">
@@ -414,19 +401,41 @@ export const DriverDashboardPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Embedded Live Map Pop-Up */}
-            <div className="relative rounded-2xl overflow-hidden border border-slate-200 shadow-inner">
-              <InteractiveMap
-                trucks={MOCK_TRUCKS}
-                selectedTruckId={activeTruck.id}
-                singleRouteOnly={true}
-                activeRoute={{
-                  origin: navigatingShipment.origin,
-                  destination: navigatingShipment.destination,
-                  title: navigatingShipment.title,
-                }}
-                className="h-[460px] sm:h-[520px]"
-              />
+            {/* Embedded Live Telemetry Details Panel */}
+            <div className="bg-slate-900 text-white rounded-2xl p-6 space-y-4 border border-slate-800 shadow-inner">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+                <div className="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Current Speed</p>
+                  <p className="text-xl font-black text-emerald-400 mt-1">54 km/h</p>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Distance Remaining</p>
+                  <p className="text-xl font-black text-blue-400 mt-1">{formatDistance(navigatingShipment.distanceKm)}</p>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Estimated Payout</p>
+                  <p className="text-xl font-black text-amber-400 mt-1">{formatCurrency(navigatingShipment.estimatedPriceInr)}</p>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">GPS Status</p>
+                  <p className="text-xl font-black text-purple-400 mt-1">99.8% Active</p>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/80 space-y-2 text-xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400 font-semibold">Origin Hub:</span>
+                  <span className="font-bold text-white">{navigatingShipment.origin.city}</span>
+                </div>
+                <div className="flex items-center justify-between border-t border-slate-700/60 pt-2">
+                  <span className="text-slate-400 font-semibold">Destination Hub:</span>
+                  <span className="font-bold text-white">{navigatingShipment.destination.city}</span>
+                </div>
+                <div className="flex items-center justify-between border-t border-slate-700/60 pt-2">
+                  <span className="text-slate-400 font-semibold">Assigned Vehicle:</span>
+                  <span className="font-bold text-emerald-400">{activeTruck.plateNumber}</span>
+                </div>
+              </div>
             </div>
 
             {/* Modal Footer Controls */}
@@ -437,9 +446,9 @@ export const DriverDashboardPage: React.FC = () => {
               </span>
               <button
                 onClick={() => setNavigatingShipment(null)}
-                className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm transition-colors"
+                className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm transition-colors cursor-pointer"
               >
-                Close Navigation Map
+                Close Telemetry
               </button>
             </div>
 
