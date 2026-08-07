@@ -52,12 +52,6 @@ const PublicAuthRoute: React.FC = () => {
 // ── Root Dispatcher ─────────────────────────────────────────────────────────
 
 const RootDispatcher: React.FC = () => {
-  const { isAuthenticated, user } = useAuth();
-
-  if (isAuthenticated && user) {
-    return <Navigate to={`/dashboard/${user.role}`} replace />;
-  }
-
   return (
     <Suspense fallback={<PageFallback />}>
       <LandingPage />

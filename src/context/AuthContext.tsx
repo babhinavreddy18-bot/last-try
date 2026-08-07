@@ -24,16 +24,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.error('Failed to parse saved user:', e);
       }
     }
-    // Default demo user so authenticated dashboard with left navbar is immediately active on load
-    const roleInfo = DEMO_ROLES.find((r) => r.role === 'shipper');
-    return {
-      id: 'usr-shipper-1',
-      name: 'Vikram Malhotra (Shipper)',
-      email: 'shipper@cargoloop.ai',
-      role: 'shipper',
-      avatar: roleInfo?.avatar,
-      companyName: 'Reliance Retail Supply',
-    };
+    return null;
   });
 
   const role: UserRole | null = user?.role || null;
