@@ -29,22 +29,30 @@ export const Layout: React.FC = () => {
         }}
       />
 
-      {/* Fixed Top Navbar */}
+      {/* Fixed Top Navbar (height: 72px) */}
       <Navbar
         onOpenCopilot={() => setIsCopilotOpen(true)}
         onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
       />
 
-      {/* Main Layout Wrapper: Fixed Left Navbar + Content Area */}
-      <div className="flex flex-1 pt-16 relative z-10 min-h-screen">
+      {/* Main Layout Container Shell */}
+      <div className="flex flex-1 w-full h-full relative z-10 overflow-hidden">
+        {/* Fixed Left Sidebar (width: 320px) */}
         <Sidebar
           isMobileMenuOpen={isMobileMenuOpen}
           onCloseMobile={() => setIsMobileMenuOpen(false)}
         />
 
-        {/* Content Area offset by fixed left sidebar margin */}
-        <div className="flex-1 md:ml-64 w-full min-w-0 flex flex-col">
-          <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+        {/* Main Content Area
+            - Positioned directly below 72px navbar (mt-[72px])
+            - Positioned directly right of 320px sidebar (md:ml-[320px])
+            - Resized to remaining viewport space (md:w-[calc(100vw-320px)])
+            - Occupies remaining height (h-[calc(100vh-72px)])
+            - Consistent 24px padding (p-6)
+            - Overflow-y-auto for content-only scrolling
+        */}
+        <div className="mt-[72px] md:ml-[320px] w-full md:w-[calc(100vw-320px)] h-[calc(100vh-72px)] overflow-y-auto p-6">
+          <main className="w-full max-w-7xl mx-auto space-y-6">
             <Outlet />
           </main>
         </div>

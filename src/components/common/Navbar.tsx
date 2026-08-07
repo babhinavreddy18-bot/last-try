@@ -41,7 +41,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot, onToggleMobileMen
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 h-16 px-4 sm:px-6 flex items-center justify-between navbar-floating">
+    <header className="fixed top-0 left-0 right-0 z-40 h-[72px] px-4 sm:px-6 flex items-center justify-between navbar-floating">
 
       {/* Logo & Left Controls */}
       <div className="flex items-center gap-3">

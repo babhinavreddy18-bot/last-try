@@ -199,7 +199,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileMenuOpen = false, onCl
   return (
     <>
       {/* Desktop Fixed Left Sidebar */}
-      <aside className="w-64 hidden md:flex flex-col justify-between p-4 fixed top-16 left-0 bottom-0 z-30 bg-white/90 backdrop-blur-md border-r border-[#E5E7EB] overflow-y-auto">
+      <aside className="w-[320px] hidden md:flex flex-col justify-between p-5 fixed top-[72px] left-0 bottom-0 z-30 bg-white/90 backdrop-blur-md border-r border-[#E5E7EB] overflow-y-auto">
         {sidebarContent}
       </aside>
 
