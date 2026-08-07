@@ -6,6 +6,7 @@ import { StatCard } from '../components/common/StatCard';
 import { Badge } from '../components/common/Badge';
 import { DocumentScanner } from '../components/ai/DocumentScanner';
 import { ReturnLoadMatcher } from '../components/ai/ReturnLoadMatcher';
+import { DriverBookingCenter } from '../components/driver/DriverBookingCenter';
 import { formatCurrency, formatDistance } from '../utils/formatters';
 import { Navigation, DollarSign, Award, MapPin, CheckCircle2, ShieldCheck, ArrowRight, Truck as TruckIcon, X, Compass, Route } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from 'recharts';
@@ -156,6 +157,11 @@ export const DriverDashboardPage: React.FC = () => {
           truckCapacityTons={activeTruck.capacityTons}
           onAccept={handleAcceptAndNavigate}
         />
+      </div>
+
+      {/* ══ DRIVER BOOKING CENTER ══ */}
+      <div id="driver-booking-center" className="scroll-mt-20">
+        <DriverBookingCenter />
       </div>
 
       {/* Main Content Grid: Document Verification & Deliveries */}

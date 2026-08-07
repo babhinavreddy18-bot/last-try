@@ -43,6 +43,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileMenuOpen = false, onCl
     driver: [
       { label: t.documentScanner, path: '/dashboard/driver#ai-document-scanner', targetId: 'ai-document-scanner', icon: <FileCheck className="w-4 h-4" />, roleAllowed: 'driver', color: '#6D4AFF', desc: 'OCR Trust Check' },
       { label: t.returnLoadMatcher, path: '/dashboard/driver#ai-return-load-matcher', targetId: 'ai-return-load-matcher', icon: <Sparkles className="w-4 h-4" />, roleAllowed: 'driver', color: '#F97316', desc: 'Backhaul Profit AI' },
+      { label: 'Booking Center', path: '/dashboard/driver#driver-booking-center', targetId: 'driver-booking-center', icon: <Truck className="w-4 h-4" />, roleAllowed: 'driver', color: '#2563EB', desc: 'Choose Your Trip' },
       { label: 'Live GPS Navigation', path: '/dashboard/driver#live-navigation-map', targetId: 'live-navigation-map', icon: <MapPin className="w-4 h-4" />, roleAllowed: 'driver', color: '#22C55E', desc: 'Real-time Route AI' },
     ],
     shipper: [
