@@ -472,9 +472,16 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
   const handleEmailChange = (val: string) => {
     setEmail(val);
     setError('');
-    const inferred = inferRoleFromEmail(val);
-    if (inferred) {
-      setSelectedRole(inferred);
+    const clean = val.trim().toLowerCase();
+    const accounts = getRegisteredAccounts();
+    const existing = accounts.find(a => a.email.toLowerCase() === clean);
+    if (existing) {
+      setSelectedRole(existing.role);
+    } else {
+      const inferred = inferRoleFromEmail(val);
+      if (inferred) {
+        setSelectedRole(inferred);
+      }
     }
   };
 
@@ -512,7 +519,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
       }
       const existing = accounts.find(a => a.email.toLowerCase() === cleanEmail);
       if (existing) {
-        setError('An account with this email is already registered. Please Sign In.');
+        setError(`This email is already registered as ${existing.role.toUpperCase()}. Please Sign In with that role or try a different email.`);
         return;
       }
 
@@ -525,12 +532,21 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
       };
       saveRegisteredAccount(newAcc);
     } else {
-      // Sign In validation: verify user already signed up
+      // Sign In validation: verify user already signed up & role matches registered account
       const userAcc = accounts.find(a => a.email.toLowerCase() === cleanEmail);
       if (!userAcc) {
         setError('No registered account found with this email. Please Sign Up first to create your account.');
         return;
       }
+
+      // Strict Role Lock Check: If email belongs to driver (or another role), don't open any other profile!
+      if (userAcc.role !== selectedRole) {
+        const registeredRoleObj = ROLE_OPTIONS.find(r => r.role === userAcc.role);
+        const registeredRoleLabel = registeredRoleObj ? t[registeredRoleObj.labelKey] : userAcc.role;
+        setError(`This email is already registered as ${registeredRoleLabel}. Please select the ${registeredRoleLabel} role or try a different email.`);
+        return;
+      }
+
       if (userAcc.pass !== password) {
         setError('Incorrect password. Please verify your password and try again.');
         return;
@@ -573,7 +589,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
 
     const accountsLatest = getRegisteredAccounts();
     const activeAcc = accountsLatest.find(a => a.email.toLowerCase() === cleanEmail);
-    const roleToLogin = selectedRole;
+    const roleToLogin = activeAcc ? activeAcc.role : selectedRole;
     const nameToLogin = activeAcc?.name || fullName || undefined;
 
     const roleName = t[ROLE_OPTIONS.find(r => r.role === roleToLogin)?.labelKey || 'shipperRole'];
