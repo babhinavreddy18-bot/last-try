@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import type { UserRole } from '../../types';
 import { isSupabaseConfigured, supabase } from '../../services/supabaseClient';
 import {
-  ArrowRight, ArrowLeft, Mail, Lock, User as UserIcon,
+  ArrowRight, ArrowLeft, Mail, Lock,
   Eye, EyeOff, Truck, Package, Building2, Shield,
   CheckCircle2, AlertCircle, Loader2, Globe, ChevronDown, KeyRound, ShieldCheck
 } from 'lucide-react';
@@ -440,7 +439,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
   const { lang, setLang } = useLanguage();
 
   const [showLangDropdown, setShowLangDropdown] = useState(false);
-  const [tab, setTab] = useState<'signin' | 'signup' | 'forgot'>('signin');
+  const [tab, setTab] = useState<'signin' | 'forgot'>('signin');
   const [forgotStep, setForgotStep] = useState<1 | 2>(1);
   const initialRole = (() => {
     const params = new URLSearchParams(window.location.search);
@@ -455,7 +454,6 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
   const [selectedRole, setSelectedRole] = useState<UserRole>(initialRole);
   const [email, setEmail] = useState(initialRoleOpt.email);
   const [password, setPassword] = useState(initialRoleOpt.pass);
-  const [fullName, setFullName] = useState('');
   const [otpInput, setOtpInput] = useState('123456');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -511,45 +509,27 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
     }
 
     const accounts = getRegisteredAccounts();
+    const existingAcc = accounts.find(a => a.email.toLowerCase() === cleanEmail);
 
-    if (tab === 'signup') {
-      if (!fullName.trim()) {
-        setError('Please enter your full name for sign up.');
-        return;
-      }
-      const existing = accounts.find(a => a.email.toLowerCase() === cleanEmail);
-      if (existing) {
-        const registeredRoleObj = ROLE_OPTIONS.find(r => r.role === existing.role);
-        const registeredRoleLabel = registeredRoleObj ? t[registeredRoleObj.labelKey] : existing.role;
-        setError(`This email is already registered as ${registeredRoleLabel}. Please Sign In with the ${registeredRoleLabel} role or try a different email.`);
-        return;
-      }
-
-      // Save new registered account locked to selectedRole
+    if (!existingAcc) {
+      // Auto-register user for seamless sign-in
       const newAcc: RegisteredAccount = {
         email: cleanEmail,
-        name: fullName.trim(),
+        name: cleanEmail.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
         pass: password,
         role: selectedRole,
       };
       saveRegisteredAccount(newAcc);
     } else {
-      // Sign In validation: verify user exists & target module role strictly matches registered role!
-      const userAcc = accounts.find(a => a.email.toLowerCase() === cleanEmail);
-      if (!userAcc) {
-        setError('No registered account found with this email. Please Sign Up first to create your account.');
-        return;
-      }
-
       // STRICT ROLE LOCK: If email belongs to driver (or another role), DO NOT authenticate other module roles!
-      if (userAcc.role !== selectedRole) {
-        const registeredRoleObj = ROLE_OPTIONS.find(r => r.role === userAcc.role);
-        const registeredRoleLabel = registeredRoleObj ? t[registeredRoleObj.labelKey] : userAcc.role;
+      if (existingAcc.role !== selectedRole) {
+        const registeredRoleObj = ROLE_OPTIONS.find(r => r.role === existingAcc.role);
+        const registeredRoleLabel = registeredRoleObj ? t[registeredRoleObj.labelKey] : existingAcc.role;
         setError(`This email is already registered as ${registeredRoleLabel}. Please select the ${registeredRoleLabel} role or try a different email.`);
         return;
       }
 
-      if (userAcc.pass !== password && password !== 'demo1234') {
+      if (existingAcc.pass !== password && password !== 'demo1234') {
         setError('Incorrect password. Please verify your password and try again.');
         return;
       }
@@ -560,25 +540,12 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
     // Attempt real Supabase auth if configured
     if (isSupabaseConfigured()) {
       try {
-        if (tab === 'signup') {
-          const { error: sbErr } = await supabase.auth.signUp({
-            email: cleanEmail,
-            password: password,
-            options: {
-              data: { full_name: fullName, role: selectedRole },
-            },
-          });
-          if (sbErr && !sbErr.message.includes('already registered')) {
-            console.warn('Supabase auth warning:', sbErr.message);
-          }
-        } else {
-          const { error: sbErr } = await supabase.auth.signInWithPassword({
-            email: cleanEmail,
-            password: password,
-          });
-          if (sbErr) {
-            console.warn('Supabase sign-in note:', sbErr.message);
-          }
+        const { error: sbErr } = await supabase.auth.signInWithPassword({
+          email: cleanEmail,
+          password: password,
+        });
+        if (sbErr) {
+          console.warn('Supabase sign-in note:', sbErr.message);
         }
       } catch (err) {
         console.warn('Supabase auth error handled gracefully:', err);
@@ -592,14 +559,10 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
     const accountsLatest = getRegisteredAccounts();
     const activeAcc = accountsLatest.find(a => a.email.toLowerCase() === cleanEmail);
     const roleToLogin = activeAcc ? activeAcc.role : selectedRole;
-    const nameToLogin = activeAcc?.name || fullName || undefined;
+    const nameToLogin = activeAcc?.name || undefined;
 
     const roleName = t[ROLE_OPTIONS.find(r => r.role === roleToLogin)?.labelKey || 'shipperRole'];
-    setSuccess(
-      tab === 'signup'
-        ? `${t.accountCreated} ${roleName}…`
-        : `${t.authenticatedAs} ${roleName}! Loading…`
-    );
+    setSuccess(`${t.authenticatedAs} ${roleName}! Loading…`);
 
     setTimeout(() => {
       loginWithCredentials(cleanEmail, roleToLogin, nameToLogin);
@@ -678,7 +641,6 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
     }, 1400);
   };
 
-  const strength = tab === 'signup' && password.length > 0 ? getPasswordStrength(password) : null;
   const newPassStrength = tab === 'forgot' && forgotStep === 2 && newPassword.length > 0 ? getPasswordStrength(newPassword) : null;
 
   return (
@@ -691,8 +653,6 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
         <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#111827]">
           {tab === 'signin'
             ? 'Welcome back'
-            : tab === 'signup'
-            ? 'Create Account'
             : forgotStep === 1
             ? t.resetPasswordTitle
             : t.setNewPasswordTitle}
@@ -700,8 +660,6 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
         <p className="text-sm text-[#6B7280] font-normal leading-relaxed max-w-xs mx-auto">
           {tab === 'signin'
             ? 'Log in to your CargoLoop account and continue managing your logistics.'
-            : tab === 'signup'
-            ? 'Sign up for CargoLoop to access real-time AI freight dispatch & fleet intelligence.'
             : forgotStep === 1
             ? t.resetPasswordSubtitle
             : t.setNewPasswordSubtitle}
@@ -751,26 +709,8 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
         </div>
       </div>
 
-      {/* Form Tabs (only show in signin / signup) */}
-      {tab !== 'forgot' ? (
-        <div className="flex p-1 bg-[#F3F4F6] rounded-full border border-[#E5E7EB]">
-          {(['signin', 'signup'] as const).map((tabKey) => (
-            <button
-              key={tabKey}
-              type="button"
-              onClick={() => { setTab(tabKey); setError(''); setSuccess(''); }}
-              className={`flex-1 py-2 text-xs font-bold rounded-full transition-all cursor-pointer ${
-                tab === tabKey
-                  ? 'text-white shadow-sm'
-                  : 'text-[#6B7280] hover:text-[#111827]'
-              }`}
-              style={tab === tabKey ? { background: 'linear-gradient(135deg, #6D4AFF 0%, #8B5CF6 100%)' } : {}}
-            >
-              {tabKey === 'signin' ? t.signIn : t.signUp}
-            </button>
-          ))}
-        </div>
-      ) : (
+      {/* Header when in Forgot Password mode */}
+      {tab === 'forgot' && (
         <div className="flex items-center justify-between bg-[#F8FAFC] border border-[#E5E7EB] p-2.5 rounded-2xl text-xs">
           <div className="flex items-center gap-2 text-[#6D4AFF] font-bold">
             <ShieldCheck className="w-4 h-4" />
@@ -838,32 +778,6 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
             </div>
           </div>
 
-          {/* Full Name (Sign-up only) */}
-          <AnimatePresence>
-            {tab === 'signup' && (
-              <motion.div
-                key="fullname"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="space-y-1 overflow-hidden"
-              >
-                <div className="relative">
-                  <UserIcon className="w-4 h-4 absolute left-4 top-3.5 text-[#9CA3AF]" />
-                  <input
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => { setFullName(e.target.value); setError(''); }}
-                    placeholder="Enter your full name"
-                    required
-                    autoComplete="name"
-                    className="w-full pl-11 pr-4 py-3 text-sm font-normal rounded-2xl border border-[#E5E7EB] bg-white text-[#111827] placeholder:text-[#9CA3AF] focus:border-[#6D4AFF] focus:ring-2 focus:ring-[#6D4AFF]/15 focus:outline-none transition-all"
-                  />
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
           {/* Email Address Input */}
           <div className="relative">
             <Mail className="w-4 h-4 absolute left-4 top-3.5 text-[#9CA3AF]" />
@@ -888,7 +802,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
                 onChange={(e) => { setPassword(e.target.value); setError(''); }}
                 placeholder={t.enterPass}
                 required
-                autoComplete={tab === 'signin' ? 'current-password' : 'new-password'}
+                autoComplete="current-password"
                 className="w-full pl-11 pr-11 py-3 text-sm font-normal rounded-2xl border border-[#E5E7EB] bg-white text-[#111827] placeholder:text-[#9CA3AF] focus:border-[#6D4AFF] focus:ring-2 focus:ring-[#6D4AFF]/15 focus:outline-none transition-all"
               />
               <button
@@ -902,37 +816,21 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
             </div>
 
             {/* Forgot Password Link on Sign In */}
-            {tab === 'signin' && (
-              <div className="flex items-center justify-end pt-1 px-1">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setTab('forgot');
-                    setForgotStep(1);
-                    setError('');
-                    setSuccess('');
-                  }}
-                  className="text-[#6D4AFF] font-bold text-xs hover:underline cursor-pointer flex items-center gap-1"
-                >
-                  <KeyRound className="w-3.5 h-3.5" />
-                  <span>{t.forgotPassword}</span>
-                </button>
-              </div>
-            )}
-
-            {strength && (
-              <div className="px-1 pt-1.5 space-y-1">
-                <div className="flex gap-1">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div
-                      key={i}
-                      className="h-1 flex-1 rounded-full transition-all duration-300"
-                      style={{ background: i <= strength.bars ? strength.color : '#E5E7EB' }}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
+            <div className="flex items-center justify-end pt-1 px-1">
+              <button
+                type="button"
+                onClick={() => {
+                  setTab('forgot');
+                  setForgotStep(1);
+                  setError('');
+                  setSuccess('');
+                }}
+                className="text-[#6D4AFF] font-bold text-xs hover:underline cursor-pointer flex items-center gap-1"
+              >
+                <KeyRound className="w-3.5 h-3.5" />
+                <span>{t.forgotPassword}</span>
+              </button>
+            </div>
           </div>
 
           {/* Errors & Success Feedback */}
@@ -964,7 +862,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
               </>
             ) : (
               <>
-                <span>{tab === 'signin' ? 'Sign in' : t.createAccount}</span>
+                <span>Sign in</span>
                 <ArrowRight className="w-4 h-4" />
               </>
             )}
@@ -1138,9 +1036,9 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
         </form>
       )}
 
-      {/* Toggle Sign In / Sign Up Footer Link */}
-      <div className="pt-2 text-center text-sm text-[#6B7280]">
-        {tab === 'forgot' ? (
+      {/* Footer Link */}
+      {tab === 'forgot' && (
+        <div className="pt-2 text-center text-sm text-[#6B7280]">
           <button
             type="button"
             onClick={() => { setTab('signin'); setForgotStep(1); setError(''); setSuccess(''); }}
@@ -1149,21 +1047,8 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>{t.backToSignIn}</span>
           </button>
-        ) : (
-          <>
-            <span>
-              {tab === 'signin' ? "Don't have an account? " : 'Already have an account? '}
-            </span>
-            <button
-              type="button"
-              onClick={() => { setTab(tab === 'signin' ? 'signup' : 'signin'); setError(''); }}
-              className="text-[#6D4AFF] font-bold hover:underline cursor-pointer"
-            >
-              {tab === 'signin' ? 'Sign up' : 'Sign in'}
-            </button>
-          </>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
