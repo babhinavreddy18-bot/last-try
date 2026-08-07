@@ -1,5 +1,5 @@
-import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import type { UserRole } from '../../types';
@@ -13,9 +13,11 @@ import clsx from 'clsx';
 interface NavItem {
   label: string;
   path: string;
+  targetId: string;
   icon: React.ReactNode;
   color: string;
   roleAllowed: UserRole;
+  desc?: string;
 }
 
 interface SidebarProps {
@@ -24,151 +26,235 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ isMobileMenuOpen = false, onCloseMobile }) => {
-  const { role } = useAuth();
+  const { role, loginAsRole } = useAuth();
   const { t } = useLanguage();
   const location = useLocation();
-
+  const navigate = useNavigate();
   const userRole = role || 'shipper';
+  const [selectedRoleView, setSelectedRoleView] = useState<UserRole>(userRole);
+
+  const roleOptions: { role: UserRole; label: string; icon: React.ReactNode; color: string }[] = [
+    { role: 'driver', label: 'Driver', icon: <Truck className="w-3.5 h-3.5" />, color: '#22C55E' },
+    { role: 'shipper', label: 'Shipper', icon: <PackageCheck className="w-3.5 h-3.5" />, color: '#6D4AFF' },
+    { role: 'fleet', label: 'Fleet', icon: <Building2 className="w-3.5 h-3.5" />, color: '#F97316' },
+    { role: 'admin', label: 'Admin', icon: <ShieldAlert className="w-3.5 h-3.5" />, color: '#EF4444' },
+  ];
 
   const dashboardItems: Record<UserRole, NavItem> = {
-    driver: { label: t.driverPortal, path: '/dashboard/driver', icon: <Truck className="w-4 h-4" />, roleAllowed: 'driver', color: '#6D4AFF' },
-    shipper: { label: t.shipperHub, path: '/dashboard/shipper', icon: <PackageCheck className="w-4 h-4" />, roleAllowed: 'shipper', color: '#6D4AFF' },
-    fleet: { label: t.fleetCommand, path: '/dashboard/fleet', icon: <Building2 className="w-4 h-4" />, roleAllowed: 'fleet', color: '#6D4AFF' },
-    admin: { label: t.adminTelemetry, path: '/dashboard/admin', icon: <ShieldAlert className="w-4 h-4" />, roleAllowed: 'admin', color: '#6D4AFF' },
+    driver: { label: t.driverPortal, path: '/dashboard/driver', targetId: 'top', icon: <Truck className="w-4 h-4" />, roleAllowed: 'driver', color: '#22C55E' },
+    shipper: { label: t.shipperHub, path: '/dashboard/shipper', targetId: 'top', icon: <PackageCheck className="w-4 h-4" />, roleAllowed: 'shipper', color: '#6D4AFF' },
+    fleet: { label: t.fleetCommand, path: '/dashboard/fleet', targetId: 'top', icon: <Building2 className="w-4 h-4" />, roleAllowed: 'fleet', color: '#F97316' },
+    admin: { label: t.adminTelemetry, path: '/dashboard/admin', targetId: 'top', icon: <ShieldAlert className="w-4 h-4" />, roleAllowed: 'admin', color: '#EF4444' },
   };
 
   const aiIntelligenceItems: Record<UserRole, NavItem[]> = {
     driver: [
-      { label: t.documentScanner, path: '/dashboard/driver#document-scanner', icon: <FileCheck className="w-4 h-4" />, roleAllowed: 'driver', color: '#6D4AFF' },
-      { label: t.returnLoadMatcher, path: '/dashboard/driver#return-load-matcher', icon: <Sparkles className="w-4 h-4" />, roleAllowed: 'driver', color: '#F97316' },
+      { label: t.documentScanner, path: '/dashboard/driver#ai-document-scanner', targetId: 'ai-document-scanner', icon: <FileCheck className="w-4 h-4" />, roleAllowed: 'driver', color: '#6D4AFF', desc: 'OCR Trust Check' },
+      { label: t.returnLoadMatcher, path: '/dashboard/driver#ai-return-load-matcher', targetId: 'ai-return-load-matcher', icon: <Sparkles className="w-4 h-4" />, roleAllowed: 'driver', color: '#F97316', desc: 'Backhaul Profit AI' },
+      { label: 'Live GPS Navigation', path: '/dashboard/driver#live-navigation-map', targetId: 'live-navigation-map', icon: <MapPin className="w-4 h-4" />, roleAllowed: 'driver', color: '#22C55E', desc: 'Real-time Route AI' },
     ],
     shipper: [
-      { label: t.freightPricingEngine, path: '/dashboard/shipper#nlp-pricing', icon: <Sparkles className="w-4 h-4" />, roleAllowed: 'shipper', color: '#F97316' },
-      { label: 'ERP & WMS Data Hub', path: '/dashboard/shipper#erp-wms-sharing', icon: <Database className="w-4 h-4" />, roleAllowed: 'shipper', color: '#6D4AFF' },
-      { label: t.dynamicBenchmarks, path: '/dashboard/shipper#dynamic-benchmarks', icon: <MapPin className="w-4 h-4" />, roleAllowed: 'shipper', color: '#6D4AFF' },
+      { label: t.freightPricingEngine, path: '/dashboard/shipper#ai-nlp-pricing', targetId: 'ai-nlp-pricing', icon: <Sparkles className="w-4 h-4" />, roleAllowed: 'shipper', color: '#F97316', desc: 'NLP Instant Quotes' },
+      { label: 'ERP & WMS Data Hub', path: '/dashboard/shipper#ai-erp-wms-sharing', targetId: 'ai-erp-wms-sharing', icon: <Database className="w-4 h-4" />, roleAllowed: 'shipper', color: '#6D4AFF', desc: 'Live Inventory Sync' },
+      { label: t.dynamicBenchmarks, path: '/dashboard/shipper#ai-dynamic-benchmarks', targetId: 'ai-dynamic-benchmarks', icon: <MapPin className="w-4 h-4" />, roleAllowed: 'shipper', color: '#6D4AFF', desc: 'Market Rate Telemetry' },
     ],
     fleet: [
-      { label: t.fleetPredictor, path: '/dashboard/fleet#availability-predictor', icon: <MapPin className="w-4 h-4" />, roleAllowed: 'fleet', color: '#6D4AFF' },
-      { label: 'ERP & WMS Data Hub', path: '/dashboard/fleet#erp-wms-sharing', icon: <Database className="w-4 h-4" />, roleAllowed: 'fleet', color: '#6D4AFF' },
-      { label: t.carbonHub, path: '/dashboard/fleet#carbon-hub', icon: <Leaf className="w-4 h-4" />, roleAllowed: 'fleet', color: '#22C55E' },
+      { label: t.fleetPredictor, path: '/dashboard/fleet#ai-availability-predictor', targetId: 'ai-availability-predictor', icon: <MapPin className="w-4 h-4" />, roleAllowed: 'fleet', color: '#6D4AFF', desc: 'Predictive Utilization' },
+      { label: 'ERP & WMS Data Hub', path: '/dashboard/fleet#ai-erp-wms-sharing', targetId: 'ai-erp-wms-sharing', icon: <Database className="w-4 h-4" />, roleAllowed: 'fleet', color: '#6D4AFF', desc: 'Supply Chain Integration' },
+      { label: t.carbonHub, path: '/dashboard/fleet#ai-carbon-hub', targetId: 'ai-carbon-hub', icon: <Leaf className="w-4 h-4" />, roleAllowed: 'fleet', color: '#22C55E', desc: 'Green Logistics Index' },
     ],
     admin: [
-      { label: t.tamperingAlerts, path: '/dashboard/admin#security-alerts', icon: <ShieldAlert className="w-4 h-4" />, roleAllowed: 'admin', color: '#EF4444' },
-      { label: t.aiPlatform, path: '/dashboard/admin#system-telemetry', icon: <Sparkles className="w-4 h-4" />, roleAllowed: 'admin', color: '#F97316' },
+      { label: t.tamperingAlerts, path: '/dashboard/admin#ai-security-alerts', targetId: 'ai-security-alerts', icon: <ShieldAlert className="w-4 h-4" />, roleAllowed: 'admin', color: '#EF4444', desc: 'Security Monitor' },
+      { label: t.aiPlatform, path: '/dashboard/admin#ai-system-telemetry', targetId: 'ai-system-telemetry', icon: <Sparkles className="w-4 h-4" />, roleAllowed: 'admin', color: '#F97316', desc: 'System Telemetry' },
     ],
   };
 
-  const currentDashboardItem = dashboardItems[userRole];
-  const currentAiItems = aiIntelligenceItems[userRole] || [];
+  const handleNavigateToAiModule = (targetRole: UserRole, targetId: string) => {
+    if (role !== targetRole) {
+      loginAsRole(targetRole);
+    }
+
+    const basePath = `/dashboard/${targetRole}`;
+    if (location.pathname !== basePath) {
+      navigate(`${basePath}#${targetId}`);
+    } else {
+      window.location.hash = targetId;
+    }
+
+    setTimeout(() => {
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        el.classList.add('ring-2', 'ring-[#6D4AFF]', 'ring-offset-2', 'transition-all', 'duration-500');
+        setTimeout(() => {
+          el.classList.remove('ring-2', 'ring-[#6D4AFF]', 'ring-offset-2');
+        }, 2000);
+      }
+    }, 150);
+
+    if (onCloseMobile) onCloseMobile();
+  };
+
+  const activeDisplayRole: UserRole = selectedRoleView || userRole;
+  const currentDashboardItem = dashboardItems[activeDisplayRole];
+  const currentAiItems = aiIntelligenceItems[activeDisplayRole] || [];
+
 
   const sidebarContent = (
-    <>
-      <div className="space-y-8">
-        {/* Role Portal Section */}
+    <div className="flex flex-col h-full justify-between gap-6">
+      <div className="space-y-6">
+        {/* Role Switcher & Selector */}
         <div>
-          <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#6B7280] px-3 mb-3">
-            {t.myWorkspace}
-          </h4>
-          <nav className="space-y-1">
-            <NavLink
-              to={currentDashboardItem.path}
-              className={clsx(
-                'flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-sm font-semibold transition-all',
-                location.pathname === currentDashboardItem.path
-                  ? 'sidebar-active'
-                  : 'text-[#374151] hover:bg-[#F5F3FF] hover:text-[#6D4AFF]'
-              )}
-            >
-              <div className="flex items-center gap-3">
-                <span className={location.pathname === currentDashboardItem.path ? 'text-white' : 'text-[#6D4AFF]'}>
-                  {currentDashboardItem.icon}
-                </span>
-                <span>{currentDashboardItem.label}</span>
-              </div>
-              <ChevronRight className={clsx('w-3.5 h-3.5', location.pathname === currentDashboardItem.path ? 'text-white/70' : 'text-[#D1D5DB]')} />
-            </NavLink>
-          </nav>
+          <div className="flex items-center justify-between px-2 mb-2">
+            <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#6B7280]">
+              Role Modules
+            </h4>
+            <span className="text-[10px] font-semibold text-[#6D4AFF] bg-[#EDE9FE] px-2 py-0.5 rounded-full border border-[#DDD6FE]">
+              Active: {userRole}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-4 gap-1 p-1 rounded-xl bg-[#F3F4F6] border border-[#E5E7EB]">
+            {roleOptions.map((ro) => {
+              const isActiveRole = userRole === ro.role;
+              return (
+                <button
+                  key={ro.role}
+                  type="button"
+                  onClick={() => {
+                    if (userRole !== ro.role) {
+                      loginAsRole(ro.role);
+                      navigate(`/dashboard/${ro.role}`);
+                    }
+                    setSelectedRoleView(ro.role);
+                    if (onCloseMobile) onCloseMobile();
+                  }}
+                  className={clsx(
+                    'flex flex-col items-center justify-center p-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer',
+                    isActiveRole
+                      ? 'bg-white text-[#111827] shadow-sm border border-[#E5E7EB]'
+                      : 'text-[#6B7280] hover:text-[#111827] hover:bg-white/50'
+                  )}
+                  title={`Switch to ${ro.label} role`}
+                >
+                  <span style={{ color: isActiveRole ? ro.color : undefined }}>{ro.icon}</span>
+                  <span className="text-[9px] mt-0.5 capitalize truncate">{ro.label}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        {/* AI Intelligence Modules */}
+        {/* Current Workspace Link */}
         <div>
-          <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#6B7280] px-3 mb-3">
-            {t.roleAiModules}
+          <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#6B7280] px-2 mb-2">
+            {t.myWorkspace}
           </h4>
-          <nav className="space-y-1">
+          <NavLink
+            to={currentDashboardItem.path}
+            onClick={() => {
+              if (userRole !== activeDisplayRole) {
+                loginAsRole(activeDisplayRole);
+              }
+              if (onCloseMobile) onCloseMobile();
+            }}
+            className={clsx(
+              'flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-sm font-semibold transition-all',
+              location.pathname === currentDashboardItem.path
+                ? 'sidebar-active'
+                : 'text-[#374151] hover:bg-[#F5F3FF] hover:text-[#6D4AFF]'
+            )}
+          >
+            <div className="flex items-center gap-2.5">
+              <span className={location.pathname === currentDashboardItem.path ? 'text-white' : 'text-[#6D4AFF]'}>
+                {currentDashboardItem.icon}
+              </span>
+              <span>{currentDashboardItem.label}</span>
+            </div>
+            <ChevronRight className={clsx('w-3.5 h-3.5', location.pathname === currentDashboardItem.path ? 'text-white/70' : 'text-[#D1D5DB]')} />
+          </NavLink>
+        </div>
+
+        {/* AI Intelligence Modules Buttons */}
+        <div>
+          <div className="flex items-center justify-between px-2 mb-2">
+            <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#6B7280]">
+              {t.roleAiModules}
+            </h4>
+            <span className="flex items-center gap-1 text-[10px] font-bold text-[#F97316]">
+              <Sparkles className="w-2.5 h-2.5 animate-spin" />
+              Direct AI
+            </span>
+          </div>
+
+          <nav className="space-y-1.5">
             {currentAiItems.map((item, idx) => {
               const currentFull = location.pathname + location.hash;
               const isActive = currentFull === item.path || (location.hash && item.path.includes(location.hash));
               const isOrange = item.color === '#F97316';
               return (
-                <NavLink
+                <button
                   key={idx}
-                  to={item.path}
-                  onClick={() => {
-                    if (item.path.includes('#')) {
-                      const hashPart = item.path.substring(item.path.indexOf('#') + 1);
-                      const targetId = hashPart.startsWith('ai-') ? hashPart : 'ai-' + hashPart;
-                      window.location.hash = hashPart;
-                      const el = document.getElementById(targetId) || document.getElementById(hashPart);
-                      if (el) {
-                        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        el.classList.add('ring-2', 'ring-[#6D4AFF]', 'ring-offset-2', 'transition-all', 'duration-500');
-                        setTimeout(() => {
-                          el.classList.remove('ring-2', 'ring-[#6D4AFF]', 'ring-offset-2');
-                        }, 2000);
-                      }
-                    }
-                    if (onCloseMobile) onCloseMobile();
-                  }}
+                  type="button"
+                  onClick={() => handleNavigateToAiModule(activeDisplayRole, item.targetId)}
                   className={clsx(
-                    'flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-sm font-semibold transition-all group',
+                    'w-full text-left flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-semibold transition-all group cursor-pointer border',
                     isActive
-                      ? 'bg-[#EDE9FE] text-[#6D4AFF] border border-[#DDD6FE]'
-                      : 'text-[#374151] hover:bg-[#F5F3FF] hover:text-[#6D4AFF]'
+                      ? 'bg-[#EDE9FE] text-[#6D4AFF] border-[#DDD6FE] shadow-sm'
+                      : 'bg-white/60 text-[#374151] border-transparent hover:bg-[#F5F3FF] hover:text-[#6D4AFF] hover:border-[#DDD6FE]'
                   )}
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2.5 min-w-0">
                     <span className={clsx(
-                      isActive ? 'text-[#6D4AFF]' : isOrange ? 'text-[#F97316] group-hover:text-[#6D4AFF]' : 'text-[#6B7280] group-hover:text-[#6D4AFF]',
-                      'transition-colors'
+                      'p-1.5 rounded-xl transition-colors shrink-0',
+                      isActive ? 'bg-[#6D4AFF] text-white' : 'bg-[#F3F4F6] text-[#6D4AFF] group-hover:bg-[#EDE9FE]'
                     )}>
                       {item.icon}
                     </span>
-                    <span>{item.label}</span>
+                    <div className="min-w-0">
+                      <div className="font-bold truncate">{item.label}</div>
+                      {item.desc && (
+                        <div className="text-[10px] text-[#6B7280] font-normal truncate">{item.desc}</div>
+                      )}
+                    </div>
                   </div>
-                  {isOrange && !isActive && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#F97316]" />
-                  )}
-                  {isActive && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#6D4AFF]" />
-                  )}
-                </NavLink>
+
+                  <span className="shrink-0 flex items-center gap-1">
+                    {isOrange && !isActive && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#F97316]" />
+                    )}
+                    {isActive && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#6D4AFF]" />
+                    )}
+                    <ChevronRight className="w-3 h-3 text-[#9CA3AF] group-hover:text-[#6D4AFF] group-hover:translate-x-0.5 transition-all" />
+                  </span>
+                </button>
               );
             })}
           </nav>
         </div>
       </div>
 
-      {/* Role status card */}
-      <div>
-        <div className="p-4 rounded-2xl bg-gradient-to-br from-[#EDE9FE] to-[#F5F3FF] border border-[#DDD6FE] space-y-2">
+      {/* Role status footer card */}
+      <div className="pt-2">
+        <div className="p-3.5 rounded-2xl bg-gradient-to-br from-[#EDE9FE] to-[#F5F3FF] border border-[#DDD6FE] space-y-1.5">
           <div className="flex items-center gap-2 text-xs font-bold text-[#6D4AFF]">
             <Zap className="w-3.5 h-3.5 text-[#F97316]" />
             <span className="capitalize">{userRole} Portal Active</span>
-            <span className="ml-auto w-2 h-2 rounded-full bg-[#6D4AFF] animate-pulse" />
+            <span className="ml-auto w-2 h-2 rounded-full bg-[#22C55E] animate-pulse" />
           </div>
-          <p className="text-[11px] text-[#6B7280] leading-relaxed">
-            RBAC enforced. Authorized for {userRole} role.
+          <p className="text-[10px] text-[#6B7280] leading-relaxed">
+            Role-based access active. Click any AI module button above to navigate directly.
           </p>
         </div>
       </div>
-    </>
+    </div>
   );
 
   return (
     <>
-      {/* Desktop Sticky Sidebar */}
-      <aside className="w-64 hidden md:flex flex-col justify-between p-5 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto shrink-0 z-20 bg-white/80 backdrop-blur-sm border-r border-[#E5E7EB]">
+      {/* Desktop Fixed Left Sidebar */}
+      <aside className="w-64 hidden md:flex flex-col justify-between p-4 fixed top-16 left-0 bottom-0 z-30 bg-white/90 backdrop-blur-md border-r border-[#E5E7EB] overflow-y-auto">
         {sidebarContent}
       </aside>
 
@@ -179,7 +265,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileMenuOpen = false, onCl
             className="fixed inset-0 bg-[#111827]/40 backdrop-blur-sm transition-opacity"
             onClick={onCloseMobile}
           />
-          <div className="relative w-72 max-w-[80vw] bg-white h-full p-5 overflow-y-auto shadow-2xl flex flex-col justify-between z-10 border-r border-[#E5E7EB] animate-in slide-in-from-left duration-200">
+          <div className="relative w-72 max-w-[85vw] bg-white h-full p-4 overflow-y-auto shadow-2xl flex flex-col justify-between z-10 border-r border-[#E5E7EB] animate-in slide-in-from-left duration-200">
             {sidebarContent}
           </div>
         </div>
@@ -187,3 +273,4 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileMenuOpen = false, onCl
     </>
   );
 };
+

@@ -15,7 +15,26 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    const saved = localStorage.getItem('cargoloop_auth_user');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Failed to parse saved user:', e);
+      }
+    }
+    // Default demo user so authenticated dashboard with left navbar is immediately active on load
+    const roleInfo = DEMO_ROLES.find((r) => r.role === 'shipper');
+    return {
+      id: 'usr-shipper-1',
+      name: 'Vikram Malhotra (Shipper)',
+      email: 'shipper@cargoloop.ai',
+      role: 'shipper',
+      avatar: roleInfo?.avatar,
+      companyName: 'Reliance Retail Supply',
+    };
+  });
 
   const role: UserRole | null = user?.role || null;
 

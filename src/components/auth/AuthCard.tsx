@@ -502,32 +502,6 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess }) => {
       {/* Auth Form */}
       <form onSubmit={handleSubmit} className="space-y-4" autoComplete="on">
 
-        {/* Target Portal Role */}
-        <div className="space-y-2">
-          <label className="text-xs font-semibold text-[#6B7280] px-1">
-            {t.selectRole}
-          </label>
-          <div className="grid grid-cols-4 gap-1.5">
-            {ROLE_OPTIONS.map((opt) => {
-              const isSelected = selectedRole === opt.role;
-              return (
-                <button
-                  key={opt.role}
-                  type="button"
-                  onClick={() => setSelectedRole(opt.role)}
-                  className={`py-2.5 px-1 rounded-xl text-[10px] font-semibold flex flex-col items-center gap-1.5 transition-all border cursor-pointer ${
-                    isSelected
-                      ? 'bg-[#EDE9FE] border-[#6D4AFF] text-[#6D4AFF]'
-                      : 'bg-white border-[#E5E7EB] text-[#6B7280] hover:bg-[#F5F3FF] hover:border-[#DDD6FE] hover:text-[#6D4AFF]'
-                  }`}
-                >
-                  <span className={isSelected ? 'text-[#6D4AFF]' : 'text-[#6B7280]'}>{opt.icon}</span>
-                  <span className="truncate w-full text-center">{t[opt.labelKey]}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
 
         {/* Full Name (Sign-up only) */}
         <AnimatePresence>
