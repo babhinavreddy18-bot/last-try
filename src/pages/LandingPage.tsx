@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import {
   Sparkles, Database, RotateCcw, FileCheck, MapPin,
   TrendingUp, ShieldAlert, Bot, ArrowRight, ShieldCheck,
-  Truck, CheckCircle2, Award, Building2, UserCheck, ChevronRight, Zap,
+  Truck, CheckCircle2, Award, Building2, UserCheck, ChevronRight, ChevronDown, Zap,
   Mail, Headphones, Briefcase, Handshake
 } from 'lucide-react';
 import { Badge } from '../components/common/Badge';
@@ -245,6 +245,23 @@ export const LandingPage: React.FC = () => {
                 <p className="text-xs text-[#6B7280] font-medium mt-1">{s.label}</p>
               </div>
             ))}
+          </motion.div>
+
+          {/* Scroll Down Option */}
+          <motion.div variants={fadeUp} className="pt-6 flex flex-col items-center justify-center">
+            <a
+              href="#features-grid"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('features-grid')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="group flex items-center gap-2.5 px-6 py-3 rounded-full bg-white/90 hover:bg-white border border-[#E5E7EB] hover:border-[#6D4AFF] shadow-sm hover:shadow-md transition-all cursor-pointer"
+            >
+              <span className="text-xs font-extrabold uppercase tracking-wider text-[#6B7280] group-hover:text-[#6D4AFF] transition-colors">
+                Scroll Down
+              </span>
+              <ChevronDown className="w-4 h-4 text-[#6D4AFF] animate-bounce" />
+            </a>
           </motion.div>
         </motion.div>
 
