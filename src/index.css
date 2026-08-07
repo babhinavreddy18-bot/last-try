@@ -38,37 +38,6 @@
     overflow-x: hidden;
   }
 
-  /* ── Legacy dark/slate color overrides → light SaaS ───── */
-  .bg-slate-950,
-  .bg-slate-900,
-  .bg-slate-900\/95,
-  .bg-slate-900\/90,
-  .bg-slate-900\/80,
-  .bg-slate-800 {
-    background-color: #FFFFFF !important;
-    color: #111827 !important;
-    border-color: #E5E7EB !important;
-  }
-
-  .border-slate-800,
-  .border-slate-700,
-  .border-slate-600,
-  .border-slate-300,
-  .border-slate-200 {
-    border-color: #E5E7EB !important;
-  }
-
-  .text-slate-400,
-  .text-slate-500 {
-    color: #6B7280 !important;
-  }
-
-  .text-slate-900,
-  .text-slate-800,
-  .text-slate-700 {
-    color: #111827 !important;
-  }
-
   /* ── Blue → Purple brand token remaps ─────────────────── */
   .bg-blue-600,
   .bg-blue-500,
@@ -243,7 +212,7 @@
 ══════════════════════════════════════════════════════ */
 .leaflet-container {
   font-family: 'Inter', sans-serif !important;
-  background-color: #F8FAFC !important;
+  background-color: #0f172a !important;
   outline: none !important;
   border-radius: 1.5rem;
 }
