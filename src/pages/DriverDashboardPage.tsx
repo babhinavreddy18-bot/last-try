@@ -28,7 +28,6 @@ export const DriverDashboardPage: React.FC = () => {
   const location = useLocation();
   const driver = MOCK_DRIVERS[0];
   const [gpsStatus, setGpsStatus] = useState<TruckStatus>('in-transit');
-  const [destination] = useState('Pune NH-48 Hub');
   const [navigatingShipment, setNavigatingShipment] = useState<Shipment | null>(null);
   const [deliveryFilter, setDeliveryFilter] = useState<'all' | 'in-transit' | 'cold-chain' | 'high-payout' | 'assigned'>('all');
   const [visibleCount, setVisibleCount] = useState(24);
@@ -92,7 +91,7 @@ export const DriverDashboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Live GPS Status & Destination Selector */}
+        {/* Live GPS Status */}
         <div className="flex flex-wrap items-center gap-3 bg-[#F8FAFC] p-2.5 rounded-2xl border border-[#E2E8F0]">
           <div className="flex items-center gap-1.5 text-xs font-semibold text-[#0F172A] px-2">
             <Navigation className="w-4 h-4 text-[#2563EB] animate-pulse" />
@@ -152,7 +151,7 @@ export const DriverDashboardPage: React.FC = () => {
       {/* ══ AI RETURN LOAD MATCHER ─ Core Feature ══ */}
       <div id="ai-return-load-matcher" className="scroll-mt-20">
         <ReturnLoadMatcher
-          currentDropCity={activeTruck.destination?.city ?? destination}
+          currentDropCity={activeTruck.destination?.city ?? 'Pune'}
           currentDropLat={activeTruck.destination?.lat ?? activeTruck.currentLocation.lat}
           currentDropLng={activeTruck.destination?.lng ?? activeTruck.currentLocation.lng}
           truckCapacityTons={activeTruck.capacityTons}
@@ -177,7 +176,7 @@ export const DriverDashboardPage: React.FC = () => {
                   <MapPin className="w-4 h-4 text-blue-600" />
                   {navigatingShipment
                     ? `Navigating: ${navigatingShipment.origin.city} → ${navigatingShipment.destination.city}`
-                    : `Live Route Telemetry (${destination})`
+                    : 'Live Route Telemetry'
                   }
                 </h3>
                 {navigatingShipment && (
@@ -238,7 +237,7 @@ export const DriverDashboardPage: React.FC = () => {
                     }
                   : {
                       origin: activeTruck.currentLocation,
-                      destination: activeTruck.destination || { lat: 18.5204, lng: 73.8567, city: destination },
+                      destination: activeTruck.destination || { lat: 18.5204, lng: 73.8567, city: 'Pune' },
                       title: `${activeTruck.plateNumber} • ${driver.name}`,
                       driverName: driver.name,
                       truckId: activeTruck.plateNumber,
