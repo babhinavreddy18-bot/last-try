@@ -12,8 +12,8 @@ export const Layout: React.FC = () => {
 
   return (
     <div
-      className="min-h-screen flex flex-col font-sans relative text-slate-900 dark:text-slate-100 transition-colors duration-300"
-      style={{ background: 'var(--hero-bg)' }}
+      className="min-h-screen flex flex-col font-sans relative text-[#111827]"
+      style={{ background: 'linear-gradient(135deg, #F8FAFC 0%, #EEF4FF 50%, #F8FAFC 100%)' }}
     >
       {/* Subtle floating ambient background glow elements */}
       <div

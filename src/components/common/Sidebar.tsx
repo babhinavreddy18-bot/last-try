@@ -200,7 +200,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileMenuOpen = false, onCl
   return (
     <>
       {/* Desktop Fixed Left Sidebar */}
-      <aside className="w-[320px] hidden md:flex flex-col justify-between p-5 fixed top-[72px] left-0 bottom-0 z-30 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-r border-slate-200 dark:border-slate-800 overflow-y-auto transition-colors duration-300">
+      <aside className="w-[320px] hidden md:flex flex-col justify-between p-5 fixed top-[72px] left-0 bottom-0 z-30 bg-white/90 backdrop-blur-md border-r border-[#E5E7EB] overflow-y-auto">
         {sidebarContent}
       </aside>
 
@@ -208,10 +208,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileMenuOpen = false, onCl
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-50 md:hidden flex">
           <div
-            className="fixed inset-0 bg-slate-950/50 backdrop-blur-sm transition-opacity"
+            className="fixed inset-0 bg-[#111827]/40 backdrop-blur-sm transition-opacity"
             onClick={onCloseMobile}
           />
-          <div className="relative w-72 max-w-[85vw] bg-white dark:bg-slate-900 h-full p-4 overflow-y-auto shadow-2xl flex flex-col justify-between z-10 border-r border-slate-200 dark:border-slate-800 animate-in slide-in-from-left duration-200">
+          <div className="relative w-72 max-w-[85vw] bg-white h-full p-4 overflow-y-auto shadow-2xl flex flex-col justify-between z-10 border-r border-[#E5E7EB] animate-in slide-in-from-left duration-200">
             {sidebarContent}
           </div>
         </div>
