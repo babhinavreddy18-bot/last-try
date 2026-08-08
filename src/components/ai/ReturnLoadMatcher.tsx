@@ -366,20 +366,21 @@ export const ReturnLoadMatcher: React.FC<ReturnLoadMatcherProps> = ({
   const bestMatch = matches[0];
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-card overflow-hidden">
+    <div className="saas-card rounded-3xl border-2 border-slate-200/80 dark:border-[#00f3ff]/30 shadow-2xl overflow-hidden backdrop-blur-xl">
 
       {/* ── Header ── */}
-      <div className="bg-[#0F172A] p-6 text-white border-b border-[#E2E8F0]">
+      <div className="bg-slate-900/90 dark:bg-slate-950/90 p-6 text-white border-b border-slate-800 backdrop-blur-md">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-[#2563EB]/20 border border-[#2563EB]/40 rounded-xl flex items-center justify-center">
-              <RotateCcw className="w-5 h-5 text-[#2563EB]" />
+            <div className="w-10 h-10 bg-[#00f3ff]/20 border border-[#00f3ff]/50 rounded-2xl flex items-center justify-center shadow-[0_0_15px_rgba(0,243,255,0.3)]">
+              <RotateCcw className="w-5 h-5 text-[#00f3ff]" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="font-extrabold text-white text-base">AI Return Load Matcher</h3>
-                <span className="text-[10px] font-bold bg-white/20 text-white px-2 py-0.5 rounded-full">
-                  {usedAI && hasSearched ? '✦ Gemini AI' : 'Core Feature'}
+                <span className="text-[10px] font-extrabold bg-[#00f3ff]/10 text-[#00d5ee] dark:text-[#00f3ff] border border-[#00f3ff]/50 px-2.5 py-0.5 rounded-full shadow-[0_0_10px_rgba(0,243,255,0.25)] flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-[#00f3ff]" />
+                  {usedAI && hasSearched ? '✦ Gemini AI Refined' : 'GPS Active'}
                 </span>
               </div>
               <p className="text-blue-100 text-xs mt-0.5">

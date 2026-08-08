@@ -65,9 +65,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot, onToggleMobileMen
             <span className="font-extrabold text-base tracking-tight text-[#111827] group-hover:text-[#6D4AFF] transition-colors">
               {t.platformName}
             </span>
-            <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EDE9FE] text-[#6D4AFF] border border-[#DDD6FE]">
-              <Zap className="w-2.5 h-2.5" />
-              AI
+            <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-[#00f3ff]/10 text-[#00cce5] dark:text-[#00f3ff] border border-[#00f3ff]/50 shadow-[0_0_10px_rgba(0,243,255,0.3)]">
+              <Zap className="w-2.5 h-2.5 text-[#00f3ff] animate-pulse" />
+              AI ACTIVE
             </span>
           </div>
         </Link>
