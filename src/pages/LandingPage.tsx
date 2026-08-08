@@ -76,7 +76,7 @@ export const LandingPage: React.FC = () => {
       icon: <FileCheck className="w-6 h-6" />,
       badge: 'OCR Trust Engine',
       badgeVariant: 'orange' as const,
-      description: 'Instant mobile camera scanning and AI trust scoring for Driver License, RC, Insurance, and PUC certificates.',
+      description: 'Instant document scanning and AI trust scoring for Driver License, RC, Insurance, and PUC certificates.',
     },
     {
       id: 'live-telemetry',
