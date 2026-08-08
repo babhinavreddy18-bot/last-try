@@ -157,8 +157,8 @@ export const LandingPage: React.FC = () => {
 
   return (
     <div
-      className="min-h-screen relative"
-      style={{ background: 'linear-gradient(135deg, #F8FAFC 0%, #EEF4FF 50%, #F8FAFC 100%)' }}
+      className="min-h-screen relative transition-colors duration-300"
+      style={{ background: 'var(--hero-bg)' }}
     >
       {/* Subtle background orbs */}
       <div
