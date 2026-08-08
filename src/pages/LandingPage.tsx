@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { Badge } from '../components/common/Badge';
 import { TruckLogo } from '../components/common/TruckLogo';
+import { ThemeToggle } from '../components/common/ThemeToggle';
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -183,13 +184,16 @@ export const LandingPage: React.FC = () => {
               AI
             </span>
           </div>
-          <Link
-            to="/auth"
-            className="btn-purple text-sm py-2 px-6"
-          >
-            <span>Sign In</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <Link
+              to="/auth"
+              className="btn-purple text-sm py-2 px-6"
+            >
+              <span>Sign In</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
         </div>
       </header>
 

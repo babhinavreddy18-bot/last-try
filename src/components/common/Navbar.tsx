@@ -9,6 +9,7 @@ import {
   ArrowRight, ArrowLeft, Zap
 } from 'lucide-react';
 import { TruckLogo } from './TruckLogo';
+import { ThemeToggle } from './ThemeToggle';
 import clsx from 'clsx';
 
 interface NavbarProps {
@@ -89,6 +90,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCopilot, onToggleMobileMen
 
       {/* Right Controls */}
       <div className="flex items-center gap-2 sm:gap-3">
+        {/* Theme Selector (Light, Dark, System Default) */}
+        <ThemeToggle />
+
         {/* Language Selector */}
         <div className="relative">
           <button
