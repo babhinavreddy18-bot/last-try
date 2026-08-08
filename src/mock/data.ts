@@ -185,9 +185,14 @@ const MATERIALS_LIST = [
   'Chemical Drums (Hazmat Approved)',
 ];
 
-export const MOCK_SHIPMENTS: Shipment[] = Array.from({ length: 120 }).map((_, i) => {
+export const MOCK_SHIPMENTS: Shipment[] = Array.from({ length: 250 }).map((_, i) => {
   const originIndex = i % CITIES.length;
-  const destIndex = (i + 4) % CITIES.length;
+  const pass = Math.floor(i / CITIES.length);
+  const offset = 1 + (pass * 3) + ((i * 7) % (CITIES.length - 2));
+  let destIndex = (originIndex + offset) % CITIES.length;
+  if (destIndex === originIndex) {
+    destIndex = (originIndex + 5) % CITIES.length;
+  }
   const origin = CITIES[originIndex];
   const dest = CITIES[destIndex];
 

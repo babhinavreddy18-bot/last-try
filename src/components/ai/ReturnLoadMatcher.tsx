@@ -303,7 +303,25 @@ export const ReturnLoadMatcher: React.FC<ReturnLoadMatcherProps> = ({
       .sort((a, b) => b.matchScore - a.matchScore)
       .map((m, i) => ({ ...m, rank: i + 1 }));
 
-    const topMatches = allScored.slice(0, 12);
+    // Ensure distinct destination cities among top return load matches
+    const diverseMatches: ReturnLoadMatch[] = [];
+    const seenDestinations = new Set<string>();
+
+    for (const match of allScored) {
+      const destCityName = match.shipment.destination.city.split(' ')[0];
+      if (!seenDestinations.has(destCityName)) {
+        seenDestinations.add(destCityName);
+        diverseMatches.push(match);
+      }
+    }
+
+    for (const match of allScored) {
+      if (!diverseMatches.some((m) => m.shipment.id === match.shipment.id)) {
+        diverseMatches.push(match);
+      }
+    }
+
+    const topMatches = diverseMatches.slice(0, 12).map((m, i) => ({ ...m, rank: i + 1 }));
     setVisibleCount(6);
     setMatches(topMatches);
     setUsedAI(false);
