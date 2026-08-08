@@ -565,19 +565,70 @@ function getFallbackExtractedFields(
   userName: string,
   plateNumber: string
 ): ExtractedDocumentFields {
-  return {
-    fullName: userName,
-    licenseNumber: `DL-MH12202000${Math.floor(100 + Math.random() * 900)}`,
-    vehicleRegistrationNumber: plateNumber,
-    chassisNumber: `MA3EWB1S000${Math.floor(10000 + Math.random() * 90000)}`,
-    engineNumber: `E413CD${Math.floor(100000 + Math.random() * 900000)}`,
-    vehicleMakeModel: 'Tata Prima 4928.S',
-    insurancePolicyNumber: `INS-2025-${Math.floor(100000 + Math.random() * 900000)}`,
-    insuranceValidity: '2026-12-31',
-    pucCertificateNumber: `PUC-MH12-${Math.floor(10000 + Math.random() * 90000)}`,
-    pucValidity: '2026-09-30',
-    issueDate: '2020-11-15',
-    expiryDate: type === 'puc' ? '2026-09-30' : '2028-11-15',
-    ownerDetails: `${userName} - CargoLoop Logistics`,
-  };
+  switch (type) {
+    case 'license':
+      return {
+        fullName: userName,
+        licenseNumber: 'DL-MH12202000101',
+        vehicleRegistrationNumber: plateNumber,
+        chassisNumber: 'MA3EWB1S000129481',
+        engineNumber: 'E413CD983201',
+        vehicleMakeModel: 'Tata Prima 4928.S (HMV Heavy Class)',
+        insurancePolicyNumber: 'INS-2025-884920',
+        insuranceValidity: '2026-12-31',
+        pucCertificateNumber: 'PUC-MH12-99382',
+        pucValidity: '2026-09-30',
+        issueDate: '2020-11-15',
+        expiryDate: '2028-11-15',
+        ownerDetails: `Licence Class: TRANS/HMV | RTO Mumbai West | Holder: ${userName}`,
+      };
+    case 'rc':
+      return {
+        fullName: userName,
+        licenseNumber: 'DL-MH12202000101',
+        vehicleRegistrationNumber: plateNumber,
+        chassisNumber: 'MA3EWB1S000129481',
+        engineNumber: 'E413CD983201',
+        vehicleMakeModel: 'Tata Prima 4928.S (28T Heavy Trailer)',
+        insurancePolicyNumber: 'INS-2025-884920',
+        insuranceValidity: '2026-12-31',
+        pucCertificateNumber: 'PUC-MH12-99382',
+        pucValidity: '2026-09-30',
+        issueDate: '2021-02-10',
+        expiryDate: '2036-02-09',
+        ownerDetails: `Registered Owner: ${userName} (Express Highways India Fleet)`,
+      };
+    case 'insurance':
+      return {
+        fullName: `${userName} (Express Highways India)`,
+        licenseNumber: 'DL-MH12202000101',
+        vehicleRegistrationNumber: plateNumber,
+        chassisNumber: 'MA3EWB1S000129481',
+        engineNumber: 'E413CD983201',
+        vehicleMakeModel: 'Tata Prima 4928.S',
+        insurancePolicyNumber: 'POL-ICICI-MH12-884920',
+        insuranceValidity: '2026-12-31',
+        pucCertificateNumber: 'PUC-MH12-99382',
+        pucValidity: '2026-09-30',
+        issueDate: '2025-01-01',
+        expiryDate: '2026-12-31',
+        ownerDetails: 'Insurer: ICICI Lombard Commercial Freight Policy (Comprehensive In-Transit Cover)',
+      };
+    case 'puc':
+      return {
+        fullName: userName,
+        licenseNumber: 'DL-MH12202000101',
+        vehicleRegistrationNumber: plateNumber,
+        chassisNumber: 'MA3EWB1S000129481',
+        engineNumber: 'E413CD983201',
+        vehicleMakeModel: 'Tata Prima 4928.S (Diesel BS-VI)',
+        insurancePolicyNumber: 'INS-2025-884920',
+        insuranceValidity: '2026-12-31',
+        pucCertificateNumber: 'PUC-MH12-99382',
+        pucValidity: '2026-09-30',
+        issueDate: '2025-09-30',
+        expiryDate: '2026-09-30',
+        ownerDetails: 'Testing Center: RTO MH-12 Emissions Hub #402 (BS-VI Heavy Diesel Standard Passed)',
+      };
+  }
 }

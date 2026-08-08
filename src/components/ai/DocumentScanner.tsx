@@ -16,6 +16,7 @@ import {
   Copy,
   Check,
   Shield,
+  BadgeCheck,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -67,14 +68,14 @@ export const DocumentScanner: React.FC = () => {
         vehicleRegistrationNumber: 'MH-12-CL-3012',
         chassisNumber: 'MA3EWB1S000129481',
         engineNumber: 'E413CD983201',
-        vehicleMakeModel: 'Tata Prima 4928.S',
+        vehicleMakeModel: 'Tata Prima 4928.S (HMV Heavy Class)',
         insurancePolicyNumber: 'INS-2025-884920',
         insuranceValidity: '2026-12-31',
         pucCertificateNumber: 'PUC-MH12-99382',
         pucValidity: '2026-09-30',
         issueDate: '2020-11-15',
         expiryDate: '2028-11-15',
-        ownerDetails: 'Rajesh Kumar - Express Highways India',
+        ownerDetails: 'Licence Class: TRANS/HMV | RTO Mumbai West | Holder: Rajesh Kumar',
       },
       qualityCheck: {
         isReadable: true,
@@ -95,6 +96,28 @@ export const DocumentScanner: React.FC = () => {
       timestamp: 'Just now',
     },
   });
+
+  const handleTabSelect = async (type: DocumentCategory) => {
+    setDocType(type);
+    setScanning(true);
+    setCurrentStepIndex(0);
+
+    const stepInterval = setInterval(() => {
+      setCurrentStepIndex((prev) => {
+        if (prev < PROGRESS_STEPS.length - 1) return prev + 1;
+        clearInterval(stepInterval);
+        return prev;
+      });
+    }, 180);
+
+    setTimeout(async () => {
+      clearInterval(stepInterval);
+      setCurrentStepIndex(PROGRESS_STEPS.length - 1);
+      const res = await verifyDriverDocumentAI(type, `${type}_verified_document.pdf`);
+      setResult(res);
+      setScanning(false);
+    }, 1200);
+  };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -181,6 +204,19 @@ export const DocumentScanner: React.FC = () => {
     }
   };
 
+  const getDocTitle = (cat: DocumentCategory) => {
+    switch (cat) {
+      case 'license':
+        return 'Driving Licence';
+      case 'rc':
+        return 'Vehicle RC Certificate';
+      case 'insurance':
+        return 'Commercial Insurance';
+      case 'puc':
+        return 'PUC Certificate';
+    }
+  };
+
   return (
     <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-7 border-2 border-slate-200/90 dark:border-slate-800 shadow-xl relative overflow-hidden backdrop-blur-md space-y-6">
       {/* Top Gradient Highlight Strip */}
@@ -219,7 +255,7 @@ export const DocumentScanner: React.FC = () => {
           ).map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setDocType(tab.id)}
+              onClick={() => handleTabSelect(tab.id)}
               className={`px-3.5 py-2 rounded-xl font-bold transition-all whitespace-nowrap cursor-pointer text-xs ${
                 docType === tab.id
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20 scale-[1.02]'
@@ -256,7 +292,7 @@ export const DocumentScanner: React.FC = () => {
                 Drag & Drop or <span className="text-blue-600 dark:text-blue-400 underline">Click to Upload Document</span>
               </p>
               <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                Upload <strong className="text-slate-800 dark:text-slate-200">{docType.toUpperCase()}</strong> (PDF, PNG, JPG supported up to 10MB)
+                Upload <strong className="text-slate-800 dark:text-slate-200">{getDocTitle(docType).toUpperCase()}</strong> (PDF, PNG, JPG supported up to 10MB)
               </p>
             </div>
           </div>
@@ -331,14 +367,14 @@ export const DocumentScanner: React.FC = () => {
               <div>
                 <div className="flex items-center gap-2.5">
                   <span className="font-extrabold text-slate-900 dark:text-white text-lg tracking-tight">
-                    Document Verification Confidence
+                    {getDocTitle(docType)} Verification Confidence
                   </span>
                   <span className="text-xs text-slate-500 dark:text-slate-400 font-bold bg-slate-200/80 dark:bg-slate-700 px-2 py-0.5 rounded-md">
                     {result.confidenceBadge}
                   </span>
                 </div>
                 <p className="text-xs text-slate-600 dark:text-slate-300 font-medium mt-1 leading-normal max-w-xl">
-                  AI Summary: <strong className="text-slate-900 dark:text-white">{result.record.aiReasoning}</strong>
+                  AI Reason: <strong className="text-slate-900 dark:text-white">{result.record.aiReasoning}</strong>
                 </p>
               </div>
             </div>
@@ -350,6 +386,26 @@ export const DocumentScanner: React.FC = () => {
               </span>
             </div>
           </div>
+
+          {/* Verified Document Clean Banner */}
+          {result.status === 'VERIFIED' && (
+            <div className="bg-emerald-50 dark:bg-emerald-950/50 p-4 rounded-2xl border-2 border-emerald-300 dark:border-emerald-800 flex items-center justify-between gap-3 shadow-sm">
+              <div className="flex items-center gap-3">
+                <BadgeCheck className="w-6 h-6 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                <div>
+                  <h4 className="font-extrabold text-emerald-950 dark:text-emerald-100 text-sm">
+                    🟢 VERIFIED DOCUMENT RECORD ({getDocTitle(docType)})
+                  </h4>
+                  <p className="text-xs text-emerald-800 dark:text-emerald-300 font-medium mt-0.5">
+                    Extracted details for <strong>{getDocTitle(docType)}</strong> match system records and passed all AI OCR & cross-document consistency checks.
+                  </p>
+                </div>
+              </div>
+              <span className="px-3 py-1 bg-emerald-600 text-white font-extrabold text-xs rounded-xl shadow-2xs shrink-0">
+                100% Compliant
+              </span>
+            </div>
+          )}
 
           {/* User Warning Banner if verification failed */}
           {result.status !== 'VERIFIED' && (
@@ -433,12 +489,12 @@ export const DocumentScanner: React.FC = () => {
             </div>
           )}
 
-          {/* Extracted 13-Field Metadata Grid */}
+          {/* Extracted 13-Field Metadata Grid tailored to active category */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-extrabold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
                 <FileText className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                <span>Extracted Document Metadata (13 Key Fields)</span>
+                <span>Extracted {getDocTitle(docType)} Verified Metadata</span>
               </span>
               <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500">
                 Gemini OCR Parsed
@@ -492,7 +548,7 @@ export const DocumentScanner: React.FC = () => {
             {/* Owner / Vehicle details footer block */}
             <div className="bg-slate-50 dark:bg-slate-800/80 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
               <span className="text-[10px] font-extrabold text-blue-600 dark:text-blue-400 uppercase tracking-wider block mb-1">
-                Owner & Vehicle Registration Details
+                Owner & Document Details ({getDocTitle(docType)})
               </span>
               <span className="font-mono font-extrabold text-slate-900 dark:text-white">
                 {result.record.extractedFields.ownerDetails}
