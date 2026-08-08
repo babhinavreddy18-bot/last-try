@@ -93,9 +93,82 @@ export interface Driver {
   totalEarningsInr: number;
 }
 
+export type DocumentCategory = 'license' | 'rc' | 'insurance' | 'puc';
+
+export type VerificationStatusCode =
+  | 'VERIFIED'
+  | 'MANUAL_REVIEW'
+  | 'DATA_MISMATCH'
+  | 'POSSIBLE_DUPLICATE'
+  | 'INVALID'
+  | 'EXPIRED';
+
+export interface ExtractedDocumentFields {
+  fullName: string;
+  licenseNumber: string;
+  vehicleRegistrationNumber: string;
+  chassisNumber: string;
+  engineNumber: string;
+  vehicleMakeModel: string;
+  insurancePolicyNumber: string;
+  insuranceValidity: string;
+  pucCertificateNumber: string;
+  pucValidity: string;
+  issueDate: string;
+  expiryDate: string;
+  ownerDetails: string;
+}
+
+export interface DocumentQualityCheck {
+  isReadable: boolean;
+  isComplete: boolean;
+  isTampered: boolean;
+  missingFields: string[];
+  docTypeMatch: boolean;
+}
+
+export interface FieldMismatch {
+  fieldName: string;
+  extractedValue: string;
+  expectedValue: string;
+  sourceA: string;
+  sourceB: string;
+}
+
+export interface DuplicateCheckResult {
+  isDuplicate: boolean;
+  reason?: string;
+  field?: string;
+}
+
+export interface VerificationRecord {
+  id: string;
+  userId: string;
+  userName: string;
+  vehicleId: string;
+  documentType: DocumentCategory;
+  fileName: string;
+  extractedFields: ExtractedDocumentFields;
+  qualityCheck: DocumentQualityCheck;
+  mismatchedFields: FieldMismatch[];
+  duplicateInfo: DuplicateCheckResult;
+  trustScorePercent: number;
+  aiReasoning: string;
+  status: VerificationStatusCode;
+  officialVerification: {
+    connected: boolean;
+    message: string;
+  };
+  timestamp: string;
+  adminAction?: 'approved' | 'rejected' | 'requested_reupload' | 'manual_review';
+  adminNote?: string;
+}
+
 export interface DocumentVerificationResult {
   trustScorePercent: number;
   confidenceBadge: 'High Confidence' | 'Medium Confidence' | 'Needs Review';
+  status: VerificationStatusCode;
+  record: VerificationRecord;
   expiryChecks: {
     documentName: string;
     isValid: boolean;

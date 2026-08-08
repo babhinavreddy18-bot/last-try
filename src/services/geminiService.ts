@@ -104,55 +104,14 @@ Respond ONLY with a valid JSON object matching this structure:
   };
 };
 
+import { processDocumentVerification } from './documentVerificationService';
+
 export const verifyDriverDocumentAI = async (
   documentType: 'license' | 'rc' | 'insurance' | 'puc',
-  fileName: string
+  fileName: string,
+  base64FileData?: string
 ): Promise<DocumentVerificationResult> => {
-  if (ai) {
-    try {
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: `Analyze logistics driver document verification for ${documentType} file named "${fileName}".
-Return JSON:
-{
-  "trustScorePercent": number (85-99),
-  "confidenceBadge": "High Confidence" | "Medium Confidence" | "Needs Review",
-  "isAuthentic": boolean,
-  "aiFlags": string[],
-  "expiryChecks": [
-    { "documentName": "string", "isValid": boolean, "expiryDate": "YYYY-MM-DD", "extractedText": "string" }
-  ]
-}`,
-      });
-      const cleaned = (response.text || '').replace(/```json/g, '').replace(/```/g, '').trim();
-      return JSON.parse(cleaned) as DocumentVerificationResult;
-    } catch (err) {
-      console.warn('Gemini OCR verification fallback active:', err);
-    }
-  }
-
-  // Simulated real-time Gemini OCR scanner response
-  const docNames: Record<string, string> = {
-    license: 'Commercial Heavy Driving License',
-    rc: 'Registration Certificate (RC)',
-    insurance: 'Commercial Goods Insurance',
-    puc: 'Pollution Under Control (PUC)',
-  };
-
-  return {
-    trustScorePercent: 96,
-    confidenceBadge: 'High Confidence',
-    isAuthentic: true,
-    aiFlags: ['Verified government hologram', 'Digital signature valid', 'Watermark check passed'],
-    expiryChecks: [
-      {
-        documentName: docNames[documentType] || 'Transport License',
-        isValid: true,
-        expiryDate: '2028-10-24',
-        extractedText: `REG NO: MH-12-2023-0094 | ISSUED: MUMBAI RTO | VALID UNTIL: 2028-10-24 | HOLDER: DRIVER ACTIVE`,
-      },
-    ],
-  };
+  return processDocumentVerification(documentType, fileName, base64FileData);
 };
 
 export const askLogisticsCopilot = async (userPrompt: string, userRole: string): Promise<string> => {
