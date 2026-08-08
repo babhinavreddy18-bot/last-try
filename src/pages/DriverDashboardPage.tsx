@@ -164,15 +164,13 @@ export const DriverDashboardPage: React.FC = () => {
         <DriverBookingCenter />
       </div>
 
-      {/* Main Content Grid: Document Verification & Deliveries */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column: AI Document Verification Center */}
-        <div id="ai-document-scanner" className="lg:col-span-1 space-y-6 scroll-mt-20">
-          <DocumentScanner />
-        </div>
+      {/* ══ AI DOCUMENT VERIFICATION CENTER (Full Width) ══ */}
+      <div id="ai-document-scanner" className="w-full scroll-mt-20">
+        <DocumentScanner />
+      </div>
 
-        {/* Right Column: Assigned Deliveries & Earnings History */}
-        <div className="lg:col-span-2 space-y-6">
+      {/* Main Content Area: Assigned Deliveries & Telemetry */}
+      <div className="w-full space-y-6">
           {/* Active Route Telemetry */}
           {navigatingShipment && (
             <div id="live-navigation-map" className="bg-white rounded-2xl p-4 border border-slate-200 shadow-card space-y-3">
@@ -349,7 +347,6 @@ export const DriverDashboardPage: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
 
       {/* ══ LIVE ROUTE NAVIGATION MAP POP-UP MODAL ══ */}
       {navigatingShipment && (
