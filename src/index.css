@@ -61,6 +61,47 @@
   }
 }
 
+/* ═══════════════════════════════════════════════════════
+   GLOBAL DARK MODE OVERRIDES (Guarantees Instant Light/Dark Switching)
+══════════════════════════════════════════════════════ */
+.dark .bg-white {
+  background-color: #0F172A !important;
+  color: #F8FAFC;
+}
+.dark .bg-white\/70,
+.dark .bg-white\/80,
+.dark .bg-white\/85,
+.dark .bg-white\/90 {
+  background-color: rgba(15, 23, 42, 0.90) !important;
+}
+
+.dark .bg-\[\#F8FAFC\],
+.dark .bg-slate-50,
+.dark .bg-slate-100 {
+  background-color: #1E293B !important;
+}
+
+.dark .text-\[\#0F172A\],
+.dark .text-\[\#111827\],
+.dark .text-slate-900,
+.dark .text-slate-800 {
+  color: #F8FAFC !important;
+}
+
+.dark .text-\[\#64748B\],
+.dark .text-\[\#6B7280\],
+.dark .text-slate-600,
+.dark .text-slate-500 {
+  color: #94A3B8 !important;
+}
+
+.dark .border-\[\#E2E8F0\],
+.dark .border-\[\#E5E7EB\],
+.dark .border-slate-200,
+.dark .border-slate-300 {
+  border-color: #1E293B !important;
+}
+
 /* ── Custom Scrollbar ─────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
