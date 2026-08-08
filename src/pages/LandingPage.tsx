@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sparkles, Database, RotateCcw, FileCheck, MapPin,
   TrendingUp, ShieldAlert, Bot, ArrowRight, ShieldCheck,
@@ -22,6 +22,20 @@ const stagger = {
 
 export const LandingPage: React.FC = () => {
   const navigate = useNavigate();
+  const [showScrollIndicator, setShowScrollIndicator] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 250) {
+        setShowScrollIndicator(false);
+      } else {
+        setShowScrollIndicator(true);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleGoToAuth = (role?: string) => {
     navigate(role ? `/auth?role=${role}` : '/auth');
@@ -142,7 +156,7 @@ export const LandingPage: React.FC = () => {
 
   return (
     <div
-      className="min-h-screen"
+      className="min-h-screen relative"
       style={{ background: 'linear-gradient(135deg, #F8FAFC 0%, #EEF4FF 50%, #F8FAFC 100%)' }}
     >
       {/* Subtle background orbs */}
@@ -156,7 +170,8 @@ export const LandingPage: React.FC = () => {
       />
 
       {/* ── Minimal Sticky Header ─────────────────────────────── */}
-      <header className="sticky top-0 z-30 border-b border-[#E5E7EB]"
+      <header
+        className="sticky top-0 z-30 border-b border-[#E5E7EB]"
         style={{ background: 'rgba(255,255,255,0.88)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -178,11 +193,41 @@ export const LandingPage: React.FC = () => {
         </div>
       </header>
 
+      {/* ── Fixed Floating "Scroll to Explore" Indicator ─────────────────── */}
+      <AnimatePresence>
+        {showScrollIndicator && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 15 }}
+            transition={{ duration: 0.3 }}
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 pointer-events-auto"
+          >
+            <button
+              onClick={() => {
+                document.getElementById('features-grid')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="group flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-white/90 backdrop-blur-md border border-[#DDD6FE] hover:border-[#6D4AFF] shadow-[0_4px_20px_rgba(109,74,255,0.18)] hover:shadow-[0_6px_25px_rgba(109,74,255,0.28)] transition-all cursor-pointer"
+            >
+              <span className="text-xs font-extrabold tracking-wide text-[#4B5563] group-hover:text-[#6D4AFF] transition-colors">
+                Scroll to Explore
+              </span>
+              <motion.div
+                animate={{ y: [0, 4, 0] }}
+                transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
+              >
+                <ChevronDown className="w-4 h-4 text-[#6D4AFF]" />
+              </motion.div>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-20">
 
         {/* ═══ HERO ══════════════════════════════════════════════ */}
         <motion.div
-          className="text-center space-y-8 pt-8"
+          className="text-center space-y-8 pt-8 relative"
           variants={stagger}
           initial="initial"
           animate="animate"
@@ -224,6 +269,10 @@ export const LandingPage: React.FC = () => {
             </button>
             <a
               href="#features-grid"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('features-grid')?.scrollIntoView({ behavior: 'smooth' });
+              }}
               className="btn-outline text-sm py-3.5 px-8"
             >
               <span>Explore All Features</span>
@@ -246,27 +295,17 @@ export const LandingPage: React.FC = () => {
               </div>
             ))}
           </motion.div>
-
-          {/* Scroll Down Option */}
-          <motion.div variants={fadeUp} className="pt-6 flex flex-col items-center justify-center">
-            <a
-              href="#features-grid"
-              onClick={(e) => {
-                e.preventDefault();
-                document.getElementById('features-grid')?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="group flex items-center gap-2.5 px-6 py-3 rounded-full bg-white/90 hover:bg-white border border-[#E5E7EB] hover:border-[#6D4AFF] shadow-sm hover:shadow-md transition-all cursor-pointer"
-            >
-              <span className="text-xs font-extrabold uppercase tracking-wider text-[#6B7280] group-hover:text-[#6D4AFF] transition-colors">
-                Scroll Down
-              </span>
-              <ChevronDown className="w-4 h-4 text-[#6D4AFF] animate-bounce" />
-            </a>
-          </motion.div>
         </motion.div>
 
-        {/* ═══ FEATURE CARDS ══════════════════════════════════════ */}
-        <div id="features-grid" className="space-y-8 scroll-mt-24">
+        {/* ═══ FEATURE CARDS (Smooth Viewport Fade-In & Slide-Up) ════════════════ */}
+        <motion.div
+          id="features-grid"
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, margin: '-80px' }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="space-y-8 scroll-mt-24"
+        >
           <div className="text-center space-y-3">
             <Badge variant="orange" icon={<CheckCircle2 className="w-3.5 h-3.5" />}>
               8 Enterprise AI Features
@@ -325,10 +364,16 @@ export const LandingPage: React.FC = () => {
               </motion.div>
             ))}
           </motion.div>
-        </div>
+        </motion.div>
 
-        {/* ═══ ROLE PORTALS ════════════════════════════════════════ */}
-        <div className="space-y-8">
+        {/* ═══ ROLE PORTALS (Smooth Viewport Fade-In & Slide-Up) ════════════════ */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, margin: '-80px' }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="space-y-8"
+        >
           <div className="text-center space-y-3">
             <Badge variant="purple" icon={<Award className="w-3.5 h-3.5" />}>
               4 Specialized Role Interfaces
@@ -385,14 +430,14 @@ export const LandingPage: React.FC = () => {
               </motion.div>
             ))}
           </motion.div>
-        </div>
+        </motion.div>
 
         {/* ═══ CTA BANNER ══════════════════════════════════════════ */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.25 }}
+          viewport={{ once: false, margin: '-80px' }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="relative rounded-3xl p-10 sm:p-14 overflow-hidden text-center space-y-6"
           style={{ background: 'linear-gradient(135deg, #6D4AFF 0%, #8B5CF6 100%)' }}
         >
